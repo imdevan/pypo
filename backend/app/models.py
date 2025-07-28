@@ -92,34 +92,6 @@ class ItemsPublic(SQLModel):
     data: list[ItemPublic]
     count: int
 
-# Shared properties
-class TagBase(ItemBase):
-    parent_id: uuid.UUID | None = Field(default=None, foreign_key="tag.id")
-    parent: "Tag" | None = Relationship(back_populates="children")
-    children: list["Tag"] = Relationship(back_populates="parent", cascade_delete=True)
-
-
-
-# Properties to receive on item creation
-class TagCreate(TagBase):
-    pass
-
-
-# Properties to receive on item update
-class TagUpdate(TagBase):
-    title: str | None = Field(default=None, min_length=1, max_length=255)  # type: ignore
-
-
-# Database model, database table inferred from class name
-class Tag(TagBase, table=True):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    owner_id: uuid.UUID = Field(
-        foreign_key="user.id", nullable=False, ondelete="CASCADE"
-    )
-    owner: User | None = Relationship(back_populates="items")
-    created_at: datetime = Field(default=datetime.utcnow(), nullable=False)
-    last_edited: datetime = Field(default_factory=datetime.utcnow, nullable=False)
-
 # Properties to return via API, id is always required
 class ItemPublic(ItemBase):
     id: uuid.UUID

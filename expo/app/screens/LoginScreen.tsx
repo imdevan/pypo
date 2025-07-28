@@ -1,6 +1,6 @@
 import { ComponentType, FC, useEffect, useMemo, useRef, useState } from "react"
 // eslint-disable-next-line no-restricted-imports
-import { TextInput, TextStyle, ViewStyle } from "react-native"
+import { TextInput, TextStyle, ViewStyle, Alert } from "react-native"
 
 import { Button } from "@/components/Button"
 import { PressableIcon } from "@/components/Icon"
@@ -21,36 +21,56 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
   const [isAuthPasswordHidden, setIsAuthPasswordHidden] = useState(true)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [attemptsCount, setAttemptsCount] = useState(0)
-  const { authEmail, setAuthEmail, setAuthToken, validationError } = useAuth()
+  const { authEmail, setAuthEmail, login, register, isLoading } = useAuth()
 
   const {
     themed,
     theme: { colors },
   } = useAppTheme()
 
+  const validationError = useMemo(() => {
+    if (!authEmail || authEmail.length === 0) return "Email can't be blank"
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(authEmail)) return "Email must be a valid email address"
+    if (!authPassword || authPassword.length === 0) return "Password can't be blank"
+    if (authPassword.length < 6) return "Password must be at least 6 characters"
+    return ""
+  }, [authEmail, authPassword])
+
   useEffect(() => {
-    // Here is where you could fetch credentials from keychain or storage
-    // and pre-fill the form fields.
-    setAuthEmail("ignite@infinite.red")
-    setAuthPassword("ign1teIsAwes0m3")
+    // Pre-fill with demo credentials for testing
+    setAuthEmail("admin@example.com")
+    setAuthPassword("changethis")
   }, [setAuthEmail])
 
   const error = isSubmitted ? validationError : ""
 
-  function login() {
+  async function handleLogin() {
     setIsSubmitted(true)
     setAttemptsCount(attemptsCount + 1)
 
     if (validationError) return
 
-    // Make a request to your server to get an authentication token.
-    // If successful, reset the fields and set the token.
+    const result = await login(authEmail!, authPassword)
+    
+    if (!result.success) {
+      Alert.alert("Login Failed", result.error || "An error occurred during login")
+    }
+    
     setIsSubmitted(false)
-    setAuthPassword("")
-    setAuthEmail("")
+  }
 
-    // We'll mock this with a fake token.
-    setAuthToken(String(Date.now()))
+  async function handleRegister() {
+    setIsSubmitted(true)
+
+    if (validationError) return
+
+    const result = await register(authEmail!, authPassword)
+    
+    if (!result.success) {
+      Alert.alert("Registration Failed", result.error || "An error occurred during registration")
+    }
+    
+    setIsSubmitted(false)
   }
 
   const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
@@ -94,6 +114,7 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
         helper={error}
         status={error ? "error" : undefined}
         onSubmitEditing={() => authPasswordInput.current?.focus()}
+        editable={!isLoading}
       />
 
       <TextField
@@ -107,8 +128,9 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
         secureTextEntry={isAuthPasswordHidden}
         labelTx="loginScreen:passwordFieldLabel"
         placeholderTx="loginScreen:passwordFieldPlaceholder"
-        onSubmitEditing={login}
+        onSubmitEditing={handleLogin}
         RightAccessory={PasswordRightAccessory}
+        editable={!isLoading}
       />
 
       <Button
@@ -116,7 +138,17 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
         tx="loginScreen:tapToLogIn"
         style={themed($tapButton)}
         preset="reversed"
-        onPress={login}
+        onPress={handleLogin}
+        disabled={isLoading}
+      />
+
+      <Button
+        testID="register-button"
+        text="Register"
+        style={themed($registerButton)}
+        preset="default"
+        onPress={handleRegister}
+        disabled={isLoading}
       />
     </Screen>
   )
@@ -146,4 +178,8 @@ const $textField: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 
 const $tapButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xs,
+})
+
+const $registerButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginTop: spacing.sm,
 })

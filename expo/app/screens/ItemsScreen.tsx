@@ -1,11 +1,11 @@
-import React, { FC, useEffect, useState } from "react"
+import React, { FC, useState } from "react"
 import { View, FlatList, Alert } from "react-native"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
 import { TextField } from "@/components/TextField"
 import { useAuth } from "@/context/AuthContext"
-import { api } from "@/services/api"
+import { useItems, useCreateItem, useDeleteItem } from "@/services/api/hooks"
 import type { ItemResponse } from "@/services/api/types"
 import { useAppTheme } from "@/theme/context"
 
@@ -15,39 +15,17 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const { logout, isAuthenticated, authToken } = useAuth()
   const { themed } = useAppTheme()
   
-  const [items, setItems] = useState<ItemResponse[]>([])
-  const [loading, setLoading] = useState(false)
   const [newItemTitle, setNewItemTitle] = useState("")
   const [newItemDescription, setNewItemDescription] = useState("")
-  const [creating, setCreating] = useState(false)
   const [debugInfo, setDebugInfo] = useState("")
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      loadItems()
-    }
-  }, [isAuthenticated])
+  // TanStack Query hooks
+  const { data: itemsData, isLoading: loading, error: itemsError, refetch } = useItems(authToken)
+  const createItemMutation = useCreateItem()
+  const deleteItemMutation = useDeleteItem()
 
-  const loadItems = async () => {
-    setLoading(true)
-    setDebugInfo(`Loading items... Token: ${authToken ? 'Present' : 'Missing'}`)
-    
-    try {
-      const result = await api.getItems()
-      if (result.kind === "ok") {
-        setItems(result.data.data)
-        setDebugInfo(`Loaded ${result.data.data.length} items successfully`)
-      } else {
-        setDebugInfo(`Failed to load items: ${result.kind}`)
-        Alert.alert("Error", "Failed to load items")
-      }
-    } catch (error) {
-      setDebugInfo(`Error loading items: ${error}`)
-      Alert.alert("Error", "Failed to load items")
-    } finally {
-      setLoading(false)
-    }
-  }
+  // Extract items from the response
+  const items = itemsData?.data || []
 
   const createItem = async () => {
     if (!newItemTitle.trim()) {
@@ -55,54 +33,48 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       return
     }
 
-    setCreating(true)
+    if (!authToken) {
+      Alert.alert("Error", "No authentication token")
+      return
+    }
+
     try {
-      const result = await api.createItem(newItemTitle.trim(), newItemDescription.trim() || undefined)
-      if (result.kind === "ok") {
-        setItems([...items, result.data])
-        setNewItemTitle("")
-        setNewItemDescription("")
-        Alert.alert("Success", "Item created successfully")
-      } else {
-        Alert.alert("Error", "Failed to create item")
-      }
+      await createItemMutation.mutateAsync({
+        title: newItemTitle.trim(),
+        description: newItemDescription.trim() || undefined,
+        token: authToken,
+      })
+      
+      setNewItemTitle("")
+      setNewItemDescription("")
+      Alert.alert("Success", "Item created successfully")
     } catch (error) {
       Alert.alert("Error", "Failed to create item")
-    } finally {
-      setCreating(false)
     }
   }
 
   const deleteItem = async (id: string) => {
+    if (!authToken) {
+      Alert.alert("Error", "No authentication token")
+      return
+    }
+
     try {
-      const result = await api.deleteItem(id)
-      if (result.kind === "ok") {
-        setItems(items.filter(item => item.id !== id))
-        Alert.alert("Success", "Item deleted successfully")
-      } else {
-        Alert.alert("Error", "Failed to delete item")
-      }
+      await deleteItemMutation.mutateAsync({ id, token: authToken })
+      Alert.alert("Success", "Item deleted successfully")
     } catch (error) {
       Alert.alert("Error", "Failed to delete item")
     }
   }
 
-  const testToken = async () => {
-    try {
-      setDebugInfo("Testing token...")
-      const result = await api.testToken()
-      if (result.kind === "ok") {
-        setDebugInfo(`Token is valid! User: ${result.data.email}`)
-        Alert.alert("Success", "Token is valid!")
-      } else {
-        setDebugInfo(`Token test failed: ${result.kind}`)
-        Alert.alert("Error", "Token test failed")
-      }
-    } catch (error) {
-      setDebugInfo(`Token test error: ${error}`)
-      Alert.alert("Error", "Token test failed")
+  // Update debug info when items load
+  React.useEffect(() => {
+    if (itemsData) {
+      setDebugInfo(`Loaded ${items.length} items successfully`)
+    } else if (itemsError) {
+      setDebugInfo(`Error loading items: ${itemsError.message}`)
     }
-  }
+  }, [itemsData, itemsError, items.length])
 
   const renderItem = ({ item }: { item: ItemResponse }) => (
     <View style={themed($itemContainer)}>
@@ -143,9 +115,9 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         <Text text={`Authenticated: ${isAuthenticated}`} preset="formHelper" />
         <Text text={`Token: ${authToken ? 'Present' : 'Missing'}`} preset="formHelper" />
         <Button
-          text="Test Token"
+          text="Refresh Items"
           preset="default"
-          onPress={testToken}
+          onPress={() => refetch()}
           style={themed($testButton)}
         />
       </View>
@@ -168,7 +140,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           text="Create Item"
           preset="reversed"
           onPress={createItem}
-          disabled={creating || !newItemTitle.trim()}
+          disabled={createItemMutation.isPending || !newItemTitle.trim()}
         />
       </View>
 
@@ -201,7 +173,9 @@ const $header = {
 }
 
 const $debugSection = { 
-  backgroundColor: "#f0f0f0", 
+  borderColor: "#f0f0f0", 
+  borderWidth: 1,
+  // color: "#191015",
   padding: 12, 
   marginBottom: 16, 
   borderRadius: 8 
@@ -223,7 +197,9 @@ const $itemContainer = {
   padding: 16, 
   marginBottom: 12, 
   borderRadius: 8,
-  backgroundColor: "#f5f5f5"
+  // backgroundColor: "#f5f5f5"
+  borderColor: "#f5f5f5",
+  borderWidth: 1,
 }
 
 const $itemContent = { flex: 1 }

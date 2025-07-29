@@ -9,7 +9,7 @@ import {
 } from "react"
 
 import { translate } from "@/i18n/translate"
-import { api } from "@/services/api"
+// import { api } from "@/services/api"
 import type { EpisodeItem } from "@/services/api/types"
 import { formatDate } from "@/utils/formatDate"
 
@@ -34,12 +34,9 @@ export const EpisodeProvider: FC<PropsWithChildren<EpisodeProviderProps>> = ({ c
   const [favoritesOnly, setFavoritesOnly] = useState<boolean>(false)
 
   const fetchEpisodes = useCallback(async () => {
-    const response = await api.getEpisodes()
-    if (response.kind === "ok") {
-      setEpisodes(response.episodes)
-    } else {
-      console.error(`Error fetching episodes: ${JSON.stringify(response)}`)
-    }
+    // TODO: Implement episode fetching with TanStack Query
+    // For now, using mock data
+    console.log("Episode fetching not implemented yet")
   }, [])
 
   const toggleFavoritesOnly = useCallback(() => {

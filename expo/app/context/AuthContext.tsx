@@ -1,6 +1,6 @@
 import { createContext, FC, PropsWithChildren, useCallback, useContext, useMemo, useEffect } from "react"
 import { useMMKVString } from "react-native-mmkv"
-import { api } from "@/services/api"
+import { useLogin, useRegister, useTestToken } from "@/services/api/hooks"
 
 export type AuthContextType = {
   isAuthenticated: boolean
@@ -24,55 +24,31 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
   const [authEmail, setAuthEmail] = useMMKVString("AuthProvider.authEmail")
   const [isLoading, setIsLoading] = useMMKVString("AuthProvider.isLoading")
 
-  // Set auth token in API service when it changes
-  useEffect(() => {
-    if (authToken) {
-      console.log("Setting auth token in API service:", authToken.substring(0, 20) + "...")
-      api.setAuthToken(authToken)
-    } else {
-      console.log("Clearing auth token from API service")
-      api.clearAuthToken()
-    }
-  }, [authToken])
+  // Use TanStack Query hooks
+  const loginMutation = useLogin()
+  const registerMutation = useRegister()
+  const testTokenQuery = useTestToken(authToken)
 
   // Test token validity on app startup if token exists
   useEffect(() => {
-    if (authToken) {
-      console.log("Testing token validity on startup...")
-      api.testToken().then(result => {
-        if (result.kind !== "ok") {
-          console.log("Token is invalid, clearing it")
-          setAuthToken(undefined)
-          setAuthEmail("")
-        } else {
-          console.log("Token is valid, user:", result.data.email)
-        }
-      }).catch(error => {
-        console.log("Error testing token:", error)
-        setAuthToken(undefined)
-        setAuthEmail("")
-      })
+    if (authToken && testTokenQuery.isError) {
+      console.log("Token is invalid, clearing it")
+      setAuthToken(undefined)
+      setAuthEmail("")
     }
-  }, [authToken, setAuthToken, setAuthEmail])
+  }, [authToken, testTokenQuery.isError, setAuthToken, setAuthEmail])
 
   const login = useCallback(async (email: string, password: string) => {
     try {
       setIsLoading("true")
       console.log("Attempting login for:", email)
-      const result = await api.login(email, password)
       
-      if (result.kind === "ok") {
-        console.log("Login successful, setting token")
-        setAuthToken(result.data.access_token)
-        setAuthEmail(email)
-        return { success: true }
-      } else {
-        console.log("Login failed:", result.kind)
-        return { 
-          success: false, 
-          error: result.kind === "bad-data" ? "Invalid response from server" : "Login failed" 
-        }
-      }
+      const result = await loginMutation.mutateAsync({ email, password })
+      
+      console.log("Login successful, setting token")
+      setAuthToken(result.access_token)
+      setAuthEmail(email)
+      return { success: true }
     } catch (error) {
       console.log("Login error:", error)
       return { 
@@ -82,25 +58,18 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
     } finally {
       setIsLoading("false")
     }
-  }, [setAuthToken, setAuthEmail, setIsLoading])
+  }, [loginMutation, setAuthToken, setAuthEmail, setIsLoading])
 
   const register = useCallback(async (email: string, password: string) => {
     try {
       setIsLoading("true")
       console.log("Attempting registration for:", email)
-      const result = await api.register(email, password)
       
-      if (result.kind === "ok") {
-        console.log("Registration successful, attempting login")
-        // After successful registration, automatically log in
-        return await login(email, password)
-      } else {
-        console.log("Registration failed:", result.kind)
-        return { 
-          success: false, 
-          error: result.kind === "bad-data" ? "Invalid response from server" : "Registration failed" 
-        }
-      }
+      await registerMutation.mutateAsync({ email, password })
+      
+      console.log("Registration successful, attempting login")
+      // After successful registration, automatically log in
+      return await login(email, password)
     } catch (error) {
       console.log("Registration error:", error)
       return { 
@@ -110,13 +79,12 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
     } finally {
       setIsLoading("false")
     }
-  }, [login, setIsLoading])
+  }, [login, registerMutation, setIsLoading])
 
   const logout = useCallback(() => {
     console.log("Logging out")
     setAuthToken(undefined)
     setAuthEmail("")
-    api.clearAuthToken()
   }, [setAuthEmail, setAuthToken])
 
   const validationError = useMemo(() => {

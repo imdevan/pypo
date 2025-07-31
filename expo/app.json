@@ -1,7 +1,7 @@
 {
-  "name": "expo",
-  "slug": "expo",
-  "scheme": "expo",
+  "name": "expo-ignite-fast",
+  "slug": "expo-ignite-fast",
+  "scheme": "expo-ignite-fast",
   "version": "1.0.0",
   "orientation": "portrait",
   "userInterfaceStyle": "automatic",
@@ -27,7 +27,20 @@
   "ios": {
     "icon": "./assets/images/app-icon-ios.png",
     "supportsTablet": true,
-    "bundleIdentifier": "com.igniteexpo.fast"
+    "bundleIdentifier": "com.igniteexpo.fast",
+    "privacyManifests": {
+      "NSPrivacyAccessedAPITypes": [
+        {
+          "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+          "NSPrivacyAccessedAPITypeReasons": [
+            "CA92.1"
+          ]
+        }
+      ]
+    },
+    "infoPlist": {
+      "ITSAppUsesNonExemptEncryption": false
+    }
   },
   "web": {
     "favicon": "./assets/images/app-icon-web-favicon.png",
@@ -61,6 +74,9 @@
   "extra": {
     "ignite": {
       "version": "11.0.1"
+    },
+    "eas": {
+      "projectId": "95278520-2dee-487d-9e6c-1e6ec34fbcaf"
     }
   }
 }

@@ -6,7 +6,7 @@ import { Button } from "@/components/Button"
 import { TextField } from "@/components/TextField"
 import { useAuth } from "@/context/AuthContext"
 import { useItems, useCreateItem, useDeleteItem } from "@/services/api/hooks"
-import type { ItemResponse } from "@/services/api/types"
+import type { ItemPublic } from "@/client/types.gen"
 import { useAppTheme } from "@/theme/context"
 
 interface ItemsScreenProps {}
@@ -40,9 +40,11 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
 
     try {
       await createItemMutation.mutateAsync({
-        title: newItemTitle.trim(),
-        description: newItemDescription.trim() || undefined,
-        token: authToken,
+        body: {
+          title: newItemTitle.trim(),
+          description: newItemDescription.trim() || undefined,
+        },
+        headers: { Authorization: `Bearer ${authToken}` },
       })
       
       setNewItemTitle("")
@@ -60,7 +62,10 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     }
 
     try {
-      await deleteItemMutation.mutateAsync({ id, token: authToken })
+      await deleteItemMutation.mutateAsync({ 
+        path: { id },
+        headers: { Authorization: `Bearer ${authToken}` },
+      })
       Alert.alert("Success", "Item deleted successfully")
     } catch (error) {
       Alert.alert("Error", "Failed to delete item")
@@ -76,12 +81,12 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     }
   }, [itemsData, itemsError, items.length])
 
-  const renderItem = ({ item }: { item: ItemResponse }) => (
+  const renderItem = ({ item }: { item: ItemPublic }) => (
     <View style={themed($itemContainer)}>
       <View style={themed($itemContent)}>
         <Text text={item.title} preset="subheading" />
         {item.description && <Text text={item.description} preset="default" style={themed($itemDescription)} />}
-        <Text text={`Posted: ${new Date(item.date_posted).toLocaleDateString()}`} preset="formHelper" />
+        <Text text={`ID: ${item.id}`} preset="formHelper" />
       </View>
       <Button
         text="Delete"
@@ -151,12 +156,13 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         ) : items.length === 0 ? (
           <Text text="No items yet. Create your first item above!" preset="default" />
         ) : (
-          <FlatList
-            data={items}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            style={themed($itemsList)}
-          />
+            items.map(item => renderItem({item}))
+          // <FlatList
+          //   data={items}
+          //   renderItem={renderItem}
+          //   keyExtractor={(item) => item.id}
+          //   style={themed($itemsList)}
+          // />
         )}
       </View>
     </Screen>

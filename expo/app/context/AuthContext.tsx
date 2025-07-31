@@ -43,7 +43,13 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
       setIsLoading("true")
       console.log("Attempting login for:", email)
       
-      const result = await loginMutation.mutateAsync({ email, password })
+      const result = await loginMutation.mutateAsync({
+        body: {
+          grant_type: "password",
+          username: email,
+          password: password,
+        },
+      })
       
       console.log("Login successful, setting token")
       setAuthToken(result.access_token)
@@ -65,7 +71,13 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
       setIsLoading("true")
       console.log("Attempting registration for:", email)
       
-      await registerMutation.mutateAsync({ email, password })
+      await registerMutation.mutateAsync({
+        body: {
+          email: email,
+          password: password,
+          full_name: email.split('@')[0], // Use email prefix as full name
+        },
+      })
       
       console.log("Registration successful, attempting login")
       // After successful registration, automatically log in

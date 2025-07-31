@@ -1,6 +1,17 @@
 import { QueryClient } from "@tanstack/react-query"
 import Config from "@/config"
+import { client as generatedClient } from "@/client/client.gen"
 
+// Configure the generated client with the API URL
+generatedClient.setConfig({
+  baseURL: Config.API_URL,
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+})
+
+// Create a QueryClient instance with default options
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -24,23 +35,14 @@ export const queryClient = new QueryClient({
   },
 })
 
-// Base API configuration
-export const API_CONFIG = {
-  baseURL: Config.API_URL,
-  timeout: 10000,
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
-}
-
-// Helper function to create API URL
-export const createApiUrl = (endpoint: string) => `${API_CONFIG.baseURL}/${endpoint}`
+// Export the configured client for use in hooks
+export { generatedClient as apiClient }
 
 // Helper function to get auth headers
 export const getAuthHeaders = (token?: string) => {
   const headers: Record<string, string> = {
-    ...API_CONFIG.headers,
+    Accept: "application/json",
+    "Content-Type": "application/json",
   }
   
   if (token) {

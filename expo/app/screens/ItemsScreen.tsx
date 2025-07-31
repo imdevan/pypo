@@ -82,7 +82,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   }, [itemsData, itemsError, items.length])
 
   const renderItem = ({ item }: { item: ItemPublic }) => (
-    <View style={themed($itemContainer)}>
+    <View key={item.id} style={themed($itemContainer)}>
       <View style={themed($itemContent)}>
         <Text text={item.title} preset="subheading" />
         {item.description && <Text text={item.description} preset="default" style={themed($itemDescription)} />}

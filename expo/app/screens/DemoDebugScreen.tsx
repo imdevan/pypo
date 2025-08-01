@@ -17,6 +17,7 @@ import { Text } from "@/components/Text"
 import { useAuth } from "@/context/AuthContext"
 import { isRTL } from "@/i18n"
 import { DemoTabScreenProps } from "@/navigators/DemoNavigator"
+import { useDebugStore, DebugMode } from "@/stores/debugStore"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
@@ -36,6 +37,7 @@ export const DemoDebugScreen: FC<DemoTabScreenProps<"DemoDebug">> = function Dem
 ) {
   const { setThemeContextOverride, themeContext, themed } = useAppTheme()
   const { logout } = useAuth()
+  const { debugMode, toggleDebugMode } = useDebugStore()
 
   // @ts-expect-error
   const usingFabric = global.nativeFabricUIManager != null
@@ -90,6 +92,11 @@ export const DemoDebugScreen: FC<DemoTabScreenProps<"DemoDebug">> = function Dem
 
       <View style={themed($itemsContainer)}>
         <Button onPress={toggleTheme} text={`Toggle Theme: ${themeContext}`} />
+      </View>
+      
+      <View style={themed($itemsContainer)}>
+        <Text preset="bold">Debug Mode: {debugMode}</Text>
+        <Button onPress={toggleDebugMode} text={`Toggle Debug Mode: ${debugMode}`} />
       </View>
       <View style={themed($itemsContainer)}>
         <ListItem

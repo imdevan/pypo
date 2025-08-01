@@ -7,6 +7,7 @@ import { Text } from "@/components/Text"
 import { useAuth } from "@/context/AuthContext"
 import { isRTL } from "@/i18n"
 import type { AppStackScreenProps } from "@/navigators/AppNavigator"
+import { useDebugStore } from "@/stores"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
@@ -23,6 +24,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = function WelcomeScreen(_pro
 
   const { navigation } = _props
   const { logout } = useAuth()
+  const { debugMode, isDebugEnabled } = useDebugStore()
 
   function goNext() {
     navigation.navigate("Demo", { screen: "DemoShowroom", params: {} })
@@ -53,6 +55,11 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = function WelcomeScreen(_pro
           preset="heading"
         />
         <Text tx="welcomeScreen:exciting" preset="subheading" />
+        {isDebugEnabled() && (
+          <Text style={themed($debugIndicator)} preset="subheading">
+            🐛 Debug Mode: {debugMode}
+          </Text>
+        )}
         <Image
           style={$welcomeFace}
           source={welcomeFace}
@@ -123,4 +130,10 @@ const $welcomeHeading: ThemedStyle<TextStyle> = ({ spacing }) => ({
 
 const $itemsButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.sm,
+})
+
+const $debugIndicator: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  color: colors.palette.angry500,
+  marginTop: spacing.sm,
+  textAlign: "center",
 })

@@ -9,6 +9,7 @@ import { translate } from "@/i18n/translate"
 import { DemoCommunityScreen } from "@/screens/DemoCommunityScreen"
 import { DemoDebugScreen } from "@/screens/DemoDebugScreen"
 import { DemoPodcastListScreen } from "@/screens/DemoPodcastListScreen"
+import { ItemsScreen } from "@/screens/ItemsScreen"
 import { DemoShowroomScreen } from "@/screens/DemoShowroomScreen/DemoShowroomScreen"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
@@ -93,10 +94,10 @@ export function DemoNavigator() {
 
         <Tab.Screen
           name="DemoPodcastList"
-          component={DemoPodcastListScreen}
+          component={ItemsScreen}
           options={{
             tabBarAccessibilityLabel: translate("demoNavigator:podcastListTab"),
-            tabBarLabel: translate("demoNavigator:podcastListTab"),
+            tabBarLabel: translate("demoNavigator:itemsTab"),
             tabBarIcon: ({ focused }) => (
               <Icon icon="podcast" color={focused ? colors.tint : colors.tintInactive} size={30} />
             ),

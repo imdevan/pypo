@@ -49,6 +49,7 @@ const hi: Translations = {
     debugTab: "डीबग",
     communityTab: "समुदाय",
     podcastListTab: "पॉडकास्ट",
+    itemsTab: "आइटम",
   },
   demoCommunityScreen: {
     title: "समुदाय से जुड़ें",

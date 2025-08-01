@@ -50,6 +50,7 @@ const ja: Translations = {
     debugTab: "デバッグ",
     communityTab: "コミュニティ",
     podcastListTab: "ポッドキャスト",
+    itemsTab: "アイテム",
   },
   demoCommunityScreen: {
     title: "コミュニティと繋がろう",

@@ -50,6 +50,7 @@ const es: Translations = {
     debugTab: "Debug",
     communityTab: "Comunidad",
     podcastListTab: "Podcasts",
+    itemsTab: "Elementos",
   },
   demoCommunityScreen: {
     title: "Conecta con la comunidad",

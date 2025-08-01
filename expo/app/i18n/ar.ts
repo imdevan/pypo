@@ -49,6 +49,7 @@ const ar: Translations = {
     debugTab: "تصحيح",
     communityTab: "واصل اجتماعي",
     podcastListTab: "البودكاست",
+    itemsTab: "العناصر",
   },
   demoCommunityScreen: {
     title: "تواصل مع المجتمع",

@@ -207,6 +207,7 @@ function ScreenWithScrolling(props: ScreenProps) {
 
   return (
     <KeyboardAwareScrollView
+      showsVerticalScrollIndicator={false}
       bottomOffset={keyboardBottomOffset}
       {...{ keyboardShouldPersistTaps, scrollEnabled, ref }}
       {...ScrollViewProps}

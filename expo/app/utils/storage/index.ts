@@ -1,4 +1,5 @@
 import { MMKV } from "react-native-mmkv"
+import { createJSONStorage } from "zustand/middleware"
 
 export const storage = new MMKV()
 
@@ -79,4 +80,66 @@ export function clear(): void {
   try {
     storage.clearAll()
   } catch {}
+}
+
+/**
+ * Creates a custom storage adapter for zustand persist with a specific prefix
+ * @param prefix - Optional prefix for the storage keys
+ * @returns A storage object compatible with zustand's persist middleware
+ */
+export function createZustandStorage(prefix?: string) {
+  const getKey = (name: string) => prefix ? `${prefix}:${name}` : name
+  
+  return createJSONStorage(() => ({
+    getItem: (name: string) => {
+      const key = getKey(name)
+      const value = load(key)
+      return value ? JSON.stringify(value) : null
+    },
+    setItem: (name: string, value: string) => {
+      const key = getKey(name)
+      try {
+        const parsedValue = JSON.parse(value)
+        save(key, parsedValue)
+      } catch {
+        // If parsing fails, store as string
+        saveString(key, value)
+      }
+    },
+    removeItem: (name: string) => {
+      const key = getKey(name)
+      remove(key)
+    }
+  }))
+}
+
+/**
+ * Helper function to create a zustand store with MMKV persistence
+ * @param name - The name of the store (used as storage key)
+ * @param initialState - The initial state of the store (data only, no methods)
+ * @param actions - The actions to add to the store
+ * @param prefix - Optional prefix for the storage key
+ * @returns A zustand store with persistence
+ */
+export function createPersistedStore<TState extends object, TActions extends object>(
+  name: string,
+  initialState: TState,
+  actions: (set: any, get: any) => TActions,
+  prefix?: string
+) {
+  const { create } = require('zustand')
+  const { persist } = require('zustand/middleware')
+  
+  return create(
+    persist(
+      (set: any, get: any) => ({
+        ...initialState,
+        ...actions(set, get)
+      }),
+      {
+        name,
+        storage: createZustandStorage(prefix)
+      }
+    )
+  )
 }

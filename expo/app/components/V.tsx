@@ -1,7 +1,6 @@
-import { ReactNode, forwardRef, ForwardedRef } from "react"
+import { forwardRef, ForwardedRef } from "react"
 // eslint-disable-next-line no-restricted-imports
-import { StyleProp, Text as RNText, TextProps as RNTextProps, TextStyle } from "react-native"
-import { View as RNView, ViewProps as RNViewProps, ViewStyle } from "react-native"
+import { View as RNView, ViewProps as RNViewProps, ViewStyle, StyleProp } from "react-native"
 
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
@@ -19,7 +18,7 @@ export interface VProps extends RNViewProps {
   preset?: Presets
 }
 
-export const V = forwardRef(function Text({style: $styleOverride, preset="default", ...rest }: VProps, ref: ForwardedRef<RNText>) {
+export const V = forwardRef(function V({style: $styleOverride, preset="default", ...rest }: VProps, ref: ForwardedRef<RNView>) {
   const { themed } = useAppTheme()
 
   const $styles: StyleProp<ViewStyle> = [
@@ -32,10 +31,10 @@ export const V = forwardRef(function Text({style: $styleOverride, preset="defaul
   )
 })
 
-const $baseStyle: ThemedStyle<TextStyle> = (theme) => ({
-  color: theme.colors.text,
+const $baseStyle: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.colors.background,
 })
 
-const $presets: Record<Presets, ThemedStyleArray<TextStyle>> = {
+const $presets: Record<Presets, ThemedStyleArray<ViewStyle>> = {
   default: [$baseStyle],
 }

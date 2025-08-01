@@ -1,5 +1,7 @@
 import React, { FC, useState } from "react"
-import { View, FlatList, Alert } from "react-native"
+import { Alert } from "react-native"
+import { DV } from "@/components/DV"
+import { V } from "@/components/V"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
@@ -83,19 +85,19 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   }, [itemsData, itemsError, items.length])
 
   const renderItem = ({ item }: { item: ItemPublic }) => (
-    <View key={item.id} style={themed($itemContainer)}>
-      <View style={themed($itemContent)}>
+    <V key={item.id} style={themed($itemContainer)}>
+      <V style={themed($itemContent)}>
         <Text text={item.title} preset="subheading" />
         {item.description && <Text text={item.description} preset="default" style={themed($itemDescription)} />}
         <Text text={`ID: ${item.id}`} preset="formHelper" />
-      </View>
+      </V>
       <Button
         text="Delete"
         preset="default"
         onPress={() => deleteItem(item.id)}
         style={themed($deleteButton)}
       />
-    </View>
+    </V>
   )
 
   if (!isAuthenticated) {
@@ -105,7 +107,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         contentContainerStyle={$styles.container}
         safeAreaEdges={["top"]}
       >
-        <Text text="Please log in to view items" preset="heading" />
+        <Text text="Please log in to V items" preset="heading" />
         <Button text="Go to Login" preset="reversed" onPress={() => {}} />
       </Screen>
     )
@@ -117,26 +119,28 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       contentContainerStyle={$styles.container}
       safeAreaEdges={["top"]}
     >
-      <View style={themed($header)}>
+      <V style={themed($header)}>
         <Text text="My Items" preset="heading" />
         <Button text="Logout" preset="default" onPress={logout} />
-      </View>
+      </V>
 
       {/* Debug Info */}
-      <View style={themed($debugSection)}>
-        <Text text="Debug Info:" preset="formLabel" />
-        <Text text={debugInfo} preset="formHelper" />
-        <Text text={`Authenticated: ${isAuthenticated}`} preset="formHelper" />
-        <Text text={`Token: ${authToken ? 'Present' : 'Missing'}`} preset="formHelper" />
-        <Button
-          text="Refresh Items"
-          preset="default"
-          onPress={() => refetch()}
-          style={themed($testButton)}
-        />
-      </View>
+      <DV>
+        <V style={themed($debugSection)}>
+          <Text text="Debug Info:" preset="formLabel" />
+          <Text text={debugInfo} preset="formHelper" />
+          <Text text={`Authenticated: ${isAuthenticated}`} preset="formHelper" />
+          <Text text={`Token: ${authToken ? 'Present' : 'Missing'}`} preset="formHelper" />
+          <Button
+            text="Refresh Items"
+            preset="default"
+            onPress={() => refetch()}
+            style={themed($testButton)}
+          />
+        </V>
+      </DV>
 
-      <View style={themed($createSection)}>
+      <V style={themed($createSection)}>
         <Text text="Create New Item" preset="subheading" style={themed($sectionTitle)} />
         <TextField
           value={newItemTitle}
@@ -156,9 +160,9 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           onPress={createItem}
           disabled={createItemMutation.isPending || !newItemTitle.trim()}
         />
-      </View>
+      </V>
 
-      <View style={themed($itemsSection)}>
+      <V style={themed($itemsSection)}>
         <Text text="Your Items" preset="subheading" style={themed($sectionTitle)} />
         {loading ? (
           <Text text="Loading items..." preset="default" />
@@ -173,7 +177,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           //   style={themed($itemsList)}
           // />
         )}
-      </View>
+      </V>
     </Screen>
   )
 }

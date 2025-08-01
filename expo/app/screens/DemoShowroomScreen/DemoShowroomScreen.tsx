@@ -196,6 +196,7 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
               <Image source={logo} style={$logoImage} />
             </View>
             <ListView<DemoListItem["item"]>
+              showsVerticalScrollIndicator={false}
               ref={menuRef}
               contentContainerStyle={themed($listContentContainer)}
               estimatedItemSize={250}
@@ -225,6 +226,7 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
           <DrawerIconButton onPress={toggleDrawer} />
 
           <SectionListWithKeyboardAwareScrollView
+            showsVerticalScrollIndicator={false}
             ref={listRef}
             contentContainerStyle={themed($sectionListContentContainer)}
             stickySectionHeadersEnabled={false}

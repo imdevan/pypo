@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext"
 import { useItems, useCreateItem, useDeleteItem } from "@/services/api/hooks"
 import type { ItemPublic } from "@/client/types.gen"
 import { useAppTheme } from "@/theme/context"
+import { $styles } from "@/theme/styles"
 
 interface ItemsScreenProps {}
 
@@ -99,7 +100,11 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
 
   if (!isAuthenticated) {
     return (
-      <Screen preset="auto" contentContainerStyle={themed($screenContentContainer)}>
+      <Screen 
+        preset="auto" 
+        contentContainerStyle={$styles.container}
+        safeAreaEdges={["top"]}
+      >
         <Text text="Please log in to view items" preset="heading" />
         <Button text="Go to Login" preset="reversed" onPress={() => {}} />
       </Screen>
@@ -107,7 +112,11 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   }
 
   return (
-    <Screen preset="auto" contentContainerStyle={themed($screenContentContainer)}>
+    <Screen 
+      preset="auto" 
+      contentContainerStyle={$styles.container}
+      safeAreaEdges={["top"]}
+    >
       <View style={themed($header)}>
         <Text text="My Items" preset="heading" />
         <Button text="Logout" preset="default" onPress={logout} />
@@ -168,8 +177,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     </Screen>
   )
 }
-
-const $screenContentContainer = { flex: 1, padding: 16 }
 
 const $header = { 
   flexDirection: "row" as const, 

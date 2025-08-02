@@ -2,7 +2,6 @@
 
 import { type Options as ClientOptions, type TDataShape, type Client, urlSearchParamsBodySerializer } from './client';
 import type { LoginLoginAccessTokenData, LoginLoginAccessTokenResponses, LoginLoginAccessTokenErrors, LoginTestTokenData, LoginTestTokenResponses, LoginRecoverPasswordData, LoginRecoverPasswordResponses, LoginRecoverPasswordErrors, LoginResetPasswordData, LoginResetPasswordResponses, LoginResetPasswordErrors, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponses, LoginRecoverPasswordHtmlContentErrors, UsersReadUsersData, UsersReadUsersResponses, UsersReadUsersErrors, UsersCreateUserData, UsersCreateUserResponses, UsersCreateUserErrors, UsersDeleteUserMeData, UsersDeleteUserMeResponses, UsersReadUserMeData, UsersReadUserMeResponses, UsersUpdateUserMeData, UsersUpdateUserMeResponses, UsersUpdateUserMeErrors, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponses, UsersUpdatePasswordMeErrors, UsersRegisterUserData, UsersRegisterUserResponses, UsersRegisterUserErrors, UsersDeleteUserData, UsersDeleteUserResponses, UsersDeleteUserErrors, UsersReadUserByIdData, UsersReadUserByIdResponses, UsersReadUserByIdErrors, UsersUpdateUserData, UsersUpdateUserResponses, UsersUpdateUserErrors, UtilsTestEmailData, UtilsTestEmailResponses, UtilsTestEmailErrors, UtilsHealthCheckData, UtilsHealthCheckResponses, ItemsReadItemsData, ItemsReadItemsResponses, ItemsReadItemsErrors, ItemsCreateItemData, ItemsCreateItemResponses, ItemsCreateItemErrors, ItemsDeleteItemData, ItemsDeleteItemResponses, ItemsDeleteItemErrors, ItemsReadItemData, ItemsReadItemResponses, ItemsReadItemErrors, ItemsUpdateItemData, ItemsUpdateItemResponses, ItemsUpdateItemErrors, PrivateCreateUserData, PrivateCreateUserResponses, PrivateCreateUserErrors } from './types.gen';
-import { zLoginLoginAccessTokenData, zLoginLoginAccessTokenResponse, zLoginTestTokenData, zLoginTestTokenResponse, zLoginRecoverPasswordData, zLoginRecoverPasswordResponse, zLoginResetPasswordData, zLoginResetPasswordResponse, zLoginRecoverPasswordHtmlContentData, zLoginRecoverPasswordHtmlContentResponse, zUsersReadUsersData, zUsersReadUsersResponse, zUsersCreateUserData, zUsersCreateUserResponse, zUsersDeleteUserMeData, zUsersDeleteUserMeResponse, zUsersReadUserMeData, zUsersReadUserMeResponse, zUsersUpdateUserMeData, zUsersUpdateUserMeResponse, zUsersUpdatePasswordMeData, zUsersUpdatePasswordMeResponse, zUsersRegisterUserData, zUsersRegisterUserResponse, zUsersDeleteUserData, zUsersDeleteUserResponse, zUsersReadUserByIdData, zUsersReadUserByIdResponse, zUsersUpdateUserData, zUsersUpdateUserResponse, zUtilsTestEmailData, zUtilsTestEmailResponse, zUtilsHealthCheckData, zUtilsHealthCheckResponse, zItemsReadItemsData, zItemsReadItemsResponse, zItemsCreateItemData, zItemsCreateItemResponse, zItemsDeleteItemData, zItemsDeleteItemResponse, zItemsReadItemData, zItemsReadItemResponse, zItemsUpdateItemData, zItemsUpdateItemResponse, zPrivateCreateUserData, zPrivateCreateUserResponse } from './zod.gen';
 import { client as _heyApiClient } from './client.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = ClientOptions<TData, ThrowOnError> & {
@@ -27,13 +26,7 @@ export class Login {
     public static loginAccessToken<ThrowOnError extends boolean = false>(options: Options<LoginLoginAccessTokenData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).post<LoginLoginAccessTokenResponses, LoginLoginAccessTokenErrors, ThrowOnError>({
             ...urlSearchParamsBodySerializer,
-            requestValidator: async (data) => {
-                return await zLoginLoginAccessTokenData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zLoginLoginAccessTokenResponse.parseAsync(data);
-            },
             url: '/api/v1/login/access-token',
             ...options,
             headers: {
@@ -49,13 +42,7 @@ export class Login {
      */
     public static testToken<ThrowOnError extends boolean = false>(options?: Options<LoginTestTokenData, ThrowOnError>) {
         return (options?.client ?? _heyApiClient).post<LoginTestTokenResponses, unknown, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zLoginTestTokenData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zLoginTestTokenResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -73,13 +60,7 @@ export class Login {
      */
     public static recoverPassword<ThrowOnError extends boolean = false>(options: Options<LoginRecoverPasswordData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).post<LoginRecoverPasswordResponses, LoginRecoverPasswordErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zLoginRecoverPasswordData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zLoginRecoverPasswordResponse.parseAsync(data);
-            },
             url: '/api/v1/password-recovery/{email}',
             ...options
         });
@@ -91,13 +72,7 @@ export class Login {
      */
     public static resetPassword<ThrowOnError extends boolean = false>(options: Options<LoginResetPasswordData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).post<LoginResetPasswordResponses, LoginResetPasswordErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zLoginResetPasswordData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zLoginResetPasswordResponse.parseAsync(data);
-            },
             url: '/api/v1/reset-password/',
             ...options,
             headers: {
@@ -113,13 +88,7 @@ export class Login {
      */
     public static recoverPasswordHtmlContent<ThrowOnError extends boolean = false>(options: Options<LoginRecoverPasswordHtmlContentData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).post<LoginRecoverPasswordHtmlContentResponses, LoginRecoverPasswordHtmlContentErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zLoginRecoverPasswordHtmlContentData.parseAsync(data);
-            },
             responseType: 'text',
-            responseValidator: async (data) => {
-                return await zLoginRecoverPasswordHtmlContentResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -139,13 +108,7 @@ export class Users {
      */
     public static readUsers<ThrowOnError extends boolean = false>(options?: Options<UsersReadUsersData, ThrowOnError>) {
         return (options?.client ?? _heyApiClient).get<UsersReadUsersResponses, UsersReadUsersErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zUsersReadUsersData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zUsersReadUsersResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -163,13 +126,7 @@ export class Users {
      */
     public static createUser<ThrowOnError extends boolean = false>(options: Options<UsersCreateUserData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).post<UsersCreateUserResponses, UsersCreateUserErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zUsersCreateUserData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zUsersCreateUserResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -191,13 +148,7 @@ export class Users {
      */
     public static deleteUserMe<ThrowOnError extends boolean = false>(options?: Options<UsersDeleteUserMeData, ThrowOnError>) {
         return (options?.client ?? _heyApiClient).delete<UsersDeleteUserMeResponses, unknown, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zUsersDeleteUserMeData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zUsersDeleteUserMeResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -215,13 +166,7 @@ export class Users {
      */
     public static readUserMe<ThrowOnError extends boolean = false>(options?: Options<UsersReadUserMeData, ThrowOnError>) {
         return (options?.client ?? _heyApiClient).get<UsersReadUserMeResponses, unknown, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zUsersReadUserMeData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zUsersReadUserMeResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -239,13 +184,7 @@ export class Users {
      */
     public static updateUserMe<ThrowOnError extends boolean = false>(options: Options<UsersUpdateUserMeData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).patch<UsersUpdateUserMeResponses, UsersUpdateUserMeErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zUsersUpdateUserMeData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zUsersUpdateUserMeResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -267,13 +206,7 @@ export class Users {
      */
     public static updatePasswordMe<ThrowOnError extends boolean = false>(options: Options<UsersUpdatePasswordMeData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).patch<UsersUpdatePasswordMeResponses, UsersUpdatePasswordMeErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zUsersUpdatePasswordMeData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zUsersUpdatePasswordMeResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -295,13 +228,7 @@ export class Users {
      */
     public static registerUser<ThrowOnError extends boolean = false>(options: Options<UsersRegisterUserData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).post<UsersRegisterUserResponses, UsersRegisterUserErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zUsersRegisterUserData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zUsersRegisterUserResponse.parseAsync(data);
-            },
             url: '/api/v1/users/signup',
             ...options,
             headers: {
@@ -317,13 +244,7 @@ export class Users {
      */
     public static deleteUser<ThrowOnError extends boolean = false>(options: Options<UsersDeleteUserData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).delete<UsersDeleteUserResponses, UsersDeleteUserErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zUsersDeleteUserData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zUsersDeleteUserResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -341,13 +262,7 @@ export class Users {
      */
     public static readUserById<ThrowOnError extends boolean = false>(options: Options<UsersReadUserByIdData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).get<UsersReadUserByIdResponses, UsersReadUserByIdErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zUsersReadUserByIdData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zUsersReadUserByIdResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -365,13 +280,7 @@ export class Users {
      */
     public static updateUser<ThrowOnError extends boolean = false>(options: Options<UsersUpdateUserData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).patch<UsersUpdateUserResponses, UsersUpdateUserErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zUsersUpdateUserData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zUsersUpdateUserResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -395,13 +304,7 @@ export class Utils {
      */
     public static testEmail<ThrowOnError extends boolean = false>(options: Options<UtilsTestEmailData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).post<UtilsTestEmailResponses, UtilsTestEmailErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zUtilsTestEmailData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zUtilsTestEmailResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -418,13 +321,7 @@ export class Utils {
      */
     public static healthCheck<ThrowOnError extends boolean = false>(options?: Options<UtilsHealthCheckData, ThrowOnError>) {
         return (options?.client ?? _heyApiClient).get<UtilsHealthCheckResponses, unknown, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zUtilsHealthCheckData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zUtilsHealthCheckResponse.parseAsync(data);
-            },
             url: '/api/v1/utils/health-check/',
             ...options
         });
@@ -438,13 +335,7 @@ export class Items {
      */
     public static readItems<ThrowOnError extends boolean = false>(options?: Options<ItemsReadItemsData, ThrowOnError>) {
         return (options?.client ?? _heyApiClient).get<ItemsReadItemsResponses, ItemsReadItemsErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zItemsReadItemsData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zItemsReadItemsResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -462,13 +353,7 @@ export class Items {
      */
     public static createItem<ThrowOnError extends boolean = false>(options: Options<ItemsCreateItemData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).post<ItemsCreateItemResponses, ItemsCreateItemErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zItemsCreateItemData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zItemsCreateItemResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -490,13 +375,7 @@ export class Items {
      */
     public static deleteItem<ThrowOnError extends boolean = false>(options: Options<ItemsDeleteItemData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).delete<ItemsDeleteItemResponses, ItemsDeleteItemErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zItemsDeleteItemData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zItemsDeleteItemResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -514,13 +393,7 @@ export class Items {
      */
     public static readItem<ThrowOnError extends boolean = false>(options: Options<ItemsReadItemData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).get<ItemsReadItemResponses, ItemsReadItemErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zItemsReadItemData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zItemsReadItemResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -538,13 +411,7 @@ export class Items {
      */
     public static updateItem<ThrowOnError extends boolean = false>(options: Options<ItemsUpdateItemData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).put<ItemsUpdateItemResponses, ItemsUpdateItemErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zItemsUpdateItemData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zItemsUpdateItemResponse.parseAsync(data);
-            },
             security: [
                 {
                     scheme: 'bearer',
@@ -568,13 +435,7 @@ export class Private {
      */
     public static createUser<ThrowOnError extends boolean = false>(options: Options<PrivateCreateUserData, ThrowOnError>) {
         return (options.client ?? _heyApiClient).post<PrivateCreateUserResponses, PrivateCreateUserErrors, ThrowOnError>({
-            requestValidator: async (data) => {
-                return await zPrivateCreateUserData.parseAsync(data);
-            },
             responseType: 'json',
-            responseValidator: async (data) => {
-                return await zPrivateCreateUserResponse.parseAsync(data);
-            },
             url: '/api/v1/private/users/',
             ...options,
             headers: {

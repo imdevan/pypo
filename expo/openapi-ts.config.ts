@@ -9,11 +9,15 @@ export default defineConfig({
     "@hey-api/client-axios",
     "@tanstack/react-query",
     {
+      name: 'zod',
+      requests: true, 
+    },
+    {
       name: "@hey-api/sdk",
       // NOTE: this doesn't allow tree-shaking
       asClass: true,
       operationId: true,
-      validator: "zod", 
+      // validator: "zod", 
       methodNameBuilder: (operation) => {
         // @ts-ignore
         let name: string = operation.id 

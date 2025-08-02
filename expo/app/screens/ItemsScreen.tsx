@@ -163,7 +163,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       </V>
 
       <V style={themed($itemsSection)}>
-        <Text text="Your Items" preset="subheading" style={themed($sectionTitle)} />
+        <Text text={`Your Items (${items.length})`} preset="subheading" style={themed($sectionTitle)} />
         {loading ? (
           <Text text="Loading items..." preset="default" />
         ) : items.length === 0 ? (

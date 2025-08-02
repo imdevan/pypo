@@ -6,6 +6,7 @@ import {
   itemsDeleteItemMutation
 } from "@/client/@tanstack/react-query.gen"
 import type { AxiosError } from "axios"
+import { ItemPublic } from "@/client/types.gen"
 
 // Get all items query
 export const useItems = (token?: string) => {
@@ -29,9 +30,21 @@ export const useCreateItem = () => {
   
   return useMutation({
     ...itemsCreateItemMutation(),
-    onSuccess: () => {
-      // Invalidate and refetch items
-      queryClient.invalidateQueries({ queryKey: ["itemsReadItems"] })
+    onSuccess: (createdItem) => {
+      // Update all itemsReadItems queries by using a partial match
+      queryClient.setQueriesData(
+        { 
+          queryKey: [{ _id: 'itemsReadItems' }], 
+          exact: false 
+        },
+        (oldData: { data: ItemPublic[]; count: number } | undefined) => {
+          if (!oldData) return { data: [createdItem], count: 1 };
+          return {
+            data: [createdItem, ...oldData.data],
+            count: oldData.count + 1
+          };
+        }
+      );
     },
   })
 }
@@ -42,9 +55,23 @@ export const useUpdateItem = () => {
   
   return useMutation({
     ...itemsUpdateItemMutation(),
-    onSuccess: () => {
-      // Invalidate and refetch items
-      queryClient.invalidateQueries({ queryKey: ["itemsReadItems"] })
+    onSuccess: (updatedItem) => {
+      // Update all itemsReadItems queries with the updated item
+      queryClient.setQueriesData(
+        { 
+          queryKey: [{ _id: 'itemsReadItems' }], 
+          exact: false 
+        },
+        (oldData: { data: ItemPublic[]; count: number } | undefined) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            data: oldData.data.map(item => 
+              item.id === updatedItem.id ? updatedItem : item
+            )
+          };
+        }
+      );
     },
   })
 }
@@ -55,9 +82,22 @@ export const useDeleteItem = () => {
   
   return useMutation({
     ...itemsDeleteItemMutation(),
-    onSuccess: () => {
-      // Invalidate and refetch items
-      queryClient.invalidateQueries({ queryKey: ["itemsReadItems"] })
+    onSuccess: (_, variables) => {
+      // Update all itemsReadItems queries by removing the deleted item
+      queryClient.setQueriesData(
+        { 
+          queryKey: [{ _id: 'itemsReadItems' }], 
+          exact: false 
+        },
+        (oldData: { data: ItemPublic[]; count: number } | undefined) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            data: oldData.data.filter(item => item.id !== variables.path.id),
+            count: oldData.count - 1
+          };
+        }
+      );
     },
   })
 } 

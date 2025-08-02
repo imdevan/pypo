@@ -52,7 +52,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       
       setNewItemTitle("")
       setNewItemDescription("")
-      Alert.alert("Success", "Item created successfully")
     } catch (error) {
       Alert.alert("Error", "Failed to create item")
     }
@@ -69,7 +68,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         path: { id },
         headers: { Authorization: `Bearer ${authToken}` },
       })
-      Alert.alert("Success", "Item deleted successfully")
     } catch (error) {
       Alert.alert("Error", "Failed to delete item")
     }

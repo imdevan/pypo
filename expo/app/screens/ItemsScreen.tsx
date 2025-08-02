@@ -15,7 +15,7 @@ import { $styles } from "@/theme/styles"
 interface ItemsScreenProps {}
 
 export const ItemsScreen: FC<ItemsScreenProps> = () => {
-  const { logout, isAuthenticated, authToken } = useAuth()
+  const { authToken } = useAuth()
   const { themed } = useAppTheme()
   
   const [newItemTitle, setNewItemTitle] = useState("")
@@ -98,18 +98,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     </V>
   )
 
-  if (!isAuthenticated) {
-    return (
-      <Screen 
-        preset="auto" 
-        contentContainerStyle={$styles.container}
-        safeAreaEdges={["top"]}
-      >
-        <Text text="Please log in to V items" preset="heading" />
-        <Button text="Go to Login" preset="reversed" onPress={() => {}} />
-      </Screen>
-    )
-  }
+
 
   return (
     <Screen 
@@ -119,7 +108,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     >
       <V style={themed($header)}>
         <Text text="My Items" preset="heading" />
-        <Button text="Logout" preset="default" onPress={logout} />
       </V>
 
       {/* Debug Info */}
@@ -127,7 +115,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         <V style={themed($debugSection)}>
           <Text text="Debug Info:" preset="formLabel" />
           <Text text={debugInfo} preset="formHelper" />
-          <Text text={`Authenticated: ${isAuthenticated}`} preset="formHelper" />
           <Text text={`Token: ${authToken ? 'Present' : 'Missing'}`} preset="formHelper" />
           <Button
             text="Refresh Items"

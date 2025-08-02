@@ -1,10 +1,43 @@
 from sqlmodel import Session, create_engine, select
+from sqlalchemy import event
+import datetime
 
 from app import crud
 from app.core.config import settings
 from app.models import User, UserCreate
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
+
+
+# Event listeners to automatically update updated_at field
+@event.listens_for(User, 'before_update')
+def update_user_timestamp(mapper, connection, target):
+    target.updated_at = datetime.datetime.now(datetime.timezone.utc)
+
+
+@event.listens_for(User, 'before_insert')
+def set_user_timestamps(mapper, connection, target):
+    if not target.created_at:
+        target.created_at = datetime.datetime.now(datetime.timezone.utc)
+    if not target.updated_at:
+        target.updated_at = datetime.datetime.now(datetime.timezone.utc)
+
+
+# Import Item model for event listeners
+from app.models import Item
+
+
+@event.listens_for(Item, 'before_update')
+def update_item_timestamp(mapper, connection, target):
+    target.updated_at = datetime.datetime.now(datetime.timezone.utc)
+
+
+@event.listens_for(Item, 'before_insert')
+def set_item_timestamps(mapper, connection, target):
+    if not target.created_at:
+        target.created_at = datetime.datetime.now(datetime.timezone.utc)
+    if not target.updated_at:
+        target.updated_at = datetime.datetime.now(datetime.timezone.utc)
 
 
 # make sure all SQLModel models are imported (app.models) before initializing DB

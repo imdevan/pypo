@@ -74,6 +74,14 @@ export type ItemPublic = {
      * Owner Id
      */
     owner_id: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
 };
 
 /**
@@ -228,6 +236,14 @@ export type UserPublic = {
      * Id
      */
     id: string;
+    /**
+     * Created At
+     */
+    created_at: string;
+    /**
+     * Updated At
+     */
+    updated_at: string;
 };
 
 /**

@@ -23,6 +23,8 @@ export type ItemPublic = {
   description?: string | null
   id: string
   owner_id: string
+  created_at: string
+  updated_at: string
 }
 
 export type ItemsPublic = {
@@ -75,6 +77,8 @@ export type UserPublic = {
   is_superuser?: boolean
   full_name?: string | null
   id: string
+  created_at: string
+  updated_at: string
 }
 
 export type UserRegister = {

@@ -63,7 +63,9 @@ export const zItemPublic = z.object({
         z.null()
     ])),
     id: z.uuid(),
-    owner_id: z.uuid()
+    owner_id: z.uuid(),
+    created_at: z.iso.datetime(),
+    updated_at: z.iso.datetime()
 });
 
 /**
@@ -154,7 +156,9 @@ export const zUserPublic = z.object({
         z.string().max(255),
         z.null()
     ])),
-    id: z.uuid()
+    id: z.uuid(),
+    created_at: z.iso.datetime(),
+    updated_at: z.iso.datetime()
 });
 
 /**

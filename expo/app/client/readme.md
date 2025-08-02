@@ -1,1 +1,0 @@
-Generated with @hey-api/openapi-ts 

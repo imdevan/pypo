@@ -2,6 +2,7 @@ import React, { FC, useState } from "react"
 import { Alert } from "react-native"
 import { DV } from "@/components/DV"
 import { V } from "@/components/V"
+import { MV } from "@/components/MV"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
@@ -69,8 +70,32 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     }
   }, [itemsData, itemsError, items.length])
 
-  const renderItem = ({ item }: { item: ItemPublic }) => (
-    <V key={item.id} style={themed($itemContainer)}>
+  const renderItem = ({ item, index }: { item: ItemPublic; index: number }) => (
+    <MV
+      key={item.id}
+      from={{
+        opacity: 0,
+        scale: 0.9,
+        translateY: 20,
+      }}
+      animate={{
+        opacity: 1,
+        scale: 1,
+        translateY: 0,
+      }}
+      transition={{
+        type: "spring",
+        damping: 15,
+        stiffness: 150,
+        delay: index * 100, // Stagger animation by 100ms per item
+      }}
+      exit={{
+        opacity: 0,
+        scale: 0.9,
+        translateY: -20,
+      }}
+      style={themed($itemContainer)}
+    >
       <V style={themed($itemContent)}>
         <Text text={item.title} preset="subheading" />
         {item.description && <Text text={item.description} preset="default" style={themed($itemDescription)} />}
@@ -82,7 +107,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         onPress={() => deleteItem(item.id)}
         style={themed($deleteButton)}
       />
-    </V>
+    </MV>
   )
 
 
@@ -136,17 +161,23 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       <V style={themed($itemsSection)}>
         <Text text={`Your Items (${items.length})`} preset="subheading" style={themed($sectionTitle)} />
         {loading ? (
-          <Text text="Loading items..." preset="default" />
+          <MV
+            from={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ type: "timing", duration: 300 }}
+          >
+            <Text text="Loading items..." preset="default" />
+          </MV>
         ) : items.length === 0 ? (
-          <Text text="No items yet. Create your first item above!" preset="default" />
+          <MV
+            from={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", damping: 15, stiffness: 150 }}
+          >
+            <Text text="No items yet. Create your first item above!" preset="default" />
+          </MV>
         ) : (
-            items.map(item => renderItem({item}))
-          // <FlatList
-          //   data={items}
-          //   renderItem={renderItem}
-          //   keyExtractor={(item) => item.id}
-          //   style={themed($itemsList)}
-          // />
+          items.map((item, index) => renderItem({ item, index }))
         )}
       </V>
     </Screen>

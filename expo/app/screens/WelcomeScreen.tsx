@@ -30,10 +30,6 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = function WelcomeScreen(_pro
     navigation.navigate("Demo", { screen: "DemoShowroom", params: {} })
   }
 
-  function goToItems() {
-    navigation.navigate("Items")
-  }
-
   useHeader(
     {
       rightTx: "common:logOut",
@@ -77,14 +73,6 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = function WelcomeScreen(_pro
           tx="welcomeScreen:letsGo"
           onPress={goNext}
         />
-
-        <Button
-          testID="items-screen-button"
-          text="Manage Items"
-          preset="default"
-          onPress={goToItems}
-          style={themed($itemsButton)}
-        />
       </View>
     </Screen>
   )
@@ -126,10 +114,6 @@ const $welcomeFace: ImageStyle = {
 
 const $welcomeHeading: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginBottom: spacing.md,
-})
-
-const $itemsButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginTop: spacing.sm,
 })
 
 const $debugIndicator: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({

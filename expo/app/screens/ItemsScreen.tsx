@@ -6,7 +6,7 @@ import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
 import { TextField } from "@/components/TextField"
-import { useAuth } from "@/context/AuthContext"
+
 import { useItems, useCreateItem, useDeleteItem } from "@/services/api/hooks"
 import type { ItemPublic } from "@/client/types.gen"
 import { useAppTheme } from "@/theme/context"
@@ -15,7 +15,6 @@ import { $styles } from "@/theme/styles"
 interface ItemsScreenProps {}
 
 export const ItemsScreen: FC<ItemsScreenProps> = () => {
-  const { authToken } = useAuth()
   const { themed } = useAppTheme()
   
   const [newItemTitle, setNewItemTitle] = useState("")
@@ -23,7 +22,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const [debugInfo, setDebugInfo] = useState("")
 
   // TanStack Query hooks
-  const { data: itemsData, isLoading: loading, error: itemsError, refetch } = useItems(authToken)
+  const { data: itemsData, isLoading: loading, error: itemsError, refetch } = useItems()
   const createItemMutation = useCreateItem()
   const deleteItemMutation = useDeleteItem()
 
@@ -36,18 +35,12 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       return
     }
 
-    if (!authToken) {
-      Alert.alert("Error", "No authentication token")
-      return
-    }
-
     try {
       await createItemMutation.mutateAsync({
         body: {
           title: newItemTitle.trim(),
           description: newItemDescription.trim() || undefined,
         },
-        headers: { Authorization: `Bearer ${authToken}` },
       })
       
       setNewItemTitle("")
@@ -58,15 +51,9 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   }
 
   const deleteItem = async (id: string) => {
-    if (!authToken) {
-      Alert.alert("Error", "No authentication token")
-      return
-    }
-
     try {
       await deleteItemMutation.mutateAsync({ 
         path: { id },
-        headers: { Authorization: `Bearer ${authToken}` },
       })
     } catch (error) {
       Alert.alert("Error", "Failed to delete item")
@@ -115,7 +102,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         <V style={themed($debugSection)}>
           <Text text="Debug Info:" preset="formLabel" />
           <Text text={debugInfo} preset="formHelper" />
-          <Text text={`Token: ${authToken ? 'Present' : 'Missing'}`} preset="formHelper" />
           <Button
             text="Refresh Items"
             preset="default"

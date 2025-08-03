@@ -7,14 +7,17 @@ import {
 } from "@/client/@tanstack/react-query.gen"
 import type { AxiosError } from "axios"
 import { ItemPublic } from "@/client/types.gen"
+import { useAuth } from "@/context/AuthContext"
 
 // Get all items query
-export const useItems = (token?: string) => {
+export const useItems = () => {
+  const { authToken } = useAuth()
+  
   return useQuery({
     ...itemsReadItemsOptions({
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
     }),
-    enabled: !!token,
+    enabled: !!authToken,
     retry: (failureCount, error) => {
       if ((error as AxiosError)?.response?.status === 401) {
         return false
@@ -27,9 +30,12 @@ export const useItems = (token?: string) => {
 // Create item mutation
 export const useCreateItem = () => {
   const queryClient = useQueryClient()
+  const { authToken } = useAuth()
   
   return useMutation({
-    ...itemsCreateItemMutation(),
+    ...itemsCreateItemMutation({
+      headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
+    }),
     onSuccess: (createdItem) => {
       // Update all itemsReadItems queries by using a partial match
       queryClient.setQueriesData(
@@ -52,9 +58,12 @@ export const useCreateItem = () => {
 // Update item mutation
 export const useUpdateItem = () => {
   const queryClient = useQueryClient()
+  const { authToken } = useAuth()
   
   return useMutation({
-    ...itemsUpdateItemMutation(),
+    ...itemsUpdateItemMutation({
+      headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
+    }),
     onSuccess: (updatedItem) => {
       // Update all itemsReadItems queries with the updated item
       queryClient.setQueriesData(
@@ -79,9 +88,12 @@ export const useUpdateItem = () => {
 // Delete item mutation
 export const useDeleteItem = () => {
   const queryClient = useQueryClient()
+  const { authToken } = useAuth()
   
   return useMutation({
-    ...itemsDeleteItemMutation(),
+    ...itemsDeleteItemMutation({
+      headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
+    }),
     onSuccess: (_, variables) => {
       // Update all itemsReadItems queries by removing the deleted item
       queryClient.setQueriesData(

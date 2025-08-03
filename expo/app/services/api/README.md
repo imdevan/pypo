@@ -80,9 +80,9 @@ if (isError) {
 
 ### Items Hooks
 
-#### `useItems(token)`
+#### `useItems()`
 ```typescript
-const { data: itemsData, isLoading, error, refetch } = useItems(authToken)
+const { data: itemsData, isLoading, error, refetch } = useItems()
 
 // Usage
 const items = itemsData?.data || []
@@ -100,9 +100,10 @@ const createItemMutation = useCreateItem()
 const handleCreate = async () => {
   try {
     await createItemMutation.mutateAsync({
-      title: "New Item",
-      description: "Description",
-      token: authToken
+      body: {
+        title: "New Item",
+        description: "Description",
+      }
     })
     // Item created successfully
   } catch (error) {
@@ -119,10 +120,11 @@ const updateItemMutation = useUpdateItem()
 const handleUpdate = async () => {
   try {
     await updateItemMutation.mutateAsync({
-      id: "item-id",
-      title: "Updated Title",
-      description: "Updated Description",
-      token: authToken
+      path: { id: "item-id" },
+      body: {
+        title: "Updated Title",
+        description: "Updated Description",
+      }
     })
     // Item updated successfully
   } catch (error) {
@@ -138,7 +140,7 @@ const deleteItemMutation = useDeleteItem()
 // Usage
 const handleDelete = async (id: string) => {
   try {
-    await deleteItemMutation.mutateAsync({ id, token: authToken })
+    await deleteItemMutation.mutateAsync({ path: { id } })
     // Item deleted successfully
   } catch (error) {
     // Handle error
@@ -174,7 +176,7 @@ All hooks include proper error handling:
 
 ## Best Practices
 
-1. **Always check for token**: Most hooks require a valid auth token
+1. **Authentication is automatic**: All hooks automatically use the auth token from the AuthContext
 2. **Handle loading states**: Use `isLoading` or `isPending` for better UX
 3. **Handle errors**: Always provide error handling in your components
 4. **Use refetch**: Provide a way for users to manually refresh data

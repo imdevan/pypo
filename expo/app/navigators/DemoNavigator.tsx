@@ -79,6 +79,19 @@ export function DemoNavigator() {
         />
 
         <Tab.Screen
+          name="Items"
+          component={ItemsScreen}
+          options={{
+            tabBarAccessibilityLabel: translate("demoNavigator:podcastListTab"),
+            tabBarShowLabel: false,
+            tabBarLabel: translate("demoNavigator:itemsTab"),
+            tabBarIcon: ({ focused }) => (
+              <Icon icon="podcast" color={focused ? colors.tint : colors.tintInactive} size={30} />
+            ),
+          }}
+        />
+
+        <Tab.Screen
           name="DemoCommunity"
           component={DemoCommunityScreen}
           options={{
@@ -90,19 +103,6 @@ export function DemoNavigator() {
                 color={focused ? colors.tint : colors.tintInactive}
                 size={30}
               />
-            ),
-          }}
-        />
-
-        <Tab.Screen
-          name="Items"
-          component={ItemsScreen}
-          options={{
-            tabBarAccessibilityLabel: translate("demoNavigator:podcastListTab"),
-            tabBarShowLabel: false,
-            tabBarLabel: translate("demoNavigator:itemsTab"),
-            tabBarIcon: ({ focused }) => (
-              <Icon icon="podcast" color={focused ? colors.tint : colors.tintInactive} size={30} />
             ),
           }}
         />

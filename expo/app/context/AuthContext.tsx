@@ -1,6 +1,7 @@
 import { createContext, FC, PropsWithChildren, useCallback, useContext, useMemo, useEffect } from "react"
 import { useMMKVString } from "react-native-mmkv"
 import { useLogin, useRegister, useTestToken } from "@/services/api/hooks"
+import { extractErrorMessage } from "@/services/api/errorHandling"
 
 export type AuthContextType = {
   isAuthenticated: boolean
@@ -59,7 +60,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
       console.log("Login error:", error)
       return { 
         success: false, 
-        error: error instanceof Error ? error.message : "An unexpected error occurred" 
+        error: extractErrorMessage(error)
       }
     } finally {
       setIsLoading("false")
@@ -86,7 +87,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
       console.log("Registration error:", error)
       return { 
         success: false, 
-        error: error instanceof Error ? error.message : "An unexpected error occurred" 
+        error: extractErrorMessage(error)
       }
     } finally {
       setIsLoading("false")

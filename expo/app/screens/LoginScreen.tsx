@@ -1,6 +1,6 @@
 import { ComponentType, FC, useEffect, useMemo, useRef, useState } from "react"
 // eslint-disable-next-line no-restricted-imports
-import { TextInput, TextStyle, ViewStyle, Alert } from "react-native"
+import { TextInput, TextStyle, ViewStyle } from "react-native"
 
 import { Button } from "@/components/Button"
 import { PressableIcon } from "@/components/Icon"
@@ -11,6 +11,7 @@ import { useAuth } from "@/context/AuthContext"
 import type { AppStackScreenProps } from "@/navigators/AppNavigator"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+import { useLogin } from "@/services/api/hooks"
 
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 
@@ -21,7 +22,10 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
   const [isAuthPasswordHidden, setIsAuthPasswordHidden] = useState(true)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [attemptsCount, setAttemptsCount] = useState(0)
+  const [serverError, setServerError] = useState("")
   const { authEmail, setAuthEmail, login, register, isLoading } = useAuth()
+  const { error: loginError } = useLogin()
+  console.log("🚀 ~ LoginScreen ~ loginError:", loginError)
 
   const {
     themed,
@@ -47,13 +51,15 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
   async function handleLogin() {
     setIsSubmitted(true)
     setAttemptsCount(attemptsCount + 1)
+    setServerError("") // Clear previous errors
 
     if (validationError) return
 
     const result = await login(authEmail!, authPassword)
-    
+     console.log("🚀 ~ handleLogin ~ result:", result)
+     
     if (!result.success) {
-      Alert.alert("Login Failed", result.error || "An error occurred during login")
+      setServerError(result.error || "An error occurred during login")
     }
     
     setIsSubmitted(false)
@@ -61,13 +67,14 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
 
   async function handleRegister() {
     setIsSubmitted(true)
+    setServerError("") // Clear previous errors
 
     if (validationError) return
 
     const result = await register(authEmail!, authPassword)
     
     if (!result.success) {
-      Alert.alert("Registration Failed", result.error || "An error occurred during registration")
+      setServerError(result.error || "An error occurred during registration")
     }
     
     setIsSubmitted(false)
@@ -103,7 +110,10 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
 
       <TextField
         value={authEmail}
-        onChangeText={setAuthEmail}
+        onChangeText={(text) => {
+          setAuthEmail(text)
+          setServerError("") // Clear server error when user types
+        }}
         containerStyle={themed($textField)}
         autoCapitalize="none"
         autoComplete="email"
@@ -120,7 +130,10 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
       <TextField
         ref={authPasswordInput}
         value={authPassword}
-        onChangeText={setAuthPassword}
+        onChangeText={(text) => {
+          setAuthPassword(text)
+          setServerError("") // Clear server error when user types
+        }}
         containerStyle={themed($textField)}
         autoCapitalize="none"
         autoComplete="password"
@@ -132,6 +145,15 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
         RightAccessory={PasswordRightAccessory}
         editable={!isLoading}
       />
+
+      {serverError && (
+        <Text
+          text={serverError}
+          style={themed($serverError)}
+          preset="formHelper"
+          size="sm"
+        />
+      )}
 
       <Button
         testID="login-button"
@@ -182,4 +204,10 @@ const $tapButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 
 const $registerButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.sm,
+})
+
+const $serverError: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  color: colors.error,
+  marginBottom: spacing.sm,
+  textAlign: "center",
 })

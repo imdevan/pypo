@@ -12,9 +12,11 @@ import { ListView } from "@/components/ListView"
 import { useItems, useCreateItem, useDeleteItem } from "@/services/api/hooks"
 import type { ItemPublic } from "@/client/types.gen"
 import { useAppTheme } from "@/theme/context"
+import { extractErrorMessage } from "@/services/api/errorHandling"
 import { $styles } from "@/theme/styles"
 import { type ContentStyle } from "@shopify/flash-list"
 import { type ThemedStyle } from "@/theme/types"
+import type { ViewStyle } from "react-native"
 import { EmptyState } from "@/components/EmptyState"
 
 interface ItemsScreenProps {}
@@ -51,7 +53,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       setNewItemTitle("")
       setNewItemDescription("")
     } catch (error) {
-      Alert.alert("Error", "Failed to create item")
+      Alert.alert("Error", extractErrorMessage(error))
     }
   }
 
@@ -61,7 +63,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         path: { id },
       })
     } catch (error) {
-      Alert.alert("Error", "Failed to delete item")
+      Alert.alert("Error", extractErrorMessage(error))
     }
   }
 
@@ -70,7 +72,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     if (itemsData) {
       setDebugInfo(`Loaded ${items.length} items successfully`)
     } else if (itemsError) {
-      setDebugInfo(`Error loading items: ${itemsError.message}`)
+      setDebugInfo(`Error loading items: ${extractErrorMessage(itemsError)}`)
     }
   }, [itemsData, itemsError, items.length])
 

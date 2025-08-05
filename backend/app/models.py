@@ -1,8 +1,22 @@
 import datetime
+import re
 import uuid
 
-from pydantic import EmailStr
+from pydantic import EmailStr, field_validator
 from sqlmodel import Field, Relationship, SQLModel
+
+
+def validate_password_strength(password: str) -> str:
+    """Validate password meets complexity requirements."""
+    if not re.search(r'[A-Z]', password):
+        raise ValueError('Password must contain at least 1 uppercase letter')
+    if not re.search(r'[a-z]', password):
+        raise ValueError('Password must contain at least 1 lowercase letter')
+    if not re.search(r'\d', password):
+        raise ValueError('Password must contain at least 1 number')
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        raise ValueError('Password must contain at least 1 special character')
+    return password
 
 
 # Shared properties
@@ -16,18 +30,35 @@ class UserBase(SQLModel):
 # Properties to receive via API on creation
 class UserCreate(UserBase):
     password: str = Field(min_length=8, max_length=40)
+    
+    @field_validator('password')
+    @classmethod
+    def validate_password(cls, v):
+        return validate_password_strength(v)
 
 
 class UserRegister(SQLModel):
     email: EmailStr = Field(max_length=255)
     password: str = Field(min_length=8, max_length=40)
     full_name: str | None = Field(default=None, max_length=255)
+    
+    @field_validator('password')
+    @classmethod
+    def validate_password(cls, v):
+        return validate_password_strength(v)
 
 
 # Properties to receive via API on update, all are optional
 class UserUpdate(UserBase):
     email: EmailStr | None = Field(default=None, max_length=255)  # type: ignore
     password: str | None = Field(default=None, min_length=8, max_length=40)
+    
+    @field_validator('password')
+    @classmethod
+    def validate_password(cls, v):
+        if v is not None:
+            return validate_password_strength(v)
+        return v
 
 
 class UserUpdateMe(SQLModel):
@@ -38,6 +69,11 @@ class UserUpdateMe(SQLModel):
 class UpdatePassword(SQLModel):
     current_password: str = Field(min_length=8, max_length=40)
     new_password: str = Field(min_length=8, max_length=40)
+    
+    @field_validator('new_password')
+    @classmethod
+    def validate_new_password(cls, v):
+        return validate_password_strength(v)
 
 
 # Database model, database table inferred from class name
@@ -121,3 +157,8 @@ class TokenPayload(SQLModel):
 class NewPassword(SQLModel):
     token: str
     new_password: str = Field(min_length=8, max_length=40)
+    
+    @field_validator('new_password')
+    @classmethod
+    def validate_new_password(cls, v):
+        return validate_password_strength(v)

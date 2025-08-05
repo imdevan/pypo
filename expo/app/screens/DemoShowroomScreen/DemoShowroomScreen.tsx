@@ -16,10 +16,10 @@ import { $styles } from "@/theme/styles"
 import type { Theme, ThemedStyle } from "@/theme/types"
 import { hasValidStringProp } from "@/utils/hasValidStringProp"
 import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
-
 import * as Demos from "./demos"
 import { DrawerIconButton } from "./DrawerIconButton"
 import SectionListWithKeyboardAwareScrollView from "./SectionListWithKeyboardAwareScrollView"
+import { DevelopmentLinks } from "./DevelopmentLinks"
 
 const logo = require("@assets/images/logo.png")
 
@@ -244,9 +244,13 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
             )}
             renderSectionFooter={() => <View style={themed($demoUseCasesSpacer)} />}
             ListHeaderComponent={
-              <View style={themed($heading)}>
-                <Text preset="heading" tx="demoShowroomScreen:jumpStart" />
-              </View>
+              <>
+                <DevelopmentLinks />
+                
+                <View style={themed($heading)}>
+                  <Text preset="heading" tx="demoShowroomScreen:jumpStart" />
+                </View>
+              </>
             }
             onScrollToIndexFailed={scrollToIndexFailed}
             renderSectionHeader={({ section }) => {

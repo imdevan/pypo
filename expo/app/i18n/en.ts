@@ -81,6 +81,14 @@ const en = {
     demoViaTxProp: "Via `tx` Prop",
     demoViaSpecifiedTxProp: "Via `{{prop}}Tx` Prop",
   },
+  demoItemsScreen: {
+    title: "My Items",
+    createNewItem: "Create New Item",
+    itemTitle: "Item Title",
+    itemDescription: "Item Description (optional)",
+    createItem: "Create Item",
+    noItems: "No items yet. Create your first item above!",
+  },
   demoDebugScreen: {
     howTo: "HOW TO",
     title: "Debug",

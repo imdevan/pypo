@@ -7,11 +7,15 @@ import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { Button } from "@/components/Button"
 import { TextField } from "@/components/TextField"
+import { ListView } from "@/components/ListView"
 
 import { useItems, useCreateItem, useDeleteItem } from "@/services/api/hooks"
 import type { ItemPublic } from "@/client/types.gen"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
+import { type ContentStyle } from "@shopify/flash-list"
+import { type ThemedStyle } from "@/theme/types"
+import { EmptyState } from "@/components/EmptyState"
 
 interface ItemsScreenProps {}
 
@@ -168,16 +172,31 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           >
             <Text text="Loading items..." preset="default" />
           </MV>
-        ) : items.length === 0 ? (
-          <MV
-            from={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: "spring", damping: 15, stiffness: 150 }}
-          >
-            <Text text="No items yet. Create your first item above!" preset="default" />
-          </MV>
         ) : (
-          items.map((item, index) => renderItem({ item, index }))
+          <ListView<ItemPublic>
+            data={items}
+            estimatedItemSize={100}
+            renderItem={({ item, index }) => renderItem({ item, index })}
+            ListEmptyComponent={
+              <MV
+                from={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: "spring", damping: 15, stiffness: 150 }}
+              >
+              <EmptyState
+              preset="generic"
+              style={themed($emptyState)}
+              contentTx="demoItemsScreen:noItems"
+              // button={favoritesOnly ? "" : undefined}
+              // buttonOnPress={manualRefresh}
+              // imageStyle={$emptyStateImage}
+              ImageProps={{ resizeMode: "contain" }}
+            />
+                {/* <Text text="No items yet. Create your first item above!" preset="default" /> */}
+              </MV>
+            }
+            contentContainerStyle={themed($itemsList)}
+          />
         )}
       </V>
     </Screen>
@@ -208,7 +227,11 @@ const $sectionTitle = { marginBottom: 16 }
 
 const $inputField = { marginBottom: 12 }
 
-const $itemsList = { flex: 1 }
+const $itemsList: ThemedStyle<ContentStyle> = ({ spacing }) => ({
+  paddingHorizontal: spacing.lg,
+  paddingTop: spacing.md,
+  paddingBottom: spacing.lg,
+})
 
 const $itemContainer = { 
   flexDirection: "row" as const, 
@@ -228,3 +251,7 @@ const $itemDescription = { marginTop: 4, marginBottom: 8 }
 const $deleteButton = { marginLeft: 12 }
 
 const $testButton = { marginTop: 8 } 
+
+const $emptyState: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginTop: spacing.xxl,
+})

@@ -32,21 +32,27 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
     theme: { colors },
   } = useAppTheme()
 
-  const validationError = useMemo(() => {
+  const emailValidationError = useMemo(() => {
     if (!authEmail || authEmail.length === 0) return "Email can't be blank"
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(authEmail)) return "Email must be a valid email address"
+    return ""
+  }, [authEmail])
+
+  const passwordValidationError = useMemo(() => {
     if (!authPassword || authPassword.length === 0) return "Password can't be blank"
     if (authPassword.length < 6) return "Password must be at least 6 characters"
     return ""
-  }, [authEmail, authPassword])
+  }, [authPassword])
+
+  const validationError = useMemo(() => {
+    return emailValidationError || passwordValidationError
+  }, [emailValidationError, passwordValidationError])
 
   useEffect(() => {
     // Pre-fill with demo credentials for testing
     setAuthEmail("admin@example.com")
     setAuthPassword("changethis")
   }, [setAuthEmail])
-
-  const error = isSubmitted ? validationError : ""
 
   async function handleLogin() {
     setIsSubmitted(true)
@@ -121,8 +127,8 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
         keyboardType="email-address"
         labelTx="loginScreen:emailFieldLabel"
         placeholderTx="loginScreen:emailFieldPlaceholder"
-        helper={error}
-        status={error ? "error" : undefined}
+        helper={isSubmitted ? emailValidationError : ""}
+        status={isSubmitted && emailValidationError ? "error" : undefined}
         onSubmitEditing={() => authPasswordInput.current?.focus()}
         editable={!isLoading}
       />
@@ -141,6 +147,8 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
         secureTextEntry={isAuthPasswordHidden}
         labelTx="loginScreen:passwordFieldLabel"
         placeholderTx="loginScreen:passwordFieldPlaceholder"
+        helper={isSubmitted ? passwordValidationError : ""}
+        status={isSubmitted && passwordValidationError ? "error" : undefined}
         onSubmitEditing={handleLogin}
         RightAccessory={PasswordRightAccessory}
         editable={!isLoading}

@@ -1,9 +1,9 @@
 import { FC } from "react"
 import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
 
-import { Button } from "@/components/Button"
-import { Screen } from "@/components/Screen"
-import { Text } from "@/components/Text"
+import { Button } from "@/components/lib/Button"
+import { Screen } from "@/components/lib/Screen"
+import { Text } from "@/components/lib/Text"
 import { useAuth } from "@/context/AuthContext"
 import { isRTL } from "@/i18n"
 import type { AppStackScreenProps } from "@/navigators/AppNavigator"

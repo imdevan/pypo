@@ -3,7 +3,7 @@ import { BottomTabScreenProps, createBottomTabNavigator } from "@react-navigatio
 import { CompositeScreenProps } from "@react-navigation/native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
-import { Icon } from "@/components/Icon"
+import { Icon } from "@/components/lib/Icon"
 import { EpisodeProvider } from "@/context/EpisodeContext"
 import { translate } from "@/i18n/translate"
 import { DemoCommunityScreen } from "@/screens/DemoCommunityScreen"

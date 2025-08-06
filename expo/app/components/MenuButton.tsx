@@ -1,5 +1,5 @@
 import { Pressable, PressableProps, ViewStyle } from "react-native"
-import { Icon } from "@/components/Icon"
+import { Icon } from "@/components/lib/Icon"
 import { useAppTheme } from "@/theme/context"
 
 interface MenuButtonProps extends PressableProps {

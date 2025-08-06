@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
 import { TextStyle, View, ViewStyle } from "react-native"
 
-import { Text } from "@/components/Text"
+import { Text } from "@/components/lib/Text"
 import type { TxKeyPath } from "@/i18n"
 import { translate } from "@/i18n/translate"
 import { useAppTheme } from "@/theme/context"

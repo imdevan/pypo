@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key, react-native/no-inline-styles */
-import { Text } from "@/components/Text"
+import { Text } from "@/components/lib/Text"
 import { translate } from "@/i18n/translate"
 
 import { DemoDivider } from "../DemoDivider"

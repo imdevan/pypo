@@ -1,13 +1,13 @@
 import { FC } from "react"
 import { TextStyle, View, ViewStyle } from "react-native"
 
-import { ListItem } from "@/components/ListItem"
-import { Text } from "@/components/Text"
+import { ListItem } from "@/components/lib/ListItem"
+import { Text } from "@/components/lib/Text"
 import { isRTL } from "@/i18n"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { openLinkInBrowser } from "@/utils/openLinkInBrowser"
-import { IconTypes } from "@/components/Icon"
+import { IconTypes } from "@/components/lib/Icon"
 import { V } from "@/components/V"
 
 export const DevelopmentLinks: FC = () => {

@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-key, react-native/no-inline-styles */
-import { AutoImage } from "@/components/AutoImage"
-import { Button } from "@/components/Button"
-import { Card } from "@/components/Card"
-import { Icon } from "@/components/Icon"
+import { AutoImage } from "@/components/lib/AutoImage"
+import { Button } from "@/components/lib/Button"
+import { Card } from "@/components/lib/Card"
+import { Icon } from "@/components/lib/Icon"
 
 import { DemoDivider } from "../DemoDivider"
 import { Demo } from "../DemoShowroomScreen"

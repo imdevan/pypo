@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-key, react-native/no-inline-styles */
 import { TextStyle, View, ViewStyle } from "react-native"
 
-import { Header } from "@/components/Header"
-import { Icon } from "@/components/Icon"
+import { Header } from "@/components/lib/Header"
+import { Icon } from "@/components/lib/Icon"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
 

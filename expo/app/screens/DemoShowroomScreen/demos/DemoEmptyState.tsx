@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-key, react-native/no-inline-styles */
-import { EmptyState } from "@/components/EmptyState"
+import { EmptyState } from "@/components/lib/EmptyState"
 
 import { DemoDivider } from "../DemoDivider"
 import { Demo } from "../DemoShowroomScreen"

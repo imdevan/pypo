@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-key */
 import { TextStyle, View, ViewStyle } from "react-native"
 
-import { Icon } from "@/components/Icon"
-import { ListItem } from "@/components/ListItem"
-import { ListView } from "@/components/ListView"
-import { Text } from "@/components/Text"
+import { Icon } from "@/components/lib/Icon"
+import { ListItem } from "@/components/lib/ListItem"
+import { ListView } from "@/components/lib/ListView"
+import { Text } from "@/components/lib/Text"
 import { translate } from "@/i18n/translate"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"

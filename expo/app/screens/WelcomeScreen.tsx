@@ -27,7 +27,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = function WelcomeScreen(_pro
   const { debugMode, isDebugEnabled } = useDebugStore()
 
   function goNext() {
-    navigation.navigate("Demo", { screen: "DemoShowroom", params: {} })
+    navigation.navigate("Drawer", { screen: "DrawerItems", params: {} })
   }
 
   useHeader(

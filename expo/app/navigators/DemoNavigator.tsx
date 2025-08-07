@@ -20,7 +20,7 @@ export type DemoTabParamList = {
   DemoCommunity: undefined
   DemoShowroom: { queryIndex?: string; itemIndex?: string }
   DemoDebug: undefined
-  Items: undefined
+  DemoItems: undefined
 }
 
 /**
@@ -79,7 +79,7 @@ export function DemoNavigator() {
         />
 
         <Tab.Screen
-          name="Items"
+          name="DemoItems"
           component={ItemsScreen}
           options={{
             tabBarAccessibilityLabel: translate("demoNavigator:podcastListTab"),

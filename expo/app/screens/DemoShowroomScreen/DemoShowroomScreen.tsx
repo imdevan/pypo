@@ -1,27 +1,28 @@
 import { FC, ReactElement, useCallback, useEffect, useRef, useState } from "react"
-import { Image, ImageStyle, Platform, SectionList, TextStyle, View, ViewStyle } from "react-native"
-import { Link, RouteProp, useRoute } from "@react-navigation/native"
-import { type ContentStyle } from "@shopify/flash-list"
-import { Drawer } from "react-native-drawer-layout"
+import { Platform, SectionList, TextStyle, View, ViewStyle } from "react-native"
+import { RouteProp, useRoute } from "@react-navigation/native"
 
-import { ListItem } from "@/components/lib/ListItem"
-import { ListView, type ListViewRef } from "@/components/lib/ListView"
-import { Screen } from "@/components/lib/Screen"
+
+
+
+
 import { Text } from "@/components/lib/Text"
-import { TxKeyPath, isRTL } from "@/i18n"
+import { DrawerWrapper } from "@/components/DrawerWrapper"
+import { ScreenWithHeader } from "@/components/ScreenWithHeader"
+import { TxKeyPath } from "@/i18n"
 import { translate } from "@/i18n/translate"
 import { DemoTabParamList, DemoTabScreenProps } from "@/navigators/DemoNavigator"
 import { useAppTheme } from "@/theme/context"
-import { $styles } from "@/theme/styles"
+
 import type { Theme, ThemedStyle } from "@/theme/types"
 import { hasValidStringProp } from "@/utils/hasValidStringProp"
-import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
+
 import * as Demos from "./demos"
-import { DrawerIconButton } from "./DrawerIconButton"
+
 import SectionListWithKeyboardAwareScrollView from "./SectionListWithKeyboardAwareScrollView"
 import { DevelopmentLinks } from "./DevelopmentLinks"
 
-const logo = require("@assets/images/logo.png")
+
 
 export interface Demo {
   name: string
@@ -29,11 +30,10 @@ export interface Demo {
   data: ({ themed, theme }: { themed: any; theme: Theme }) => ReactElement[]
 }
 
-interface DemoListItem {
-  item: { name: string; useCases: string[] }
-  sectionIndex: number
-  handleScroll?: (sectionIndex: number, itemIndex?: number) => void
-}
+
+
+
+
 
 const slugify = (str: string) =>
   str
@@ -43,67 +43,13 @@ const slugify = (str: string) =>
     .replace(/[\s_-]+/g, "-")
     .replace(/^-+|-+$/g, "")
 
-const WebListItem: FC<DemoListItem> = ({ item, sectionIndex }) => {
-  const sectionSlug = item.name.toLowerCase()
-  const { themed } = useAppTheme()
-  return (
-    <View>
-      <Link
-        screen="DemoShowroom"
-        params={{ queryIndex: sectionSlug }}
-        style={themed($menuContainer)}
-      >
-        <Text preset="bold">{item.name}</Text>
-      </Link>
-      {item.useCases.map((u) => {
-        const itemSlug = slugify(u)
 
-        return (
-          <Link
-            key={`section${sectionIndex}-${u}`}
-            screen="DemoShowroom"
-            params={{ queryIndex: sectionSlug, itemIndex: itemSlug }}
-          >
-            <Text>{u}</Text>
-          </Link>
-        )
-      })}
-    </View>
-  )
-}
-
-const NativeListItem: FC<DemoListItem> = ({ item, sectionIndex, handleScroll }) => {
-  const { themed } = useAppTheme()
-  return (
-    <View>
-      <Text
-        onPress={() => handleScroll?.(sectionIndex)}
-        preset="bold"
-        style={themed($menuContainer)}
-      >
-        {item.name}
-      </Text>
-      {item.useCases.map((u, index) => (
-        <ListItem
-          key={`section${sectionIndex}-${u}`}
-          onPress={() => handleScroll?.(sectionIndex, index)}
-          text={u}
-          rightIcon={isRTL ? "caretLeft" : "caretRight"}
-        />
-      ))}
-    </View>
-  )
-}
-
-const ShowroomListItem = Platform.select({ web: WebListItem, default: NativeListItem })
-const isAndroid = Platform.OS === "android"
 
 export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
   function DemoShowroomScreen(_props) {
     const [open, setOpen] = useState(false)
     const timeout = useRef<ReturnType<typeof setTimeout>>(null)
     const listRef = useRef<SectionList>(null)
-    const menuRef = useRef<ListViewRef<DemoListItem["item"]>>(null)
     const route = useRoute<RouteProp<DemoTabParamList, "DemoShowroom">>()
     const params = route.params
 
@@ -181,49 +127,27 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
       }
     }, [])
 
-    const $drawerInsets = useSafeAreaInsetsStyle(["top"])
+    const drawerData = Object.values(Demos).map((d) => ({
+      name: d.name,
+      useCases: d.data({ theme, themed }).map((u) => {
+        if (hasValidStringProp(u.props, "name")) {
+          return translate((u.props as { name: TxKeyPath }).name)
+        }
+        return ""
+      }),
+    }))
 
     return (
-      <Drawer
+      <DrawerWrapper
         open={open}
         onOpen={() => setOpen(true)}
         onClose={() => setOpen(false)}
-        drawerType="back"
-        drawerPosition={isRTL ? "right" : "left"}
-        renderDrawerContent={() => (
-          <View style={themed([$drawer, $drawerInsets])}>
-            <View style={themed($logoContainer)}>
-              <Image source={logo} style={$logoImage} />
-            </View>
-            <ListView<DemoListItem["item"]>
-              showsVerticalScrollIndicator={false}
-              ref={menuRef}
-              contentContainerStyle={themed($listContentContainer)}
-              estimatedItemSize={250}
-              data={Object.values(Demos).map((d) => ({
-                name: d.name,
-                useCases: d.data({ theme, themed }).map((u) => {
-                  if (hasValidStringProp(u.props, "name")) {
-                    return translate((u.props as { name: TxKeyPath }).name)
-                  }
-                  return ""
-                }),
-              }))}
-              keyExtractor={(item) => item.name}
-              renderItem={({ item, index: sectionIndex }) => (
-                <ShowroomListItem {...{ item, sectionIndex, handleScroll }} />
-              )}
-            />
-          </View>
-        )}
+        drawerData={drawerData}
+        onItemPress={handleScroll}
       >
-        <Screen
-          preset="fixed"
-          safeAreaEdges={["top"]}
-          contentContainerStyle={$styles.flex1}
-          {...(isAndroid ? { KeyboardAvoidingViewProps: { behavior: undefined } } : {})}
+        <ScreenWithHeader
+          onDrawerToggle={toggleDrawer}
         >
-          <DrawerIconButton onPress={toggleDrawer} />
 
           <SectionListWithKeyboardAwareScrollView
             showsVerticalScrollIndicator={false}
@@ -264,19 +188,10 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
               )
             }}
           />
-        </Screen>
-      </Drawer>
+        </ScreenWithHeader>
+      </DrawerWrapper>
     )
   }
-
-const $drawer: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  backgroundColor: colors.background,
-  flex: 1,
-})
-
-const $listContentContainer: ThemedStyle<ContentStyle> = ({ spacing }) => ({
-  paddingHorizontal: spacing.lg,
-})
 
 const $sectionListContentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingHorizontal: spacing.lg,
@@ -284,23 +199,6 @@ const $sectionListContentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 
 const $heading: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.xxxl,
-})
-
-const $logoImage: ImageStyle = {
-  height: 42,
-  width: 77,
-}
-
-const $logoContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  alignSelf: "flex-start",
-  justifyContent: "center",
-  height: 56,
-  paddingHorizontal: spacing.lg,
-})
-
-const $menuContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  paddingBottom: spacing.xs,
-  paddingTop: spacing.lg,
 })
 
 const $demoItemName: ThemedStyle<TextStyle> = ({ spacing }) => ({

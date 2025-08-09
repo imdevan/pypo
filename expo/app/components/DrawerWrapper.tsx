@@ -1,15 +1,15 @@
-import { FC, ReactNode, useRef } from "react"
+import { FC, ReactNode, useRef, useCallback } from "react"
 import { Image, ImageStyle, View, ViewStyle } from "react-native"
 import { Drawer } from "react-native-drawer-layout"
 import { type ContentStyle } from "@shopify/flash-list"
 
 import { ListView, type ListViewRef } from "@/components/lib/ListView"
-import { TxKeyPath, isRTL } from "@/i18n"
-import { translate } from "@/i18n/translate"
+import { isRTL } from "@/i18n"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
-import { hasValidStringProp } from "@/utils/hasValidStringProp"
 import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
+import { ScreenWithHeader } from "./ScreenWithHeader"
+import { useDrawer } from "@/context/DrawerContext"
 
 const logo = require("@assets/images/logo.png")
 
@@ -20,30 +20,25 @@ export interface DrawerItem {
 
 export interface DrawerWrapperProps {
   children: ReactNode
-  open: boolean
-  onOpen: () => void
-  onClose: () => void
   drawerData: DrawerItem[]
   onItemPress?: (sectionIndex: number, itemIndex?: number) => void
 }
 
 export const DrawerWrapper: FC<DrawerWrapperProps> = ({
   children,
-  open,
-  onOpen,
-  onClose,
   drawerData,
   onItemPress,
 }) => {
   const menuRef = useRef<ListViewRef<DrawerItem>>(null)
   const { themed } = useAppTheme()
   const $drawerInsets = useSafeAreaInsetsStyle(["top"])
+  const { isOpen, openDrawer, closeDrawer, toggleDrawer } = useDrawer()
 
   return (
     <Drawer
-      open={open}
-      onOpen={onOpen}
-      onClose={onClose}
+      open={isOpen}
+      onOpen={openDrawer}
+      onClose={closeDrawer}
       drawerType="back"
       drawerPosition={isRTL ? "right" : "left"}
       renderDrawerContent={() => (
@@ -69,7 +64,9 @@ export const DrawerWrapper: FC<DrawerWrapperProps> = ({
         </View>
       )}
     >
-      {children}
+      <ScreenWithHeader onDrawerToggle={toggleDrawer}>
+        {children}
+      </ScreenWithHeader>
     </Drawer>
   )
 }

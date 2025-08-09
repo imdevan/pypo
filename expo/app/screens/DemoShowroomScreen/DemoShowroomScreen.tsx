@@ -1,5 +1,5 @@
 import { FC, ReactElement, useCallback, useEffect, useRef, useState } from "react"
-import { Platform, SectionList, TextStyle, View, ViewStyle } from "react-native"
+import { SectionList, TextStyle, View, ViewStyle } from "react-native"
 import { RouteProp, useRoute } from "@react-navigation/native"
 
 
@@ -8,7 +8,6 @@ import { RouteProp, useRoute } from "@react-navigation/native"
 
 import { Text } from "@/components/lib/Text"
 import { DrawerWrapper } from "@/components/DrawerWrapper"
-import { ScreenWithHeader } from "@/components/ScreenWithHeader"
 import { TxKeyPath } from "@/i18n"
 import { translate } from "@/i18n/translate"
 import { DemoTabParamList, DemoTabScreenProps } from "@/navigators/DemoNavigator"
@@ -55,13 +54,6 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
 
     const { themed, theme } = useAppTheme()
 
-    const toggleDrawer = useCallback(() => {
-      if (!open) {
-        setOpen(true)
-      } else {
-        setOpen(false)
-      }
-    }, [open])
 
     const handleScroll = useCallback((sectionIndex: number, itemIndex = 0) => {
       try {
@@ -145,9 +137,6 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
         drawerData={drawerData}
         onItemPress={handleScroll}
       >
-        <ScreenWithHeader
-          onDrawerToggle={toggleDrawer}
-        >
 
           <SectionListWithKeyboardAwareScrollView
             showsVerticalScrollIndicator={false}
@@ -188,7 +177,6 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
               )
             }}
           />
-        </ScreenWithHeader>
       </DrawerWrapper>
     )
   }

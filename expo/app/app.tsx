@@ -34,6 +34,7 @@ import { customFontsToLoad } from "./theme/typography"
 import { loadDateFnsLocale } from "./utils/formatDate"
 import * as storage from "./utils/storage"
 import { queryClient } from "./services/api/queryClient"
+import { DrawerProvider } from "./context/DrawerContext"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
@@ -101,11 +102,13 @@ export function App() {
         <KeyboardProvider>
           <AuthProvider>
             <ThemeProvider>
-              <AppNavigator
-                linking={linking}
-                initialState={initialNavigationState}
-                onStateChange={onNavigationStateChange}
-              />
+              <DrawerProvider>
+                <AppNavigator
+                  linking={linking}
+                  initialState={initialNavigationState}
+                  onStateChange={onNavigationStateChange}
+                  />
+                </DrawerProvider>
             </ThemeProvider>
           </AuthProvider>
         </KeyboardProvider>

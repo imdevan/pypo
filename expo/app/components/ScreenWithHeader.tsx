@@ -32,6 +32,7 @@ export function ScreenWithHeader(props: ScreenWithHeaderProps) {
     <Screen
       preset="fixed"
       contentContainerStyle={$styles.flex1}
+      safeAreaEdges={["top"]}
       {...(isAndroid ? { KeyboardAvoidingViewProps: { behavior: undefined } } : {})}
       {...screenProps}
     >

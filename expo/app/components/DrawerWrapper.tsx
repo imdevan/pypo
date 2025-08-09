@@ -22,17 +22,19 @@ export interface DrawerWrapperProps {
   children: ReactNode
   drawerData: DrawerItem[]
   onItemPress?: (sectionIndex: number, itemIndex?: number) => void
+  drawerId: string
 }
 
 export const DrawerWrapper: FC<DrawerWrapperProps> = ({
   children,
   drawerData,
   onItemPress,
+  drawerId,
 }) => {
   const menuRef = useRef<ListViewRef<DrawerItem>>(null)
   const { themed } = useAppTheme()
   const $drawerInsets = useSafeAreaInsetsStyle(["top"])
-  const { isOpen, openDrawer, closeDrawer, toggleDrawer } = useDrawer()
+  const { isOpen, openDrawer, closeDrawer, toggleDrawer } = useDrawer(drawerId)
 
   return (
     <Drawer

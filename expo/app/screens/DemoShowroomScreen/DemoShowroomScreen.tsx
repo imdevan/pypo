@@ -46,7 +46,6 @@ const slugify = (str: string) =>
 
 export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
   function DemoShowroomScreen(_props) {
-    const [open, setOpen] = useState(false)
     const timeout = useRef<ReturnType<typeof setTimeout>>(null)
     const listRef = useRef<SectionList>(null)
     const route = useRoute<RouteProp<DemoTabParamList, "DemoShowroom">>()
@@ -131,11 +130,9 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
 
     return (
       <DrawerWrapper
-        open={open}
-        onOpen={() => setOpen(true)}
-        onClose={() => setOpen(false)}
         drawerData={drawerData}
         onItemPress={handleScroll}
+        drawerId="demoshowroom"
       >
 
           <SectionListWithKeyboardAwareScrollView

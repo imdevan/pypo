@@ -35,7 +35,7 @@ export const MainDrawerWrapper: FC<DrawerWrapperProps> = ({
   const menuRef = useRef<ListViewRef<DrawerItem>>(null)
   const { themed } = useAppTheme()
   const $drawerInsets = useSafeAreaInsetsStyle(["top"])
-  const { isOpen, openDrawer, closeDrawer, toggleDrawer } = useDrawer()
+  const { isOpen, openDrawer, closeDrawer, toggleDrawer } = useDrawer("app")
 
   return (
     <Drawer

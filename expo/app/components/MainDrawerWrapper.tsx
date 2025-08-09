@@ -1,15 +1,16 @@
-import { FC, ReactNode, useRef, useCallback } from "react"
-import { Image, ImageStyle, View, ViewStyle } from "react-native"
+import { FC, ReactNode, useRef} from "react"
+import { ImageStyle, View, ViewStyle } from "react-native"
 import { Drawer } from "react-native-drawer-layout"
 import { type ContentStyle } from "@shopify/flash-list"
 
-import { ListView, type ListViewRef } from "@/components/lib/ListView"
+import { type ListViewRef } from "@/components/lib/ListView"
 import { isRTL } from "@/i18n"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 import { ScreenWithHeader } from "./ScreenWithHeader"
 import { useDrawer } from "@/context/DrawerContext"
+import { AppDrawer } from "./AppDrawer"
 
 const logo = require("@assets/images/logo.png")
 
@@ -20,7 +21,6 @@ export interface DrawerItem {
 
 export interface DrawerWrapperProps {
   children: ReactNode
-  drawerData: DrawerItem[]
   onItemPress?: (sectionIndex: number, itemIndex?: number) => void
 }
 
@@ -30,7 +30,6 @@ export interface DrawerWrapperProps {
  */
 export const MainDrawerWrapper: FC<DrawerWrapperProps> = ({
   children,
-  drawerData,
   onItemPress,
 }) => {
   const menuRef = useRef<ListViewRef<DrawerItem>>(null)
@@ -45,28 +44,7 @@ export const MainDrawerWrapper: FC<DrawerWrapperProps> = ({
       onClose={closeDrawer}
       drawerType="back"
       drawerPosition={isRTL ? "right" : "left"}
-      renderDrawerContent={() => (
-        <View style={themed([$drawer, $drawerInsets])}>
-          <View style={themed($logoContainer)}>
-            <Image source={logo} style={$logoImage} />
-          </View>
-          <ListView<DrawerItem>
-            showsVerticalScrollIndicator={false}
-            ref={menuRef}
-            contentContainerStyle={themed($listContentContainer)}
-            estimatedItemSize={250}
-            data={drawerData}
-            keyExtractor={(item) => item.name}
-            renderItem={({ item, index: sectionIndex }) => (
-              <DrawerListItem
-                item={item}
-                sectionIndex={sectionIndex}
-                onItemPress={onItemPress}
-              />
-            )}
-          />
-        </View>
-      )}
+      renderDrawerContent={AppDrawer}
     >
       <ScreenWithHeader onDrawerToggle={toggleDrawer}>
         {children}

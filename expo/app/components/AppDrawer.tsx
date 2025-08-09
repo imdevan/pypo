@@ -5,8 +5,12 @@ import { Button } from "@/components/lib/Button"
 import { Icon } from "@/components/lib/Icon"
 import { useAuth } from "@/context/AuthContext"
 import { useAppTheme } from "@/theme/context"
+import { useDrawer } from "@/context/DrawerContext"
+import { useNavigation, CommonActions } from "@react-navigation/native"
+import { translate } from "@/i18n/translate"
 import type { ThemedStyle } from "@/theme/types"
 import type { ViewStyle, TextStyle } from "react-native"
+import { Pressable } from "react-native"
 
 /**
  * AppDrawer component that shows user information and logout button
@@ -14,6 +18,37 @@ import type { ViewStyle, TextStyle } from "react-native"
 export function AppDrawer() {
   const { authEmail, logout } = useAuth()
   const { themed } = useAppTheme()
+  const { closeDrawer } = useDrawer()
+  const navigation = useNavigation()
+  
+  // Navigation items for demo tabs
+  const navigationItems = [
+    { 
+      label: translate("demoNavigator:componentsTab"), 
+      screen: 'DemoShowroom' as const,
+      icon: "components" as const
+    },
+    { 
+      label: translate("demoNavigator:itemsTab"), 
+      screen: 'DemoItems' as const,
+      icon: "podcast" as const
+    },
+    { 
+      label: translate("demoNavigator:communityTab"), 
+      screen: 'DemoCommunity' as const,
+      icon: "community" as const
+    },
+    { 
+      label: translate("demoNavigator:debugTab"), 
+      screen: 'DemoDebug' as const,
+      icon: "debug" as const
+    },
+  ]
+
+  const handleNavigation = (screen: string) => {
+    closeDrawer()
+    navigation.navigate(screen as never)
+  }
   
   return (
     <V style={themed($drawerContainer)}>
@@ -34,22 +69,21 @@ export function AppDrawer() {
           text="Navigation"
           style={themed($sectionTitle)}
         />
-        <Text
-          text="• Demo Showroom"
-          style={themed($navItem)}
-        />
-        <Text
-          text="• Items"
-          style={themed($navItem)}
-        />
-        <Text
-          text="• Community"
-          style={themed($navItem)}
-        />
-        <Text
-          text="• Debug"
-          style={themed($navItem)}
-        />
+        {navigationItems.map((item, index) => (
+          <Pressable
+            key={item.screen}
+            onPress={() => handleNavigation(item.screen)}
+            style={themed($navItemPressable)}
+          >
+            <V style={themed($navItemContainer)}>
+              <Icon icon={item.icon} size={20} color={themed($navIconColor)} />
+              <Text
+                text={item.label}
+                style={themed($navItem)}
+              />
+            </V>
+          </Pressable>
+        ))}
       </V>
       
       <Button
@@ -73,9 +107,7 @@ const $userSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.xl,
 })
 
-const $iconColor: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  color: colors.tint,
-})
+const $iconColor = ({ colors }: any) => colors.tint
 
 const $userName: ThemedStyle<TextStyle> = ({ colors, spacing, typography }) => ({
   fontSize: 18,
@@ -105,9 +137,23 @@ const $sectionTitle: ThemedStyle<TextStyle> = ({ colors, spacing, typography }) 
 const $navItem: ThemedStyle<TextStyle> = ({ colors, spacing, typography }) => ({
   fontSize: 14,
   fontFamily: typography.primary.normal,
-  color: colors.textDim,
-  marginBottom: spacing.xs,
+  color: colors.text,
+  marginLeft: spacing.sm,
+  flex: 1,
 })
+
+const $navItemPressable: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
+  marginBottom: spacing.sm,
+  borderRadius: spacing.xs,
+  padding: spacing.sm,
+})
+
+const $navItemContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+})
+
+const $navIconColor = ({ colors }: any) => colors.tint
 
 const $logoutButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.error,

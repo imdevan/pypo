@@ -20,9 +20,9 @@ export const DemoCommunityScreen: FC<DemoTabScreenProps<"DemoCommunity">> =
   function DemoCommunityScreen(_props) {
     const { themed } = useAppTheme()
     return (
-      <Screen preset="scroll" contentContainerStyle={$styles.container} safeAreaEdges={["top"]}>
+      <Screen preset="scroll" contentContainerStyle={$styles.container} >
         <Text preset="heading" tx="demoCommunityScreen:title" style={themed($title)} />
-        <Text tx="demoCommunityScreen:tagLine" style={themed($tagline)} />
+        {/* <Text tx="demoCommunityScreen:tagLine" style={themed($tagline)} /> */}
 
         <Text preset="subheading" tx="demoCommunityScreen:joinUsOnSlackTitle" />
         <Text tx="demoCommunityScreen:joinUsOnSlack" style={themed($description)} />

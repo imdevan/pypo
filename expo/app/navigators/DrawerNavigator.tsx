@@ -1,7 +1,7 @@
 import { createDrawerNavigator, DrawerContentComponentProps } from '@react-navigation/drawer';
 
 import { ItemsScreen } from '@/screens/ItemsScreen';
-import { DemoNavigator, DemoTabParamList } from './DemoNavigator';
+import { TabNavigator, DemoTabParamList } from './TabNavigator';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import type { ThemedStyle } from "@/theme/types"
@@ -10,7 +10,7 @@ import { MainDrawerWrapper } from '@/components/MainDrawerWrapper';
 
 export type DrawNavigatorParamList = {
   DrawerItems: undefined;
-  DrawerDemo: NavigatorScreenParams<DemoTabParamList>
+  TabNavigatorScreen: NavigatorScreenParams<DemoTabParamList>
 };
 
 const MyDrawer = createDrawerNavigator<DrawNavigatorParamList>();
@@ -21,9 +21,9 @@ const Stack = createNativeStackNavigator<DrawNavigatorParamList>()
 // Create the main content component that contains the stack navigator
 const StackContent = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="DrawerDemo">
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="TabNavigatorScreen">
       <Stack.Screen name="DrawerItems" component={ItemsScreen} />
-      <Stack.Screen name="DrawerDemo" component={DemoNavigator} />
+      <Stack.Screen name="TabNavigatorScreen" component={TabNavigator} />
     </Stack.Navigator>
   )
 }

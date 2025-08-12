@@ -40,9 +40,9 @@ const Tab = createBottomTabNavigator<DemoTabParamList>()
  * Each tab is a stack navigator with its own set of screens.
  *
  * More info: https://reactnavigation.org/docs/bottom-tab-navigator/
- * @returns {JSX.Element} The rendered `DemoNavigator`.
+ * @returns {JSX.Element} The rendered `TabNavigator`.
  */
-export function DemoNavigator() {
+export function TabNavigator() {
   const { bottom } = useSafeAreaInsets()
   const {
     themed,
@@ -67,7 +67,7 @@ export function DemoNavigator() {
           component={DemoShowroomScreen}
           options={{
             tabBarShowLabel: false,
-            tabBarLabel: translate("demoNavigator:componentsTab"),
+            tabBarLabel: translate("tabNavigator:componentsTab"),
             tabBarIcon: ({ focused }) => (
               <Icon
                 icon="components"
@@ -82,9 +82,9 @@ export function DemoNavigator() {
           name="DemoItems"
           component={ItemsScreen}
           options={{
-            tabBarAccessibilityLabel: translate("demoNavigator:podcastListTab"),
+            tabBarAccessibilityLabel: translate("tabNavigator:podcastListTab"),
             tabBarShowLabel: false,
-            tabBarLabel: translate("demoNavigator:itemsTab"),
+            tabBarLabel: translate("tabNavigator:itemsTab"),
             tabBarIcon: ({ focused }) => (
               <Icon icon="podcast" color={focused ? colors.tint : colors.tintInactive} size={30} />
             ),
@@ -96,7 +96,7 @@ export function DemoNavigator() {
           component={DemoCommunityScreen}
           options={{
             tabBarShowLabel: false,
-            tabBarLabel: translate("demoNavigator:communityTab"),
+            tabBarLabel: translate("tabNavigator:communityTab"),
             tabBarIcon: ({ focused }) => (
               <Icon
                 icon="community"
@@ -112,7 +112,7 @@ export function DemoNavigator() {
           component={DemoDebugScreen}
           options={{
             tabBarShowLabel: false,
-            tabBarLabel: translate("demoNavigator:debugTab"),
+            tabBarLabel: translate("tabNavigator:debugTab"),
             tabBarIcon: ({ focused }) => (
               <Icon icon="debug" color={focused ? colors.tint : colors.tintInactive} size={30} />
             ),

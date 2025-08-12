@@ -10,7 +10,7 @@ import { Text } from "@/components/lib/Text"
 import { DrawerWrapper } from "@/components/DrawerWrapper"
 import { TxKeyPath } from "@/i18n"
 import { translate } from "@/i18n/translate"
-import { DemoTabParamList, DemoTabScreenProps } from "@/navigators/DemoNavigator"
+import { DemoTabParamList, DemoTabScreenProps } from "@/navigators/TabNavigator"
 import { useAppTheme } from "@/theme/context"
 
 import type { Theme, ThemedStyle } from "@/theme/types"

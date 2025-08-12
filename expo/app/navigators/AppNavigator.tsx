@@ -16,7 +16,7 @@ import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { ItemsScreen } from "@/screens/ItemsScreen"
 import { useAppTheme } from "@/theme/context"
 
-import { DemoNavigator, DemoTabParamList } from "./DemoNavigator"
+import { TabNavigator, DemoTabParamList } from "./TabNavigator"
 import { DrawerNavigator, DrawNavigatorParamList } from "./DrawerNavigator"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 

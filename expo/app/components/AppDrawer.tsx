@@ -6,7 +6,9 @@ import { Icon } from "@/components/lib/Icon"
 import { useAuth } from "@/context/AuthContext"
 import { useAppTheme } from "@/theme/context"
 import { useDrawer } from "@/context/DrawerContext"
-import { useNavigation, CommonActions } from "@react-navigation/native"
+import { useNavigation, CommonActions, NavigationProp } from "@react-navigation/native"
+import { AppStackParamList } from "@/navigators/AppNavigator"
+import { DemoTabParamList } from "@/navigators/TabNavigator"
 import { translate } from "@/i18n/translate"
 import type { ThemedStyle } from "@/theme/types"
 import type { ViewStyle, TextStyle } from "react-native"
@@ -14,40 +16,63 @@ import { Pressable } from "react-native"
 
 /**
  * AppDrawer component that shows user information and logout button
+ * 
+ * Navigation Structure:
+ * - AppNavigator (Stack) → contains "Drawer" screen
+ * - DrawerNavigator (Stack) → contains "TabNavigatorScreen" 
+ * - TabNavigator (Bottom Tabs) → contains "DemoShowroom", "DemoItems", "DemoCommunity", "DemoDebug"
+ * 
+ * To navigate to specific tabs from the drawer, we use CommonActions.navigate
+ * to navigate through the nested navigator structure.
  */
 export function AppDrawer() {
   const { authEmail, logout } = useAuth()
   const { themed } = useAppTheme()
   const { closeDrawer } = useDrawer()
-  const navigation = useNavigation()
+  const navigation = useNavigation<NavigationProp<AppStackParamList>>()
   
   // Navigation items for demo tabs
   const navigationItems = [
     { 
-      label: translate("demoNavigator:componentsTab"), 
+      label: translate("tabNavigator:componentsTab"), 
       screen: 'DemoShowroom' as const,
       icon: "components" as const
     },
     { 
-      label: translate("demoNavigator:itemsTab"), 
+      label: translate("tabNavigator:itemsTab"), 
       screen: 'DemoItems' as const,
       icon: "podcast" as const
     },
     { 
-      label: translate("demoNavigator:communityTab"), 
+      label: translate("tabNavigator:communityTab"), 
       screen: 'DemoCommunity' as const,
       icon: "community" as const
     },
     { 
-      label: translate("demoNavigator:debugTab"), 
+      label: translate("tabNavigator:debugTab"), 
       screen: 'DemoDebug' as const,
       icon: "debug" as const
     },
   ]
 
-  const handleNavigation = (screen: string) => {
+  const handleNavigation = (screen: keyof DemoTabParamList) => {
     closeDrawer()
-    navigation.navigate(screen as never)
+    try {
+      // Use CommonActions to navigate to nested screens
+      navigation.dispatch(
+        CommonActions.navigate({
+          name: 'Drawer',
+          params: {
+            screen: 'TabNavigatorScreen',
+            params: {
+              screen,
+            },
+          },
+        })
+      )
+    } catch (error) {
+      console.error("Navigation error:", error)
+    }
   }
   
   return (

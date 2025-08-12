@@ -33,7 +33,7 @@ export const DrawerWrapper: FC<DrawerWrapperProps> = ({
 }) => {
   const menuRef = useRef<ListViewRef<DrawerItem>>(null)
   const { themed } = useAppTheme()
-  const $drawerInsets = useSafeAreaInsetsStyle(["top"])
+  // const $drawerInsets = useSafeAreaInsetsStyle(["top"])
   const { isOpen, openDrawer, closeDrawer, toggleDrawer } = useDrawer(drawerId)
 
   return (
@@ -44,7 +44,7 @@ export const DrawerWrapper: FC<DrawerWrapperProps> = ({
       drawerType="back"
       drawerPosition={isRTL ? "right" : "left"}
       renderDrawerContent={() => (
-        <View style={themed([$drawer, $drawerInsets])}>
+        <View style={themed([$drawer])}>
           <View style={themed($logoContainer)}>
             <Image source={logo} style={$logoImage} />
           </View>

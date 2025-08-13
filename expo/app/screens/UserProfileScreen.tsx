@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import { ViewStyle } from "react-native"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { useCurrentUserData } from "@/services/api/hooks"
+import { EditProfileForm } from "@/components/EditProfileForm"
 
 /**
  * UserProfileScreen displays user information and profile details
@@ -16,6 +17,18 @@ export function UserProfileScreen() {
   const { authEmail, logout } = useAuth()
   const { themed } = useAppTheme()
   const { data: userData, isLoading, error } = useCurrentUserData()
+  const [isEditing, setIsEditing] = useState(false)
+
+  // Show edit form when in editing mode
+  if (isEditing && userData) {
+    return (
+      <EditProfileForm
+        userData={userData}
+        onCancel={() => setIsEditing(false)}
+        onSuccess={() => setIsEditing(false)}
+      />
+    )
+  }
 
   return (
     <Screen 
@@ -132,10 +145,7 @@ export function UserProfileScreen() {
             text="Edit Profile"
             style={themed($editButton)}
             textStyle={themed($editButtonText)}
-            onPress={() => {
-              // TODO: Implement edit profile functionality
-              console.log("Edit profile pressed")
-            }}
+            onPress={() => setIsEditing(true)}
           />
           
           <Button

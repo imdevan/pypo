@@ -1,17 +1,15 @@
 import { FC, ReactElement, useCallback, useEffect, useRef, useState } from "react"
-import { SectionList, TextStyle, View, ViewStyle } from "react-native"
+import { SectionList, TextStyle, View, ViewStyle, Platform } from "react-native"
 import { RouteProp, useRoute } from "@react-navigation/native"
 
-
-
-
-
+import { Screen, ScreenProps } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
-import { DrawerWrapper } from "@/components/DrawerWrapper"
+// import { DrawerWrapper } from "@/components/DrawerWrapper"
 import { TxKeyPath } from "@/i18n"
 import { translate } from "@/i18n/translate"
 import { DemoTabParamList, DemoTabScreenProps } from "@/navigators/TabNavigator"
 import { useAppTheme } from "@/theme/context"
+import { $styles } from "@/theme/styles"
 
 import type { Theme, ThemedStyle } from "@/theme/types"
 import { hasValidStringProp } from "@/utils/hasValidStringProp"
@@ -29,11 +27,6 @@ export interface Demo {
   data: ({ themed, theme }: { themed: any; theme: Theme }) => ReactElement[]
 }
 
-
-
-
-
-
 const slugify = (str: string) =>
   str
     .toLowerCase()
@@ -41,7 +34,6 @@ const slugify = (str: string) =>
     .replace(/[^\w\s-]/g, "")
     .replace(/[\s_-]+/g, "-")
     .replace(/^-+|-+$/g, "")
-
 
 
 export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
@@ -128,13 +120,20 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
       }),
     }))
 
+    const isAndroid = Platform.OS === "android"
+
     return (
-      <DrawerWrapper
+/*       <DrawerWrapper
         drawerData={drawerData}
         onItemPress={handleScroll}
         drawerId="demoshowroom"
       >
-
+ */
+      <Screen
+      preset="fixed"
+      contentContainerStyle={$styles.flex1}
+      {...(isAndroid ? { KeyboardAvoidingViewProps: { behavior: undefined } } : {})}
+    >
           <SectionListWithKeyboardAwareScrollView
             showsVerticalScrollIndicator={false}
             ref={listRef}
@@ -174,7 +173,8 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
               )
             }}
           />
-      </DrawerWrapper>
+          </Screen>
+      // </DrawerWrapper>
     )
   }
 

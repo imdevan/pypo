@@ -122,7 +122,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     <Screen 
       preset="auto" 
       contentContainerStyle={$styles.container}
-//      safeAreaEdges={["top"]}
     >
       <V style={themed($header)}>
         <Text text="My Items" preset="heading" />

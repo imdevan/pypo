@@ -1,6 +1,7 @@
 import { createDrawerNavigator, DrawerContentComponentProps } from '@react-navigation/drawer';
 
 import { ItemsScreen } from '@/screens/ItemsScreen';
+import { UserProfileScreen } from '@/screens/UserProfileScreen';
 import { TabNavigator, DemoTabParamList } from './TabNavigator';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
@@ -10,6 +11,7 @@ import { MainDrawerWrapper } from '@/components/MainDrawerWrapper';
 
 export type DrawNavigatorParamList = {
   DrawerItems: undefined;
+  UserProfile: undefined;
   TabNavigatorScreen: NavigatorScreenParams<DemoTabParamList>
 };
 
@@ -23,6 +25,7 @@ const StackContent = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="TabNavigatorScreen">
       <Stack.Screen name="DrawerItems" component={ItemsScreen} />
+      <Stack.Screen name="UserProfile" component={UserProfileScreen} />
       <Stack.Screen name="TabNavigatorScreen" component={TabNavigator} />
     </Stack.Navigator>
   )

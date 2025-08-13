@@ -74,15 +74,39 @@ export function AppDrawer() {
       console.error("Navigation error:", error)
     }
   }
+
+  const handleUserProfileNavigation = () => {
+    closeDrawer()
+    try {
+      // Navigate to UserProfile screen in DrawerNavigator
+      navigation.dispatch(
+        CommonActions.navigate({
+          name: 'Drawer',
+          params: {
+            screen: 'UserProfile',
+          },
+        })
+      )
+    } catch (error) {
+      console.error("Navigation error:", error)
+    }
+  }
   
   return (
     <V style={themed($drawerContainer)}>
       <V style={themed($userSection)}>
-        <Icon icon="settings" size={60} color={themed($iconColor)} />
-        <Text
-          text={authEmail || "Guest User"}
-          style={themed($userName)}
-        />
+        <Pressable
+          onPress={() => handleUserProfileNavigation()}
+          style={themed($userNamePressable)}
+        >
+          <V style={themed($userNameContainer)}>
+            <Text
+              text={authEmail || "Guest User"}
+              style={themed($userName)}
+            />
+            <Icon icon="settings" size={16} />
+          </V>
+        </Pressable>
         <Text
           text="Welcome to the demo app!"
           style={themed($welcomeText)}
@@ -101,7 +125,7 @@ export function AppDrawer() {
             style={themed($navItemPressable)}
           >
             <V style={themed($navItemContainer)}>
-              <Icon icon={item.icon} size={20} color={themed($navIconColor)} />
+              <Icon icon={item.icon} size={20} />
               <Text
                 text={item.label}
                 style={themed($navItem)}
@@ -132,13 +156,21 @@ const $userSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.xl,
 })
 
-const $iconColor = ({ colors }: any) => colors.tint
-
 const $userName: ThemedStyle<TextStyle> = ({ colors, spacing, typography }) => ({
   fontSize: 18,
   fontFamily: typography.primary.bold,
   color: colors.text,
   marginTop: spacing.sm,
+})
+
+const $userNamePressable: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
+
+})
+
+const $userNameContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
 })
 
 const $welcomeText: ThemedStyle<TextStyle> = ({ colors, spacing, typography }) => ({
@@ -177,8 +209,6 @@ const $navItemContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row",
   alignItems: "center",
 })
-
-const $navIconColor = ({ colors }: any) => colors.tint
 
 const $logoutButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.error,

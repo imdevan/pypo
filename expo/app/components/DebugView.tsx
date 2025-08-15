@@ -17,11 +17,11 @@ export interface DVProps extends VProps {
 /**
  * Debug View
  * A view that only renders if the debug mode is enabled.
- * @param props - The props for the DV component.
- * @param ref - The ref for the DV component.
- * @returns The DV component.
+ * @param props - The props for the DebugView component.
+ * @param ref - The ref for the DebugView component.
+ * @returns The DebugView component.
  */
-export const DV = forwardRef(function DV({debugLevel = DebugMode.BASIC, ...props}: DVProps, ref: ForwardedRef<RNView>) {
+export const DebugView = forwardRef(function DebugView({debugLevel = DebugMode.BASIC, ...props}: DVProps, ref: ForwardedRef<RNView>) {
   const {debugMode, isDebugEnabled} = useDebugStore();
 
   if (!isDebugEnabled()) {

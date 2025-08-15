@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react"
 import { Alert } from "react-native"
-import { DV } from "@/components/DV"
+import { DebugView } from "@/components/DebugView"
 import { V } from "@/components/V"
 import { MV } from "@/components/MV"
 import { Screen } from "@/components/lib/Screen"
@@ -128,7 +128,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       </V>
 
       {/* Debug Info */}
-      <DV>
+      <DebugView>
         <V style={themed($debugSection)}>
           <Text text="Debug Info:" preset="formLabel" />
           <Text text={debugInfo} preset="formHelper" />
@@ -139,7 +139,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             style={themed($testButton)}
           />
         </V>
-      </DV>
+      </DebugView>
 
       <V style={themed($createSection)}>
         <Text text="Create New Item" preset="subheading" style={themed($sectionTitle)} />

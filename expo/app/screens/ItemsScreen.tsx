@@ -2,7 +2,7 @@ import React, { FC, useState } from "react"
 import { Alert } from "react-native"
 import { DebugView } from "@/components/DebugView"
 import { V } from "@/components/V"
-import { MV } from "@/components/MV"
+import { MotiView } from "@/components/MotiView"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
 import { Button } from "@/components/lib/Button"
@@ -77,7 +77,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   }, [itemsData, itemsError, items.length])
 
   const renderItem = ({ item, index }: { item: ItemPublic; index: number }) => (
-    <MV
+    <MotiView
       key={item.id}
       from={{
         opacity: 0,
@@ -113,7 +113,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         onPress={() => deleteItem(item.id)}
         style={themed($deleteButton)}
       />
-    </MV>
+    </MotiView>
   )
 
 
@@ -166,20 +166,20 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       <V style={themed($itemsSection)}>
         <Text text={`Your Items (${items.length})`} preset="subheading" style={themed($sectionTitle)} />
         {loading ? (
-          <MV
+          <MotiView
             from={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ type: "timing", duration: 300 }}
           >
             <Text text="Loading items..." preset="default" />
-          </MV>
+          </MotiView>
         ) : (
           <ListView<ItemPublic>
             data={items}
             estimatedItemSize={100}
             renderItem={({ item, index }) => renderItem({ item, index })}
             ListEmptyComponent={
-              <MV
+              <MotiView
                 from={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ type: "spring", damping: 15, stiffness: 150 }}
@@ -194,7 +194,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
               ImageProps={{ resizeMode: "contain" }}
             />
                 {/* <Text text="No items yet. Create your first item above!" preset="default" /> */}
-              </MV>
+              </MotiView>
             }
             contentContainerStyle={themed($itemsList)}
           />

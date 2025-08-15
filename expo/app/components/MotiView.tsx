@@ -1,6 +1,6 @@
 import { forwardRef, ForwardedRef } from "react"
 import { ViewStyle, StyleProp } from "react-native"
-import { MotiView } from "moti"
+import { MotiView as MotiViewBase } from "moti"
 
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle, ThemedStyleArray } from "@/theme/types"
@@ -30,7 +30,7 @@ export interface MVProps {
   [key: string]: any
 }
 
-export const MV = forwardRef(function MV({style: $styleOverride, preset="default", ...rest }: MVProps, ref: ForwardedRef<any>) {
+export const MotiView = forwardRef(function MotiView({style: $styleOverride, preset="default", ...rest }: MVProps, ref: ForwardedRef<any>) {
   const { themed } = useAppTheme()
 
   const $styles: StyleProp<ViewStyle> = [
@@ -39,7 +39,7 @@ export const MV = forwardRef(function MV({style: $styleOverride, preset="default
   ]
 
   return (
-    <MotiView {...rest} style={$styles} ref={ref} />
+    <MotiViewBase {...rest} style={$styles} ref={ref} />
   )
 })
 

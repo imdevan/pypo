@@ -8,7 +8,6 @@ import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { openLinkInBrowser } from "@/utils/openLinkInBrowser"
 import { IconTypes } from "@/components/lib/Icon"
-import { V } from "@/components/V"
 
 export const DevelopmentLinks: FC = () => {
   const { themed } = useAppTheme()
@@ -46,12 +45,12 @@ export const DevelopmentLinks: FC = () => {
   ]
 
   return (
-    <V style={themed($devLinksContainer)}>
+    <View style={themed($devLinksContainer)}>
       <Text preset="heading" text="Development Environment" style={themed($devLinksTitle)} />
       <Text text="Quick access to development tools and services" style={themed($devLinksSubtitle)} />
 
       {devLinks.map((link, index) => (
-        <V key={index} style={themed($devLinkItem)}>
+        <View key={index} style={themed($devLinkItem)}>
           <ListItem
             height={40}
             text={link.title}
@@ -60,9 +59,9 @@ export const DevelopmentLinks: FC = () => {
             onPress={() => openLinkInBrowser(link.url)}
           />
           <Text text={link.description} style={themed($devLinkDescription)} />
-        </V>
+        </View>
       ))}
-    </V>
+    </View>
   )
 }
 

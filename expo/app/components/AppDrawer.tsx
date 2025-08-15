@@ -1,5 +1,4 @@
 import React from "react"
-import { V } from "@/components/V"
 import { Text } from "@/components/lib/Text"
 import { Button } from "@/components/lib/Button"
 import { Icon } from "@/components/lib/Icon"
@@ -12,7 +11,7 @@ import { DemoTabParamList } from "@/navigators/TabNavigator"
 import { translate } from "@/i18n/translate"
 import type { ThemedStyle } from "@/theme/types"
 import type { ViewStyle, TextStyle } from "react-native"
-import { Pressable } from "react-native"
+import { Pressable, View } from "react-native"
 
 /**
  * AppDrawer component that shows user information and logout button
@@ -93,27 +92,27 @@ export function AppDrawer() {
   }
   
   return (
-    <V style={themed($drawerContainer)}>
-      <V style={themed($userSection)}>
+    <View style={themed($drawerContainer)}>
+      <View style={themed($userSection)}>
         <Pressable
           onPress={() => handleUserProfileNavigation()}
           style={themed($userNamePressable)}
         >
-          <V style={themed($userNameContainer)}>
+          <View style={themed($userNameContainer)}>
             <Text
               text={authEmail || "Guest User"}
               style={themed($userName)}
             />
             <Icon icon="settings" size={16} />
-          </V>
+          </View>
         </Pressable>
         <Text
           text="Welcome to the demo app!"
           style={themed($welcomeText)}
         />
-      </V>
+      </View>
       
-      <V style={themed($navigationSection)}>
+      <View style={themed($navigationSection)}>
         <Text
           text="Navigation"
           style={themed($sectionTitle)}
@@ -124,16 +123,16 @@ export function AppDrawer() {
             onPress={() => handleNavigation(item.screen)}
             style={themed($navItemPressable)}
           >
-            <V style={themed($navItemContainer)}>
+            <View style={themed($navItemContainer)}>
               <Icon icon={item.icon} size={20} />
               <Text
                 text={item.label}
                 style={themed($navItem)}
               />
-            </V>
+            </View>
           </Pressable>
         ))}
-      </V>
+      </View>
       
       <Button
         text="Logout"
@@ -141,7 +140,7 @@ export function AppDrawer() {
         style={themed($logoutButton)}
         textStyle={themed($logoutButtonText)}
       />
-    </V>
+    </View>
   )
 }
 

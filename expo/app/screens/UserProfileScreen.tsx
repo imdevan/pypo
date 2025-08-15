@@ -3,7 +3,7 @@ import { ViewStyle } from "react-native"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
 import { Button } from "@/components/lib/Button"
-import { V } from "@/components/V"
+import { View } from "react-native"
 import { useAuth } from "@/context/AuthContext"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
@@ -34,34 +34,34 @@ export function UserProfileScreen() {
     <Screen 
       preset="auto" 
     >
-      <V style={themed($container)}>
+      <View style={themed($container)}>
         {/* Header Section */}
-        <V style={themed($headerSection)}>
+        <View style={themed($headerSection)}>
           <Text
             text="User Profile"
             style={themed($title)}
           />
-        </V>
+        </View>
 
         {/* User Information Section */}
-        <V style={themed($infoSection)}>
+        <View style={themed($infoSection)}>
           {isLoading ? (
-            <V style={themed($infoCard)}>
+            <View style={themed($infoCard)}>
               <Text
                 text="Loading user data..."
                 style={themed($value)}
               />
-            </V>
+            </View>
           ) : error ? (
-            <V style={themed($infoCard)}>
+            <View style={themed($infoCard)}>
               <Text
                 text="Error loading user data"
                 style={themed($errorValue)}
               />
-            </V>
+            </View>
           ) : userData ? (
             <>
-              <V style={themed($infoCard)}>
+              <View style={themed($infoCard)}>
                 <Text
                   text="Email Address"
                   style={themed($label)}
@@ -70,9 +70,9 @@ export function UserProfileScreen() {
                   text={userData.email || "No email available"}
                   style={themed($value)}
                 />
-              </V>
+              </View>
 
-              <V style={themed($infoCard)}>
+              <View style={themed($infoCard)}>
                 <Text
                   text="Full Name"
                   style={themed($label)}
@@ -81,9 +81,9 @@ export function UserProfileScreen() {
                   text={userData.full_name || "No name provided"}
                   style={themed($value)}
                 />
-              </V>
+              </View>
 
-              <V style={themed($infoCard)}>
+              <View style={themed($infoCard)}>
                 <Text
                   text="Account Status"
                   style={themed($label)}
@@ -92,9 +92,9 @@ export function UserProfileScreen() {
                   text={userData.is_active ? "Active" : "Inactive"}
                   style={themed(userData.is_active ? $statusValue : $errorValue)}
                 />
-              </V>
+              </View>
 
-              <V style={themed($infoCard)}>
+              <View style={themed($infoCard)}>
                 <Text
                   text="Member Since"
                   style={themed($label)}
@@ -103,9 +103,9 @@ export function UserProfileScreen() {
                   text={new Date(userData.created_at).toLocaleDateString()}
                   style={themed($value)}
                 />
-              </V>
+              </View>
 
-              <V style={themed($infoCard)}>
+              <View style={themed($infoCard)}>
                 <Text
                   text="Last Updated"
                   style={themed($label)}
@@ -114,10 +114,10 @@ export function UserProfileScreen() {
                   text={new Date(userData.updated_at).toLocaleDateString()}
                   style={themed($value)}
                 />
-              </V>
+              </View>
 
               {userData.is_superuser && (
-                <V style={themed($infoCard)}>
+                <View style={themed($infoCard)}>
                   <Text
                     text="User Role"
                     style={themed($label)}
@@ -126,21 +126,21 @@ export function UserProfileScreen() {
                     text="Superuser"
                     style={themed($superuserValue)}
                   />
-                </V>
+                </View>
               )}
             </>
           ) : (
-            <V style={themed($infoCard)}>
+            <View style={themed($infoCard)}>
               <Text
                 text="No user data available"
                 style={themed($value)}
               />
-            </V>
+            </View>
           )}
-        </V>
+        </View>
 
         {/* Actions Section */}
-        <V style={themed($actionsSection)}>
+        <View style={themed($actionsSection)}>
           <Button
             text="Edit Profile"
             style={themed($editButton)}
@@ -154,8 +154,8 @@ export function UserProfileScreen() {
             style={themed($logoutButton)}
             textStyle={themed($logoutButtonText)}
           />
-        </V>
-      </V>
+        </View>
+      </View>
     </Screen>
   )
 }

@@ -1,10 +1,9 @@
 import React, { useState } from "react"
-import { ViewStyle, Alert } from "react-native"
+import { ViewStyle, Alert, View } from "react-native"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
 import { Button } from "@/components/lib/Button"
 import { TextField } from "@/components/lib/TextField"
-import { V } from "@/components/V"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { useUpdateCurrentUserData } from "@/services/api/hooks"
@@ -82,18 +81,18 @@ export function EditProfileForm({ userData, onCancel, onSuccess }: EditProfileFo
 
   return (
     <Screen preset="auto">
-      <V style={themed($container)}>
+      <View style={themed($container)}>
         {/* Header Section */}
-        <V style={themed($headerSection)}>
+        <View style={themed($headerSection)}>
           <Text
             text="Edit Profile"
             style={themed($title)}
           />
-        </V>
+        </View>
 
         {/* Form Section */}
-        <V style={themed($formSection)}>
-          <V style={themed($formCard)}>
+        <View style={themed($formSection)}>
+          <View style={themed($formCard)}>
             <Text
               text="Full Name"
               style={themed($label)}
@@ -108,9 +107,9 @@ export function EditProfileForm({ userData, onCancel, onSuccess }: EditProfileFo
               helperTx={undefined}
               status={errors.full_name ? "error" : undefined}
             />
-          </V>
+          </View>
 
-          <V style={themed($formCard)}>
+          <View style={themed($formCard)}>
             <Text
               text="Email Address"
               style={themed($label)}
@@ -127,11 +126,11 @@ export function EditProfileForm({ userData, onCancel, onSuccess }: EditProfileFo
               autoCapitalize="none"
               status={errors.email ? "error" : undefined}
             />
-          </V>
-        </V>
+          </View>
+        </View>
 
         {/* Actions Section */}
-        <V style={themed($actionsSection)}>
+        <View style={themed($actionsSection)}>
           <Button
             text="Save Changes"
             onPress={handleSubmit}
@@ -147,8 +146,8 @@ export function EditProfileForm({ userData, onCancel, onSuccess }: EditProfileFo
             textStyle={themed($cancelButtonText)}
             disabled={updateUserMutation.isPending}
           />
-        </V>
-      </V>
+        </View>
+      </View>
     </Screen>
   )
 }

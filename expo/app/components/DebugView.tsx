@@ -28,5 +28,5 @@ export const DebugView = forwardRef(function DebugView({debugLevel = DebugMode.B
     return null;
   }
 
-  return <V {...props} ref={ref} />
+  return <View {...props} ref={ref} />
 })

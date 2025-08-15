@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react"
 import { Alert } from "react-native"
 import { DebugView } from "@/components/DebugView"
-import { V } from "@/components/V"
+import { View } from "react-native"
 import { MotiView } from "@/components/MotiView"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
@@ -102,11 +102,11 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       }}
       style={themed($itemContainer)}
     >
-      <V style={themed($itemContent)}>
+      <View style={themed($itemContent)}>
         <Text text={item.title} preset="subheading" />
         {item.description && <Text text={item.description} preset="default" style={themed($itemDescription)} />}
         <Text text={`ID: ${item.id}`} preset="formHelper" />
-      </V>
+      </View>
       <Button
         text="Delete"
         preset="default"
@@ -123,13 +123,13 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       preset="auto" 
       contentContainerStyle={$styles.container}
     >
-      <V style={themed($header)}>
+      <View style={themed($header)}>
         <Text text="My Items" preset="heading" />
-      </V>
+      </View>
 
       {/* Debug Info */}
       <DebugView>
-        <V style={themed($debugSection)}>
+        <View style={themed($debugSection)}>
           <Text text="Debug Info:" preset="formLabel" />
           <Text text={debugInfo} preset="formHelper" />
           <Button
@@ -138,10 +138,10 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             onPress={() => refetch()}
             style={themed($testButton)}
           />
-        </V>
+        </View>
       </DebugView>
 
-      <V style={themed($createSection)}>
+      <View style={themed($createSection)}>
         <Text text="Create New Item" preset="subheading" style={themed($sectionTitle)} />
         <TextField
           value={newItemTitle}
@@ -161,9 +161,9 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           onPress={createItem}
           disabled={createItemMutation.isPending || !newItemTitle.trim()}
         />
-      </V>
+      </View>
 
-      <V style={themed($itemsSection)}>
+      <View style={themed($itemsSection)}>
         <Text text={`Your Items (${items.length})`} preset="subheading" style={themed($sectionTitle)} />
         {loading ? (
           <MotiView
@@ -199,7 +199,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             contentContainerStyle={themed($itemsList)}
           />
         )}
-      </V>
+      </View>
     </Screen>
   )
 }

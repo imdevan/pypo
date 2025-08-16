@@ -51,7 +51,7 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
   useEffect(() => {
     // Pre-fill with demo credentials for testing
     setAuthEmail("admin@example.com")
-    setAuthPassword("changethis")
+    setAuthPassword("ChangeThis123!")
   }, [setAuthEmail])
 
   async function handleLogin() {

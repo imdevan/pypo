@@ -149,11 +149,10 @@ export function useNavigationPersistence(storage: Storage, persistenceKey: strin
     try {
       const initialUrl = await Linking.getInitialURL()
 
-      // Only restore the state if app has not started from a deep link
-      if (!initialUrl) {
-        const state = (await storage.load(persistenceKey)) as NavigationProps["initialState"] | null
-        if (state) setInitialNavigationState(state)
-      }
+      // Always try to restore navigation state for better UX
+      // The linking configuration will handle deep links if they exist
+      const state = (await storage.load(persistenceKey)) as NavigationProps["initialState"] | null
+      if (state) setInitialNavigationState(state)
     } finally {
       if (isMounted()) setIsRestored(true)
     }

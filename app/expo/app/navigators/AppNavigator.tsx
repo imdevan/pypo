@@ -7,6 +7,8 @@
 import { ComponentProps } from "react"
 import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native"
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
+import { useEffect, useState } from "react"
+import * as Linking from "expo-linking"
 
 import Config from "@/config"
 import { useAuth } from "@/context/AuthContext"
@@ -31,7 +33,7 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 export type AppStackParamList = {
   Welcome: undefined
   Login: undefined
-  App: NavigatorScreenParams<DrawNavigatorParamList>
+  app: NavigatorScreenParams<DrawNavigatorParamList>
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
@@ -47,11 +49,39 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
   T
 >
 
-// Documentation: https://reactnavigation.org/docs/stack-navigator/
-const Stack = createNativeStackNavigator<AppStackParamList>()
 
-const AppStack = () => {
-  const { isAuthenticated } = useAuth()
+
+// Custom component to handle authenticated user routing
+const AuthenticatedNavigator = () => {
+  const [isReady, setIsReady] = useState(false)
+  const [initialRoute, setInitialRoute] = useState<keyof AppStackParamList>("app")
+
+  useEffect(() => {
+    const prepareNavigation = async () => {
+      try {
+        // Check if there's an initial URL
+        const initialUrl = await Linking.getInitialURL()
+        
+        if (initialUrl) {
+          // If there's a deep link, let the linking configuration handle it
+          // Don't set an initial route
+          setInitialRoute("app")
+        } else {
+          // For authenticated users without a specific URL, default to app
+          // The navigation state will be restored from persistence
+          setInitialRoute("app")
+        }
+      } finally {
+        setIsReady(true)
+      }
+    }
+
+    prepareNavigation()
+  }, [])
+
+  if (!isReady) {
+    return null
+  }
 
   const {
     theme: { colors },
@@ -66,21 +96,40 @@ const AppStack = () => {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName={isAuthenticated ? "Welcome" : "Login"}
+      initialRouteName={initialRoute}
     >
-      {isAuthenticated ? (
-        <>
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="app" component={DrawerNavigator} />
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="Login" component={LoginScreen} />
-        </>
-      )}
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      <Stack.Screen name="app" component={DrawerNavigator} />
+    </Stack.Navigator>
+  )
+}
 
-      {/** 🔥 Your screens go here */}
-      {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
+// Documentation: https://reactnavigation.org/docs/stack-navigator/
+const Stack = createNativeStackNavigator<AppStackParamList>()
+
+const AppStack = () => {
+  const { isAuthenticated } = useAuth()
+
+  const {
+    theme: { colors },
+  } = useAppTheme()
+
+  if (isAuthenticated) {
+    return <AuthenticatedNavigator />
+  }
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        navigationBarColor: colors.background,
+        contentStyle: {
+          backgroundColor: colors.background,
+        },
+      }}
+      initialRouteName="Login"
+    >
+      <Stack.Screen name="Login" component={LoginScreen} />
     </Stack.Navigator>
   )
 }

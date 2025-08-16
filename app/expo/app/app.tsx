@@ -46,14 +46,19 @@ const config = {
       path: "",
     },
     Welcome: "welcome",
-    Demo: {
+    app: {
       screens: {
-        DemoShowroom: {
-          path: "showroom/:queryIndex?/:itemIndex?",
+        tab: {
+          screens: {
+            showroom: {
+              path: "showroom/:queryIndex?/:itemIndex?",
+            },
+            debug: "debug",
+            items: "items",
+            community: "community",
+          },
         },
-        DemoDebug: "debug",
-        Items: "items",
-        DemoCommunity: "community",
+        userprofile: "profile",
       },
     },
   },

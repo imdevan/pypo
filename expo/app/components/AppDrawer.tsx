@@ -18,7 +18,7 @@ import { Pressable, View } from "react-native"
  * 
  * Navigation Structure:
  * - AppNavigator (Stack) → contains "Drawer" screen
- * - DrawerNavigator (Stack) → contains "TabNavigatorScreen" 
+ * - DrawerNavigator (Stack) → contains "Tab" 
  * - TabNavigator (Bottom Tabs) → contains "DemoShowroom", "DemoItems", "DemoCommunity", "DemoDebug"
  * 
  * To navigate to specific tabs from the drawer, we use CommonActions.navigate
@@ -62,7 +62,7 @@ export function AppDrawer() {
         CommonActions.navigate({
           name: 'Drawer',
           params: {
-            screen: 'TabNavigatorScreen',
+            screen: 'Tab',
             params: {
               screen,
             },

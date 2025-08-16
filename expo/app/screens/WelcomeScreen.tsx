@@ -27,7 +27,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = function WelcomeScreen(_pro
   const { debugMode, isDebugEnabled } = useDebugStore()
 
   function goNext() {
-    navigation.navigate("Drawer", { screen: "TabNavigatorScreen", params: {} })
+    navigation.navigate("App", { screen: "Tab", params: {} })
   }
 
   useHeader(

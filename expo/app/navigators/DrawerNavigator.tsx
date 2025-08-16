@@ -10,7 +10,7 @@ import { MainDrawerWrapper } from '@/components/MainDrawerWrapper';
 
 export type DrawNavigatorParamList = {
   UserProfile: undefined;
-  TabNavigatorScreen: NavigatorScreenParams<DemoTabParamList>
+  Tab: NavigatorScreenParams<DemoTabParamList>
 };
 
 const MyDrawer = createDrawerNavigator<DrawNavigatorParamList>();
@@ -21,9 +21,9 @@ const Stack = createNativeStackNavigator<DrawNavigatorParamList>()
 // Create the main content component that contains the stack navigator
 const StackContent = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="TabNavigatorScreen">
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Tab">
       <Stack.Screen name="UserProfile" component={UserProfileScreen} />
-      <Stack.Screen name="TabNavigatorScreen" component={TabNavigator} />
+      <Stack.Screen name="Tab" component={TabNavigator} />
     </Stack.Navigator>
   )
 }

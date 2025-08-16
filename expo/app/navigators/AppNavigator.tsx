@@ -31,7 +31,7 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 export type AppStackParamList = {
   Welcome: undefined
   Login: undefined
-  Drawer: NavigatorScreenParams<DrawNavigatorParamList>
+  App: NavigatorScreenParams<DrawNavigatorParamList>
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
@@ -71,7 +71,7 @@ const AppStack = () => {
       {isAuthenticated ? (
         <>
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="Drawer" component={DrawerNavigator} />
+          <Stack.Screen name="App" component={DrawerNavigator} />
         </>
       ) : (
         <>

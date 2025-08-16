@@ -103,26 +103,6 @@ const ja: Translations = {
     windowsReactotronHint:
       "もし動かなければ、Reactotronのデスクトップアプリが実行されていることを確認して、アプリをリロードしてください。",
   },
-  demoPodcastListScreen: {
-    title: "React Native Radioのエピソード",
-    onlyFavorites: "お気に入り表示",
-    favoriteButton: "お気に入り",
-    unfavoriteButton: "お気に入りを外す",
-    accessibility: {
-      cardHint: "ダブルタップで再生します。 ダブルタップと長押しで {{action}}",
-      switch: "スイッチオンでお気に入りを表示する",
-      favoriteAction: "お気に入りの切り替え",
-      favoriteIcon: "お気に入りのエピソードではありません",
-      unfavoriteIcon: "お気に入りのエピソードです",
-      publishLabel: "公開日 {{date}}",
-      durationLabel: "再生時間: {{hours}} 時間 {{minutes}} 分 {{seconds}} 秒",
-    },
-    noFavoritesEmptyState: {
-      heading: "どうやら空っぽのようですね",
-      content:
-        "お気に入りのエピソードがまだありません。エピソードにあるハートマークにタップして、お気に入りに追加しましょう！",
-    },
-  },
 
   ...demoJa,
 }

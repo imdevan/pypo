@@ -104,27 +104,6 @@ const es: Translations = {
     windowsReactotronHint:
       "Si esto no funciona, asegúrate de que la app de escritorio de Reactotron se esté ejecutando, y luego recarga la app.",
   },
-  demoPodcastListScreen: {
-    title: "Episodios de React Native Radio",
-    onlyFavorites: "Mostrar solo favoritos",
-    favoriteButton: "Favorito",
-    unfavoriteButton: "No favorito",
-    accessibility: {
-      cardHint:
-        "Haz doble clic para escuchar el episodio. Haz doble clic y mantén presionado para {{action}} este episodio.",
-      switch: "Activa para mostrar solo favoritos",
-      favoriteAction: "Cambiar a favorito",
-      favoriteIcon: "Episodio no favorito",
-      unfavoriteIcon: "Episodio favorito",
-      publishLabel: "Publicado el {{date}}",
-      durationLabel: "Duración: {{hours}} horas {{minutes}} minutos {{seconds}} segundos",
-    },
-    noFavoritesEmptyState: {
-      heading: "Esto está un poco vacío",
-      content:
-        "No se han agregado episodios favoritos todavía. ¡Presiona el corazón dentro de un episodio para agregarlo a tus favoritos!",
-    },
-  },
 
   ...demoEs,
 }

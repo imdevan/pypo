@@ -102,27 +102,6 @@ const hi: Translations = {
     windowsReactotronHint:
       "यदि यह काम नहीं करता है, तो सुनिश्चित करें कि Reactotron डेस्कटॉप ऐप चल रहा है और ऐप को पुनः लोड करें।",
   },
-  demoPodcastListScreen: {
-    title: "React Native रेडियो एपिसोड",
-    onlyFavorites: "केवल पसंदीदा दिखाएं",
-    favoriteButton: "पसंदीदा",
-    unfavoriteButton: "नापसंद",
-    accessibility: {
-      cardHint:
-        "एपिसोड सुनने के लिए डबल टैप करें। इस एपिसोड को {{action}} करने के लिए डबल टैप करें और होल्ड करें।",
-      switch: "केवल पसंदीदा दिखाने के लिए स्विच करें",
-      favoriteAction: "पसंदीदा टॉगल करें",
-      favoriteIcon: "एपिसोड पसंदीदा नहीं है",
-      unfavoriteIcon: "एपिसोड पसंदीदा है",
-      publishLabel: "{{date}} को प्रकाशित",
-      durationLabel: "अवधि: {{hours}} घंटे {{minutes}} मिनट {{seconds}} सेकंड",
-    },
-    noFavoritesEmptyState: {
-      heading: "यह थोड़ा खाली लगता है",
-      content:
-        "अभी तक कोई पसंदीदा नहीं जोड़ा गया है। इसे अपने पसंदीदा में जोड़ने के लिए किसी एपिसोड पर दिल पर टैप करें!",
-    },
-  },
 
   ...demoHi,
 }

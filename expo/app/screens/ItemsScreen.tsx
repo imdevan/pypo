@@ -1,7 +1,6 @@
 import React, { FC, useState } from "react"
-import { Alert } from "react-native"
+import { Alert, View } from "react-native"
 import { DebugView } from "@/components/DebugView"
-import { View } from "react-native"
 import { MotiView } from "@/components/MotiView"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"

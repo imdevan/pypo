@@ -70,7 +70,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
-    "@babel/preset-env": "^7.20.0",
+    "@babel/preset-env": "^7.28.3",
     "@babel/runtime": "^7.20.0",
     "@hey-api/openapi-ts": "^0.80.1",
     "@testing-library/react-native": "^13.2.0",

@@ -14,9 +14,9 @@ updates:
       interval: daily
     commit-message:
       prefix: ⬆
-  # npm
-  - package-ecosystem: npm
-    directory: /frontend
+  # bun
+  - package-ecosystem: bun
+    directory: /expo
     schedule:
       interval: daily
     commit-message:
@@ -25,7 +25,7 @@ updates:
   - package-ecosystem: docker
     directories:
       - /backend
-      - /frontend
+      - /expo
     schedule:
       interval: weekly
     commit-message:

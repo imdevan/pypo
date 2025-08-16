@@ -51,8 +51,8 @@ docker compose stop frontend
 And then start the local frontend development server:
 
 ```bash
-cd frontend
-npm run dev
+cd expo
+bun start
 ```
 
 Or you could stop the `backend` Docker Compose service:

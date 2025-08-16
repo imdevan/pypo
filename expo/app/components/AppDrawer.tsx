@@ -60,7 +60,7 @@ export function AppDrawer() {
       // Use CommonActions to navigate to nested screens
       navigation.dispatch(
         CommonActions.navigate({
-          name: 'Drawer',
+          name: 'App',
           params: {
             screen: 'Tab',
             params: {

@@ -19,8 +19,8 @@ import type { ThemedStyle } from "@/theme/types"
  *
  * Navigation Structure:
  * - AppNavigator (Stack) → contains "Drawer" screen
- * - DrawerNavigator (Stack) → contains "Tab"
- * - TabNavigator (Bottom Tabs) → contains "DemoShowroom", "DemoItems", "DemoCommunity", "DemoDebug"
+ * - DrawerNavigator (Stack) → contains "tab"
+ * - TabNavigator (Bottom Tabs) → contains "showroom", "items", "community", "debug"
  *
  * To navigate to specific tabs from the drawer, we use CommonActions.navigate
  * to navigate through the nested navigator structure.
@@ -35,22 +35,22 @@ export function AppDrawer() {
   const navigationItems = [
     {
       label: translate("tabNavigator:componentsTab"),
-      screen: "DemoShowroom" as const,
+      screen: "showroom" as const,
       icon: "components" as const,
     },
     {
       label: translate("tabNavigator:itemsTab"),
-      screen: "DemoItems" as const,
+      screen: "items" as const,
       icon: "podcast" as const,
     },
     {
       label: translate("tabNavigator:communityTab"),
-      screen: "DemoCommunity" as const,
+      screen: "community" as const,
       icon: "community" as const,
     },
     {
       label: translate("tabNavigator:debugTab"),
-      screen: "DemoDebug" as const,
+      screen: "debug" as const,
       icon: "debug" as const,
     },
   ]
@@ -61,9 +61,9 @@ export function AppDrawer() {
       // Use CommonActions to navigate to nested screens
       navigation.dispatch(
         CommonActions.navigate({
-          name: "App",
+          name: "app",
           params: {
-            screen: "Tab",
+            screen: "tab",
             params: {
               screen,
             },

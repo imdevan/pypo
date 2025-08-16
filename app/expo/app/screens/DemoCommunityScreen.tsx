@@ -16,7 +16,7 @@ const reactNativeLiveLogo = require("@assets/images/demo/rnl-logo.png")
 const reactNativeNewsletterLogo = require("@assets/images/demo/rnn-logo.png")
 const reactNativeRadioLogo = require("@assets/images/demo/rnr-logo.png")
 
-export const DemoCommunityScreen: FC<DemoTabScreenProps<"DemoCommunity">> =
+export const DemoCommunityScreen: FC<DemoTabScreenProps<"community">> =
   function DemoCommunityScreen(_props) {
     const { themed } = useAppTheme()
     return (

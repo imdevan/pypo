@@ -60,7 +60,7 @@ export function TabNavigator() {
       }}
     >
       <Tab.Screen
-        name="DemoShowroom"
+        name="showroom"
         component={DemoShowroomScreen}
         options={{
           tabBarShowLabel: false,
@@ -72,7 +72,7 @@ export function TabNavigator() {
       />
 
       <Tab.Screen
-        name="DemoItems"
+        name="items"
         component={ItemsScreen}
         options={{
           tabBarAccessibilityLabel: translate("tabNavigator:podcastListTab"),
@@ -85,7 +85,7 @@ export function TabNavigator() {
       />
 
       <Tab.Screen
-        name="DemoCommunity"
+        name="community"
         component={DemoCommunityScreen}
         options={{
           tabBarShowLabel: false,
@@ -97,7 +97,7 @@ export function TabNavigator() {
       />
 
       <Tab.Screen
-        name="DemoDebug"
+        name="debug"
         component={DemoDebugScreen}
         options={{
           tabBarShowLabel: false,

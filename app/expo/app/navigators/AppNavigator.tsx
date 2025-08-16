@@ -71,7 +71,7 @@ const AppStack = () => {
       {isAuthenticated ? (
         <>
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="App" component={DrawerNavigator} />
+          <Stack.Screen name="app" component={DrawerNavigator} />
         </>
       ) : (
         <>

@@ -31,11 +31,11 @@ const slugify = (str: string) =>
     .replace(/[\s_-]+/g, "-")
     .replace(/^-+|-+$/g, "")
 
-export const DemoShowroomScreen: FC<DemoTabScreenProps<"DemoShowroom">> =
+export const DemoShowroomScreen: FC<DemoTabScreenProps<"showroom">> =
   function DemoShowroomScreen(_props) {
     const timeout = useRef<ReturnType<typeof setTimeout>>(null)
     const listRef = useRef<SectionList>(null)
-    const route = useRoute<RouteProp<DemoTabParamList, "DemoShowroom">>()
+    const route = useRoute<RouteProp<DemoTabParamList, "showroom">>()
     const params = route.params
 
     const { themed, theme } = useAppTheme()

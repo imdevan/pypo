@@ -1,7 +1,14 @@
-# Ignite Expo Fast!
+# PyPo 
+
+🐍 Python + 🏃🏻‍♂️ Expo 
+
+This project is a continuation of https://github.com/imdevan/ignite-expo-fast 
+
+The key difference is that IEF was created to be as close to the existing templates as possible, 
+and this project is my unhinged atttempt to make a resuable toolkit that I personal would use across (personal) projects.
 
 tl;dr: 
-[FastAPI project template](https://github.com/fastapi/full-stack-fastapi-template) + [Infinite Red's ignite Expo boilerplate](https://github.com/infinitered/ignite/)
+This project started out as the official [FastAPI project template](https://github.com/fastapi/full-stack-fastapi-template) + [Infinite Red's ignite Expo boilerplate](https://github.com/infinitered/ignite/) plus my own choices for building a cross language React Native app. 
 
 ## What is in this project?
 

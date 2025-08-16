@@ -1,3 +1,17 @@
+# PyPo
+
+🐍 Python + 🏃🏻‍♂️ Expo
+
+tl;dr: 
+This project started out as the official [FastAPI project template](https://github.com/fastapi/full-stack-fastapi-template) + [Infinite Red's ignite Expo boilerplate](https://github.com/infinitered/ignite/) plus my own choices for building a cross language React Native app. 
+
+## What is in this project?
+
+Basically I took Fast API Template and replaced the included frontend with Infinite Red's expo boilerplate.
+
+I added the OpenAPI Typescript client such that all data (user data, and item data) are loaded via hook using the OpenAPI generated hooks. And the OpenAPI generated React Query client.
+
+
 # Pypo - Turborepo
 
 This is a monorepo containing both the backend API and the Expo mobile application.

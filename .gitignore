@@ -2,6 +2,9 @@
 # 
 .DS_Store
 
+# Turbo repo
+.turbo
+
 # 
 .vscode
 node_modules/

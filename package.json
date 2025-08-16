@@ -1,6 +1,23 @@
 {
-  "dependencies": {
+  "name": "pypo",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "app/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "clean": "turbo run clean",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "devDependencies": {
     "@tanstack/react-query": "^5.83.0",
-    "zustand": "^5.0.6"
-  }
+    "zustand": "^5.0.6",
+    "turbo": "^1.12.4",
+    "prettier": "^3.2.5"
+  },
+  "packageManager": "bun@1.0.35"
 }

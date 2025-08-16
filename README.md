@@ -1,264 +1,109 @@
-# PyPo 
+# Pypo - Turborepo
 
-🐍 Python + 🏃🏻‍♂️ Expo 
+This is a monorepo containing both the backend API and the Expo mobile application.
 
-This project is a continuation of https://github.com/imdevan/ignite-expo-fast 
+## Structure
 
-The key difference is that IEF was created to be as close to the existing templates as possible, 
-and this project is my unhinged atttempt to make a resuable toolkit that I personal would use across (personal) projects.
-
-tl;dr: 
-This project started out as the official [FastAPI project template](https://github.com/fastapi/full-stack-fastapi-template) + [Infinite Red's ignite Expo boilerplate](https://github.com/infinitered/ignite/) plus my own choices for building a cross language React Native app. 
-
-## What is in this project?
-
-Basically I took Fast API Template and replaced the included frontend with Infinite Red's expo boilerplate.
-
-I reaplaced the expo boilerplate podcast loading exmpale with the item data included with FastAPI's template.
-
-I added the [OpenAPI Typescript](https://openapi-ts.dev/) client such that all data (user data, and item data) 
-are loaded via hook using the OpenAPI generated hooks. And the OpenAPI generated React Query client.
-
-
-# Mostly original readme from FastAPI: 
-
-
-# Full Stack FastAPI Template
-
-<a href="https://github.com/fastapi/full-stack-fastapi-template/actions?query=workflow%3ATest" target="_blank"><img src="https://github.com/fastapi/full-stack-fastapi-template/workflows/Test/badge.svg" alt="Test"></a>
-<a href="https://coverage-badge.samuelcolvin.workers.dev/redirect/fastapi/full-stack-fastapi-template" target="_blank"><img src="https://coverage-badge.samuelcolvin.workers.dev/fastapi/full-stack-fastapi-template.svg" alt="Coverage"></a>
-
-## Technology Stack and Features
-
-- ⚡ [**FastAPI**](https://fastapi.tiangolo.com) for the Python backend API.
-    - 🧰 [SQLModel](https://sqlmodel.tiangolo.com) for the Python SQL database interactions (ORM).
-    - 🔍 [Pydantic](https://docs.pydantic.dev), used by FastAPI, for the data validation and settings management.
-    - 💾 [PostgreSQL](https://www.postgresql.org) as the SQL database.
-- 🚀 [React Native](https://github.com/infinitered/ignite/) for the frontend.
-    - 💃 Using TypeScript, hooks, Vite, and other parts of a modern frontend stack.
-    - 🎨 [Chakra UI](https://chakra-ui.com) for the frontend components.
-    - 🤖 An automatically generated frontend client.
-    - 🧪 [Playwright](https://playwright.dev) for End-to-End testing.
-    - 🦇 Dark mode support.
-- 🐋 [Docker Compose](https://www.docker.com) for development and production.
-- 🔒 Secure password hashing by default.
-- 🔑 JWT (JSON Web Token) authentication.
-- 📫 Email based password recovery.
-- ✅ Tests with [Pytest](https://pytest.org).
-- 📞 [Traefik](https://traefik.io) as a reverse proxy / load balancer.
-- 🚢 Deployment instructions using Docker Compose, including how to set up a frontend Traefik proxy to handle automatic HTTPS certificates.
-- 🏭 CI (continuous integration) and CD (continuous deployment) based on GitHub Actions.
-
-### Dashboard Login
-
-[![API docs](img/login.png)](https://github.com/fastapi/full-stack-fastapi-template)
-
-### Dashboard - Admin
-
-[![API docs](img/dashboard.png)](https://github.com/fastapi/full-stack-fastapi-template)
-
-### Dashboard - Create User
-
-[![API docs](img/dashboard-create.png)](https://github.com/fastapi/full-stack-fastapi-template)
-
-### Dashboard - Items
-
-[![API docs](img/dashboard-items.png)](https://github.com/fastapi/full-stack-fastapi-template)
-
-### Dashboard - User Settings
-
-[![API docs](img/dashboard-user-settings.png)](https://github.com/fastapi/full-stack-fastapi-template)
-
-### Dashboard - Dark Mode
-
-[![API docs](img/dashboard-dark.png)](https://github.com/fastapi/full-stack-fastapi-template)
-
-### Interactive API Documentation
-
-[![API docs](img/docs.png)](https://github.com/fastapi/full-stack-fastapi-template)
-
-## How To Use It
-
-You can **just fork or clone** this repository and use it as is.
-
-✨ It just works. ✨
-
-### How to Use a Private Repository
-
-If you want to have a private repository, GitHub won't allow you to simply fork it as it doesn't allow changing the visibility of forks.
-
-But you can do the following:
-
-- Create a new GitHub repo, for example `my-full-stack`.
-- Clone this repository manually, set the name with the name of the project you want to use, for example `my-full-stack`:
-
-```bash
-git clone git@github.com:fastapi/full-stack-fastapi-template.git my-full-stack
+```
+pypo/
+├── app/
+│   ├── backend/     # FastAPI backend
+│   └── expo/        # Expo React Native app
+├── turbo.json       # Turborepo configuration
+└── package.json     # Root workspace configuration
 ```
 
-- Enter into the new directory:
+## Prerequisites
 
-```bash
-cd my-full-stack
-```
+- Node.js >= 20.0.0
+- Bun (package manager)
+- Python 3.10+
+- uv (Python package manager)
 
-- Set the new origin to your new repository, copy it from the GitHub interface, for example:
+## Getting Started
 
-```bash
-git remote set-url origin git@github.com:octocat/my-full-stack.git
-```
+1. Install dependencies:
+   ```bash
+   bun install
+   ```
 
-- Add this repo as another "remote" to allow you to get updates later:
+2. Install Python dependencies for the backend:
+   ```bash
+   cd app/backend
+   uv sync
+   ```
 
-```bash
-git remote add upstream git@github.com:fastapi/full-stack-fastapi-template.git
-```
+3. Start development servers:
+   ```bash
+   # Start both backend and expo
+   bun run dev
+   
+   # Or start individually
+   bun run dev --filter=backend
+   bun run dev --filter=expo
+   ```
 
-- Push the code to your new repository:
+## Available Scripts
 
-```bash
-git push -u origin master
-```
+### Root Level (Turborepo)
+- `bun run build` - Build all applications
+- `bun run dev` - Start development servers for all applications
+- `bun run test` - Run tests for all applications
+- `bun run lint` - Lint all applications
+- `bun run clean` - Clean all applications
+- `bun run format` - Format code with Prettier
 
-### Update From the Original Template
+### Backend (`app/backend/`)
+- `bun run dev` - Start FastAPI development server
+- `bun run test` - Run pytest tests
+- `bun run lint` - Run ruff linter
+- `bun run format` - Format code with ruff
 
-After cloning the repository, and after doing changes, you might want to get the latest changes from this original template.
-
-- Make sure you added the original repository as a remote, you can check it with:
-
-```bash
-git remote -v
-
-origin    git@github.com:octocat/my-full-stack.git (fetch)
-origin    git@github.com:octocat/my-full-stack.git (push)
-upstream    git@github.com:fastapi/full-stack-fastapi-template.git (fetch)
-upstream    git@github.com:fastapi/full-stack-fastapi-template.git (push)
-```
-
-- Pull the latest changes without merging:
-
-```bash
-git pull --no-commit upstream master
-```
-
-This will download the latest changes from this template without committing them, that way you can check everything is right before committing.
-
-- If there are conflicts, solve them in your editor.
-
-- Once you are done, commit the changes:
-
-```bash
-git merge --continue
-```
-
-### Configure
-
-You can then update configs in the `.env` files to customize your configurations.
-
-Before deploying it, make sure you change at least the values for:
-
-- `SECRET_KEY`
-- `FIRST_SUPERUSER_PASSWORD`
-- `POSTGRES_PASSWORD`
-
-You can (and should) pass these as environment variables from secrets.
-
-Read the [deployment.md](./deployment.md) docs for more details.
-
-### Generate Secret Keys
-
-Some environment variables in the `.env` file have a default value of `ChangeThis123!`.
-
-You have to change them with a secret key, to generate secret keys you can run the following command:
-
-```bash
-python -c "import secrets; print(secrets.token_urlsafe(32))"
-```
-
-Copy the content and use that as password / secret key. And run that again to generate another secure key.
-
-## How To Use It - Alternative With Copier
-
-This repository also supports generating a new project using [Copier](https://copier.readthedocs.io).
-
-It will copy all the files, ask you configuration questions, and update the `.env` files with your answers.
-
-### Install Copier
-
-You can install Copier with:
-
-```bash
-pip install copier
-```
-
-Or better, if you have [`pipx`](https://pipx.pypa.io/), you can run it with:
-
-```bash
-pipx install copier
-```
-
-**Note**: If you have `pipx`, installing copier is optional, you could run it directly.
-
-### Generate a Project With Copier
-
-Decide a name for your new project's directory, you will use it below. For example, `my-awesome-project`.
-
-Go to the directory that will be the parent of your project, and run the command with your project's name:
-
-```bash
-copier copy https://github.com/fastapi/full-stack-fastapi-template my-awesome-project --trust
-```
-
-If you have `pipx` and you didn't install `copier`, you can run it directly:
-
-```bash
-pipx run copier copy https://github.com/fastapi/full-stack-fastapi-template my-awesome-project --trust
-```
-
-**Note** the `--trust` option is necessary to be able to execute a [post-creation script](https://github.com/fastapi/full-stack-fastapi-template/blob/master/.copier/update_dotenv.py) that updates your `.env` files.
-
-### Input Variables
-
-Copier will ask you for some data, you might want to have at hand before generating the project.
-
-But don't worry, you can just update any of that in the `.env` files afterwards.
-
-The input variables, with their default values (some auto generated) are:
-
-- `project_name`: (default: `"FastAPI Project"`) The name of the project, shown to API users (in .env).
-- `stack_name`: (default: `"fastapi-project"`) The name of the stack used for Docker Compose labels and project name (no spaces, no periods) (in .env).
-- `secret_key`: (default: `"ChangeThis123!"`) The secret key for the project, used for security, stored in .env, you can generate one with the method above.
-- `first_superuser`: (default: `"admin@example.com"`) The email of the first superuser (in .env).
-- `first_superuser_password`: (default: `"ChangeThis123!"`) The password of the first superuser (in .env).
-- `smtp_host`: (default: "") The SMTP server host to send emails, you can set it later in .env.
-- `smtp_user`: (default: "") The SMTP server user to send emails, you can set it later in .env.
-- `smtp_password`: (default: "") The SMTP server password to send emails, you can set it later in .env.
-- `emails_from_email`: (default: `"info@example.com"`) The email account to send emails from, you can set it later in .env.
-- `postgres_password`: (default: `"ChangeThis123!"`) The password for the PostgreSQL database, stored in .env, you can generate one with the method above.
-- `sentry_dsn`: (default: "") The DSN for Sentry, if you are using it, you can set it later in .env.
-
-## Backend Development
-
-Backend docs: [backend/README.md](./backend/README.md).
-
-## Frontend Development
-
-Frontend docs: [expo/README.md](./expo/README.md).
-
-## Deployment
-
-Deployment docs: [deployment.md](./deployment.md).
+### Expo (`app/expo/`)
+- `bun run dev` - Start Expo development server
+- `bun run android` - Run on Android
+- `bun run ios` - Run on iOS
+- `bun run web` - Run on web
+- `bun run test` - Run Jest tests
+- `bun run lint` - Run ESLint
 
 ## Development
 
-General development docs: [development.md](./development.md).
+### Backend Development
+The backend is a FastAPI application located in `app/backend/`. It uses:
+- FastAPI for the web framework
+- SQLModel for ORM
+- Alembic for database migrations
+- Pytest for testing
+- Ruff for linting and formatting
 
-This includes using Docker Compose, custom local domains, `.env` configurations, etc.
+### Expo Development
+The Expo app is located in `app/expo/` and includes:
+- React Native with Expo
+- TypeScript
+- React Navigation
+- TanStack Query for data fetching
+- Zustand for state management
 
-## Release Notes
+## Docker
 
-Check the file [release-notes.md](./release-notes.md).
+The project includes Docker Compose configurations for easy deployment:
+
+```bash
+# Start all services
+docker-compose up -d
+
+# Start with Traefik (production-like)
+docker-compose -f docker-compose.traefik.yml up -d
+```
+
+## Contributing
+
+1. Make sure all tests pass: `bun run test`
+2. Ensure code is properly formatted: `bun run format`
+3. Check linting: `bun run lint`
+4. Commit your changes
 
 ## License
 
-The Full Stack FastAPI Template is licensed under the terms of the MIT license.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

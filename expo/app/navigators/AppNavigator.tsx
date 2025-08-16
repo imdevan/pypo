@@ -16,7 +16,6 @@ import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { ItemsScreen } from "@/screens/ItemsScreen"
 import { useAppTheme } from "@/theme/context"
 
-import { TabNavigator, DemoTabParamList } from "./TabNavigator"
 import { DrawerNavigator, DrawNavigatorParamList } from "./DrawerNavigator"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 
@@ -32,8 +31,6 @@ import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 export type AppStackParamList = {
   Welcome: undefined
   Login: undefined
-  Demo: NavigatorScreenParams<DemoTabParamList>
-  Items: undefined
   Drawer: NavigatorScreenParams<DrawNavigatorParamList>
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
@@ -74,7 +71,6 @@ const AppStack = () => {
       {isAuthenticated ? (
         <>
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="Items" component={ItemsScreen} />
           <Stack.Screen name="Drawer" component={DrawerNavigator} />
         </>
       ) : (

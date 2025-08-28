@@ -15,10 +15,10 @@ import type { ThemedStyle } from "@/theme/types"
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 
 export type DemoTabParamList = {
-  DemoCommunity: undefined
-  DemoShowroom: { queryIndex?: string; itemIndex?: string }
-  DemoDebug: undefined
-  DemoItems: undefined
+  community: undefined
+  showroom: { queryIndex?: string; itemIndex?: string }
+  debug: undefined
+  items: undefined
 }
 
 /**

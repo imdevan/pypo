@@ -81,9 +81,9 @@ export function AppDrawer() {
       // Navigate to UserProfile screen in DrawerNavigator
       navigation.dispatch(
         CommonActions.navigate({
-          name: "Drawer",
+          name: "app",
           params: {
-            screen: "UserProfile",
+            screen: "userprofile",
           },
         }),
       )

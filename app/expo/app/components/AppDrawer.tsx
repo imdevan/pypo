@@ -92,32 +92,61 @@ export function AppDrawer() {
     }
   }
 
+  const handleTagsNavigation = () => {
+    closeDrawer()
+    try {
+      // Navigate to Tags screen in DrawerNavigator
+      navigation.dispatch(
+        CommonActions.navigate({
+          name: "app",
+          params: {
+            screen: "tags",
+          },
+        }),
+      )
+    } catch (error) {
+      console.error("Navigation error:", error)
+    }
+  }
+
   return (
     <View style={themed($drawerContainer)}>
-      <View style={themed($userSection)}>
-        <Pressable onPress={() => handleUserProfileNavigation()} style={themed($userNamePressable)}>
-          <View style={themed($userNameContainer)}>
-            <Text text={authEmail || "Guest User"} style={themed($userName)} />
-            <Icon icon="settings" size={16} />
-          </View>
-        </Pressable>
-        <Text text="Welcome to the demo app!" style={themed($welcomeText)} />
-      </View>
-
-      <View style={themed($navigationSection)}>
-        <Text text="Navigation" style={themed($sectionTitle)} />
-        {navigationItems.map((item, index) => (
-          <Pressable
-            key={item.screen}
-            onPress={() => handleNavigation(item.screen)}
-            style={themed($navItemPressable)}
-          >
-            <View style={themed($navItemContainer)}>
-              <Icon icon={item.icon} size={20} />
-              <Text text={item.label} style={themed($navItem)} />
+      <View style={themed($contentSection)}>
+        <View style={themed($userSection)}>
+          <Pressable onPress={() => handleUserProfileNavigation()} style={themed($userNamePressable)}>
+            <View style={themed($userNameContainer)}>
+              <Text text={authEmail || "Guest User"} style={themed($userName)} />
+              <Icon icon="settings" size={16} />
             </View>
           </Pressable>
-        ))}
+          <Text text="Welcome to the demo app!" style={themed($welcomeText)} />
+        </View>
+
+        <View style={themed($navigationSection)}>
+          <Text text="Navigation" style={themed($sectionTitle)} />
+          {navigationItems.map((item, index) => (
+            <Pressable
+              key={item.screen}
+              onPress={() => handleNavigation(item.screen)}
+              style={themed($navItemPressable)}
+            >
+              <View style={themed($navItemContainer)}>
+                <Icon icon={item.icon} size={20} />
+                <Text text={item.label} style={themed($navItem)} />
+              </View>
+            </Pressable>
+          ))}
+        </View>
+
+        <View style={themed($managementSection)}>
+          <Text text="Management" style={themed($sectionTitle)} />
+          <Pressable onPress={() => handleTagsNavigation()} style={themed($navItemPressable)}>
+            <View style={themed($navItemContainer)}>
+              <Icon icon="components" size={20} />
+              <Text text="Tags" style={themed($navItem)} />
+            </View>
+          </Pressable>
+        </View>
       </View>
 
       <Button
@@ -135,6 +164,11 @@ const $drawerContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.background,
   padding: spacing.lg,
   paddingTop: spacing.xl * 2,
+  justifyContent: "space-between",
+})
+
+const $contentSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flex: 1,
 })
 
 const $userSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
@@ -164,7 +198,11 @@ const $welcomeText: ThemedStyle<TextStyle> = ({ colors, spacing, typography }) =
 })
 
 const $navigationSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  flex: 1,
+  marginBottom: spacing.xl,
+})
+
+const $managementSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginBottom: spacing.xl,
 })
 
 const $sectionTitle: ThemedStyle<TextStyle> = ({ colors, spacing, typography }) => ({

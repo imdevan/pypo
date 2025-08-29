@@ -1,0 +1,490 @@
+import React, { useState } from "react"
+import { ViewStyle, Alert } from "react-native"
+import { View, ScrollView } from "react-native"
+
+import { Button } from "@/components/lib/Button"
+import { Screen } from "@/components/lib/Screen"
+import { Text } from "@/components/lib/Text"
+import { TextField } from "@/components/lib/TextField"
+import { useTags, useCreateTag, useUpdateTag, useDeleteTag } from "@/services/api/hooks"
+import { useAppTheme } from "@/theme/context"
+import type { ThemedStyle } from "@/theme/types"
+import { TagPublic, TagCreate, TagUpdate } from "@/client/types.gen"
+import { $styles } from "@/theme/styles"
+
+/**
+ * TagsScreen displays and manages global tags
+ */
+export function TagsScreen() {
+  const { themed } = useAppTheme()
+  const { data: tagsData, isLoading, error } = useTags()
+  console.log("🚀 ~ TagsScreen ~ tagsData:", tagsData)
+  const createTagMutation = useCreateTag()
+  const updateTagMutation = useUpdateTag()
+  const deleteTagMutation = useDeleteTag()
+
+  const [isCreating, setIsCreating] = useState(false)
+  const [editingTag, setEditingTag] = useState<TagPublic | null>(null)
+  const [newTag, setNewTag] = useState<TagCreate>({
+    name: "",
+    description: "",
+    color: "#007AFF",
+  })
+  const [editForm, setEditForm] = useState<TagUpdate>({
+    name: "",
+    description: "",
+    color: "#007AFF",
+  })
+
+  const handleCreateTag = () => {
+    if (!newTag.name.trim()) {
+      Alert.alert("Error", "Tag name is required")
+      return
+    }
+
+    createTagMutation.mutate(
+      { body: newTag },
+      {
+        onSuccess: () => {
+          setNewTag({ name: "", description: "", color: "#007AFF" })
+          setIsCreating(false)
+        },
+        onError: (error) => {
+          Alert.alert("Error", "Failed to create tag")
+        },
+      }
+    )
+  }
+
+  const handleUpdateTag = () => {
+    if (!editingTag || !editForm.name?.trim()) {
+      Alert.alert("Error", "Tag name is required")
+      return
+    }
+
+    updateTagMutation.mutate(
+      { body: editForm, path: { tag_id: editingTag.id } },
+      {
+        onSuccess: () => {
+          setEditingTag(null)
+          setEditForm({ name: "", description: "", color: "#007AFF" })
+        },
+        onError: (error) => {
+          Alert.alert("Error", "Failed to update tag")
+        },
+      }
+    )
+  }
+
+  const handleDeleteTag = (tag: TagPublic) => {
+    deleteTagMutation.mutate(
+      { path: { tag_id: tag.id } },
+      {
+        onError: (error) => {
+          Alert.alert("Error", "Failed to delete tag")
+        },
+      }
+    )
+
+    // Alert.alert(
+    //   "Delete Tag",
+    //   `Are you sure you want to delete "${tag.name}"?`,
+    //   [
+    //     { text: "Cancel", style: "cancel" },
+    //     {
+    //       text: "Delete",
+    //       style: "destructive",
+    //       onPress: () => {
+    //         deleteTagMutation.mutate(
+    //           { path: { tag_id: tag.id } },
+    //           {
+    //             onError: (error) => {
+    //               Alert.alert("Error", "Failed to delete tag")
+    //             },
+    //           }
+    //         )
+    //       },
+    //     },
+    //   ]
+    // )
+  }
+
+  const startEditing = (tag: TagPublic) => {
+    setEditingTag(tag)
+    setEditForm({
+      name: tag.name,
+      description: tag.description || "",
+      color: tag.color || "#007AFF",
+    })
+  }
+
+  const cancelEditing = () => {
+    setEditingTag(null)
+    setEditForm({ name: "", description: "", color: "#007AFF" })
+  }
+
+  const cancelCreating = () => {
+    setIsCreating(false)
+    setNewTag({ name: "", description: "", color: "#007AFF" })
+  }
+
+  return (
+    <Screen preset="auto" contentContainerStyle={[$styles.container, themed($container)]}>
+        {/* Header Section */}
+        <View style={themed($headerSection)}>
+          <Text text="Global Tags" style={themed($title)} />
+          <Text text="Manage tags for categorizing items" style={themed($subtitle)} />
+        </View>
+
+        {/* Create New Tag Section */}
+        <View style={themed($section)}>
+          <View style={themed($sectionHeader)}>
+            <Text text="Create New Tag" style={themed($sectionTitle)} />
+            {!isCreating && (
+              <Button
+                text="Add Tag"
+                onPress={() => setIsCreating(true)}
+                style={themed($addButton)}
+                textStyle={themed($addButtonText)}
+              />
+            )}
+          </View>
+
+          {isCreating && (
+            <View style={themed($formCard)}>
+              <TextField
+                label="Tag Name"
+                value={newTag.name}
+                onChangeText={(text) => setNewTag({ ...newTag, name: text })}
+                placeholder="Enter tag name"
+                style={themed($input)}
+              />
+              <TextField
+                label="Description"
+                value={newTag.description || ""}
+                onChangeText={(text) => setNewTag({ ...newTag, description: text })}
+                placeholder="Enter description (optional)"
+                style={themed($input)}
+                multiline
+              />
+              <TextField
+                label="Color"
+                value={newTag.color || "#007AFF"}
+                onChangeText={(text) => setNewTag({ ...newTag, color: text })}
+                placeholder="#007AFF"
+                style={themed($input)}
+              />
+              <View style={themed($formActions)}>
+                <Button
+                  text="Cancel"
+                  onPress={cancelCreating}
+                  style={themed($cancelButton)}
+                  textStyle={themed($cancelButtonText)}
+                />
+                <Button
+                  text="Create"
+                  onPress={handleCreateTag}
+                  style={themed($saveButton)}
+                  textStyle={themed($saveButtonText)}
+                  disabled={createTagMutation.isPending}
+                />
+              </View>
+            </View>
+          )}
+        </View>
+
+        {/* Tags List Section */}
+        <View style={themed($section)}>
+          <Text text="Existing Tags" style={themed($sectionTitle)} />
+          {isLoading ? (
+            <View style={themed($infoCard)}>
+              <Text text="Loading tags..." style={themed($value)} />
+            </View>
+          ) : error ? (
+            <View style={themed($infoCard)}>
+              <Text text="Error loading tags" style={themed($errorValue)} />
+            </View>
+          ) : tagsData?.data && tagsData.data.length > 0 ? (
+            tagsData.data.map((tag) => (
+              <View key={tag.id} style={themed($tagCard)}>
+                {editingTag?.id === tag.id ? (
+                  // Edit Form
+                  <View style={themed($editForm)}>
+                    <TextField
+                      label="Tag Name"
+                      value={editForm.name || ""}
+                      onChangeText={(text) => setEditForm({ ...editForm, name: text })}
+                      style={themed($input)}
+                    />
+                    <TextField
+                      label="Description"
+                      value={editForm.description || ""}
+                      onChangeText={(text) => setEditForm({ ...editForm, description: text })}
+                      style={themed($input)}
+                      multiline
+                    />
+                    <TextField
+                      label="Color"
+                      value={editForm.color || "#007AFF"}
+                      onChangeText={(text) => setEditForm({ ...editForm, color: text })}
+                      style={themed($input)}
+                    />
+                    <View style={themed($formActions)}>
+                      <Button
+                        text="Cancel"
+                        onPress={cancelEditing}
+                        style={themed($cancelButton)}
+                        textStyle={themed($cancelButtonText)}
+                      />
+                      <Button
+                        text="Save"
+                        onPress={handleUpdateTag}
+                        style={themed($saveButton)}
+                        textStyle={themed($saveButtonText)}
+                        disabled={updateTagMutation.isPending}
+                      />
+                    </View>
+                  </View>
+                ) : (
+                  // Tag Display
+                  <View style={themed($tagContent)}>
+
+                    <View style={themed($tagInfo)}>
+                      <View style={themed($tagHeader)}>
+                        <View
+                          style={[
+                            themed($colorIndicator),
+                            { backgroundColor: tag.color || "#007AFF" },
+                          ]}
+                        />
+                        <Text text={tag.name} style={themed($tagName)} />
+                      </View>
+                      {!!tag.description && (
+                        <Text text={tag.description} style={themed($tagDescription)} />
+                      )}
+                      <Text
+                        text={`Created: ${new Date(tag.created_at).toLocaleDateString()}`}
+                        style={themed($tagDate)}
+                      />
+                    </View>
+                    <View style={themed($tagActions)}>
+                      <Button
+                        text="Edit"
+                        onPress={() => startEditing(tag)}
+                        style={themed($editButton)}
+                        textStyle={themed($editButtonText)}
+                      />
+                      <Button
+                        text="Delete"
+                        onPress={() => handleDeleteTag(tag)}
+                        style={themed($deleteButton)}
+                        textStyle={themed($deleteButtonText)}
+                        disabled={deleteTagMutation.isPending}
+                      />
+                    </View>
+                    
+                  </View>
+                )}
+              </View>
+            ))
+          ) : (
+            <View style={themed($infoCard)}>
+              <Text text="No tags found. Create your first tag!" style={themed($value)} />
+            </View>
+          )} 
+        </View>
+    </Screen>
+  )
+}
+
+const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flex: 1,
+  marginBottom: spacing.lg,
+})
+
+const $headerSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  alignItems: "center",
+  marginBottom: spacing.xl,
+})
+
+const $title: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+  fontSize: 24,
+  fontFamily: typography.primary.bold,
+  color: colors.text,
+})
+
+const $subtitle: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+  fontSize: 14,
+  fontFamily: typography.primary.normal,
+  color: colors.textDim,
+  marginTop: spacing.xs,
+  textAlign: "center",
+})
+
+const $section: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginBottom: spacing.xl,
+})
+
+const $sectionHeader: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  marginBottom: spacing.md,
+})
+
+const $sectionTitle: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+  fontSize: 18,
+  fontFamily: typography.primary.bold,
+  marginBottom: spacing.md,
+  color: colors.text,
+})
+
+const $addButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.tint,
+  paddingHorizontal: spacing.md,
+  paddingVertical: spacing.sm,
+})
+
+const $addButtonText: ThemedStyle<any> = ({ colors }) => ({
+  color: colors.background,
+  fontSize: 14,
+})
+
+const $formCard: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.palette.neutral200,
+  padding: spacing.lg,
+  borderRadius: spacing.sm,
+  borderWidth: 1,
+  borderColor: colors.border,
+})
+
+const $input: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginBottom: spacing.md,
+})
+
+const $formActions: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  gap: spacing.md,
+  marginTop: spacing.sm,
+})
+
+const $cancelButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.palette.neutral400,
+  flex: 1,
+})
+
+const $cancelButtonText: ThemedStyle<any> = ({ colors }) => ({
+  color: colors.background,
+})
+
+const $saveButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.tint,
+  flex: 1,
+})
+
+const $saveButtonText: ThemedStyle<any> = ({ colors }) => ({
+  color: colors.background,
+})
+
+const $tagCard: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.palette.neutral200,
+  padding: spacing.lg,
+  borderRadius: spacing.sm,
+  marginBottom: spacing.md,
+  borderWidth: 1,
+  borderColor: colors.border,
+})
+
+const $tagContent: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "flex-start",
+})
+
+const $tagInfo: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flex: 1,
+})
+
+const $tagHeader: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  marginBottom: spacing.xs,
+})
+
+const $colorIndicator: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  width: 16,
+  height: 16,
+  borderRadius: 8,
+  marginRight: spacing.sm,
+})
+
+const $tagName: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+  fontSize: 16,
+  fontFamily: typography.primary.bold,
+  color: colors.text,
+})
+
+const $tagDescription: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+  fontSize: 14,
+  fontFamily: typography.primary.normal,
+  color: colors.textDim,
+  marginBottom: spacing.xs,
+})
+
+const $tagDate: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+  fontSize: 12,
+  fontFamily: typography.primary.normal,
+  color: colors.textDim,
+})
+
+const $tagActions: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  gap: spacing.sm,
+})
+
+const $editButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.tint,
+  paddingHorizontal: spacing.md,
+  paddingVertical: spacing.sm,
+})
+
+const $editButtonText: ThemedStyle<any> = ({ colors }) => ({
+  color: colors.background,
+  fontSize: 12,
+})
+
+const $deleteButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.error,
+  paddingHorizontal: spacing.md,
+  paddingVertical: spacing.sm,
+})
+
+const $deleteButtonText: ThemedStyle<any> = ({ colors }) => ({
+  color: colors.background,
+  fontSize: 12,
+})
+
+const $editForm: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  width: "100%",
+})
+
+const $infoCard: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.palette.neutral200,
+  padding: spacing.lg,
+  borderRadius: spacing.sm,
+  borderWidth: 1,
+  borderColor: colors.border,
+  alignItems: "center",
+})
+
+const $value: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+  fontSize: 16,
+  fontFamily: typography.primary.normal,
+  color: colors.text,
+})
+
+const $errorValue: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+  fontSize: 16,
+  fontFamily: typography.primary.medium,
+  color: colors.error,
+})

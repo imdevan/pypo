@@ -1,38 +1,44 @@
 const palette = {
-  neutral100: "#FFFFFF",
-  neutral200: "#F4F2F1",
-  neutral300: "#D7CEC9",
-  neutral400: "#B6ACA6",
-  neutral500: "#978F8A",
-  neutral600: "#564E4A",
-  neutral700: "#3C3836",
-  neutral800: "#191015",
-  neutral900: "#000000",
+  // Neutrals (light-first, layered for backgrounds and borders)
+  neutral100: "#FFFFFF", // pure white
+  neutral200: "#F9F9F9", // main background
+  neutral300: "#F0F0F0", // secondary background
+  neutral400: "#D9D9D9", // light border
+  neutral500: "#A3A3A3", // mid-gray text
+  neutral600: "#737373", // body text
+  neutral700: "#525252", // strong text
+  neutral800: "#2E2E2E", // headers
+  neutral900: "#121212", // darkest
 
-  primary100: "#F4E0D9",
-  primary200: "#E8C1B4",
-  primary300: "#DDA28E",
-  primary400: "#D28468",
-  primary500: "#C76542",
-  primary600: "#A54F31",
+  // Primary (warm orange/peach — same family as dark mode)
+  primary100: "#FFF1EB",
+  primary200: "#FFD8C7",
+  primary300: "#FFBFA3",
+  primary400: "#FF9D7C",
+  primary500: "#F26D50",
+  primary600: "#C94E32",
 
-  secondary100: "#DCDDE9",
-  secondary200: "#BCC0D6",
-  secondary300: "#9196B9",
-  secondary400: "#626894",
-  secondary500: "#41476E",
+  // Secondary (cool balance with indigo/blue)
+  secondary100: "#F2F3FA",
+  secondary200: "#E1E4F2",
+  secondary300: "#C4C8E8",
+  secondary400: "#9CA2D9",
+  secondary500: "#6A72B8",
 
-  accent100: "#FFEED4",
-  accent200: "#FFE1B2",
-  accent300: "#FDD495",
-  accent400: "#FBC878",
-  accent500: "#FFBB50",
+  // Accent (cheerful golden yellow)
+  accent100: "#FFFBE6",
+  accent200: "#FFF3BF",
+  accent300: "#FFE066",
+  accent400: "#FFD43B",
+  accent500: "#FCC419",
 
-  angry100: "#F2D6CD",
-  angry500: "#C03403",
+  // Angry (alerts/errors)
+  angry100: "#FEE3E1",
+  angry500: "#E03131",
 
-  overlay20: "rgba(25, 16, 21, 0.2)",
-  overlay50: "rgba(25, 16, 21, 0.5)",
+  // Overlays
+  overlay20: "rgba(255, 255, 255, 0.2)",
+  overlay50: "rgba(255, 255, 255, 0.5)",
 } as const
 
 export const colors = {

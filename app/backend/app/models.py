@@ -97,6 +97,51 @@ class UsersPublic(SQLModel):
     count: int
 
 
+# Tag models
+class TagBase(SQLModel):
+    name: str = Field(min_length=1, max_length=50, unique=True, index=True)
+    description: str | None = Field(default=None, max_length=255)
+    color: str | None = Field(default=None, max_length=7)  # Hex color code
+
+
+# Properties to receive on tag creation
+class TagCreate(TagBase):
+    pass
+
+
+# Properties to receive on tag update
+class TagUpdate(SQLModel):
+    name: str | None = Field(default=None, min_length=1, max_length=50)
+    description: str | None = Field(default=None, max_length=255)
+    color: str | None = Field(default=None, max_length=7)
+
+
+# Many-to-many relationship table between Item and Tag
+class ItemTag(SQLModel, table=True):
+    item_id: uuid.UUID = Field(foreign_key="item.id", primary_key=True)
+    tag_id: uuid.UUID = Field(foreign_key="tag.id", primary_key=True)
+
+
+# Database model for Tag
+class Tag(TagBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    created_at: datetime.datetime = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc))
+    updated_at: datetime.datetime = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc))
+    items: list["Item"] = Relationship(back_populates="tags", link_model=ItemTag)
+
+
+# Properties to return via API, id is always required
+class TagPublic(TagBase):
+    id: uuid.UUID
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+
+
+class TagsPublic(SQLModel):
+    data: list[TagPublic]
+    count: int
+
+
 # Shared properties
 class ItemBase(SQLModel):
     title: str = Field(min_length=1, max_length=255)
@@ -105,12 +150,13 @@ class ItemBase(SQLModel):
 
 # Properties to receive on item creation
 class ItemCreate(ItemBase):
-    pass
+    tag_ids: list[uuid.UUID] | None = Field(default=None)
 
 
 # Properties to receive on item update
 class ItemUpdate(ItemBase):
     title: str | None = Field(default=None, min_length=1, max_length=255)  # type: ignore
+    tag_ids: list[uuid.UUID] | None = Field(default=None)
 
 
 # Database model, database table inferred from class name
@@ -122,6 +168,7 @@ class Item(ItemBase, table=True):
     created_at: datetime.datetime = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc))
     updated_at: datetime.datetime = Field(default_factory=lambda: datetime.datetime.now(datetime.timezone.utc))
     owner: User | None = Relationship(back_populates="items")
+    tags: list[Tag] = Relationship(back_populates="items", link_model=ItemTag)
 
 
 # Properties to return via API, id is always required
@@ -130,12 +177,12 @@ class ItemPublic(ItemBase):
     owner_id: uuid.UUID
     created_at: datetime.datetime
     updated_at: datetime.datetime
+    tags: list[TagPublic] | None = None
 
 
 class ItemsPublic(SQLModel):
     data: list[ItemPublic]
     count: int
-
 
 
 # Generic message

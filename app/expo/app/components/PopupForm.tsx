@@ -10,10 +10,11 @@ import type { ThemedStyle } from "@/theme/types"
 interface PopupFormProps {
   title?: string
   triggerText?: string
-  onSuccess?: () => void
+  onSuccess?: () => void | Promise<void>
   onCancel?: () => void
   children: ReactNode
   disabled?: boolean
+  saveDisabled?: boolean
 }
 
 /**
@@ -27,6 +28,7 @@ export function PopupForm({
   onCancel,
   children,
   disabled = false,
+  saveDisabled = false,
 }: PopupFormProps) {
   const { themed } = useAppTheme()
   const [isOpen, setIsOpen] = useState(false)
@@ -40,9 +42,14 @@ export function PopupForm({
     onCancel?.()
   }
 
-  const handleSuccess = () => {
-    setIsOpen(false)
-    onSuccess?.()
+  const handleSuccess = async () => {
+    try {
+      await onSuccess?.()
+      setIsOpen(false)
+    } catch (error) {
+      // Don't close the form if there's an error
+      // The error handling should be done in the onSuccess callback
+    }
   }
 
   return (
@@ -75,6 +82,7 @@ export function PopupForm({
               onPress={handleSuccess}
               style={themed($saveButton)}
               textStyle={themed($saveButtonText)}
+              disabled={saveDisabled}
             />
           </View>
         </View>

@@ -8,6 +8,7 @@ import { DebugView } from "@/components/DebugView"
 import { Button } from "@/components/lib/Button"
 import { EmptyState } from "@/components/lib/EmptyState"
 import { ListView } from "@/components/lib/ListView"
+import { PopupForm } from "@/components/PopupForm"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
 import { TextField } from "@/components/lib/TextField"
@@ -36,24 +37,32 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const items = itemsData?.data || []
 
   const createItem = async () => {
+    console.log("Creating item", newItemTitle.trim(), newItemDescription.trim())
+
     if (!newItemTitle.trim()) {
       Alert.alert("Error", "Title is required")
       return
     }
 
     try {
+      console.log("Creating item", newItemTitle.trim(), newItemDescription.trim())
       await createItemMutation.mutateAsync({
         body: {
           title: newItemTitle.trim(),
           description: newItemDescription.trim() || undefined,
+          tag_ids: undefined,
         },
       })
 
-      setNewItemTitle("")
-      setNewItemDescription("")
+      resetNewItem()
     } catch (error) {
       Alert.alert("Error", extractErrorMessage(error))
     }
+  }
+
+  const resetNewItem = () => {
+    setNewItemTitle("")
+    setNewItemDescription("")
   }
 
   const deleteItem = async (id: string) => {
@@ -137,8 +146,14 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         </View>
       </DebugView>
 
-      <View style={themed($createSection)}>
-        <Text text="Create New Item" preset="subheading" style={themed($sectionTitle)} />
+      <PopupForm
+        title="Create New Item"
+        triggerText="Add Item"
+        onSuccess={createItem}
+        onCancel={resetNewItem}
+        disabled={createItemMutation.isPending}
+        saveDisabled={createItemMutation.isPending || !newItemTitle.trim()}
+      >
         <TextField
           value={newItemTitle}
           onChangeText={setNewItemTitle}
@@ -151,19 +166,13 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           placeholder="Item description (optional)"
           containerStyle={themed($inputField)}
         />
-        <Button
-          text="Create Item"
-          preset="reversed"
-          onPress={createItem}
-          disabled={createItemMutation.isPending || !newItemTitle.trim()}
-        />
-      </View>
+      </PopupForm>
 
       <View style={themed($itemsSection)}>
         <Text
           text={`Your Items (${items.length})`}
           preset="subheading"
-          style={themed($sectionTitle)}
+          style={{ marginBottom: 16 }}
         />
         {loading ? (
           <MotiView
@@ -220,11 +229,7 @@ const $debugSection = {
   borderRadius: 8,
 }
 
-const $createSection = { marginBottom: 30 }
-
 const $itemsSection = { flex: 1 }
-
-const $sectionTitle = { marginBottom: 16 }
 
 const $inputField = { marginBottom: 12 }
 

@@ -4,8 +4,8 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from sqlmodel import func, select
 
+from app import crud
 from app.api.deps import CurrentUser, SessionDep
-from app.crud import create_item, update_item as update_item_crud
 from app.models import Item, ItemCreate, ItemPublic, ItemsPublic, ItemUpdate, Message
 
 router = APIRouter(prefix="/items", tags=["items"])
@@ -63,7 +63,7 @@ def create_item(
     """
     Create new item.
     """
-    item = create_item(session=session, item_in=item_in, owner_id=current_user.id)
+    item = crud.create_item(session=session, item_in=item_in, owner_id=current_user.id)
     return item
 
 
@@ -83,7 +83,7 @@ def update_item(
         raise HTTPException(status_code=404, detail="Item not found")
     if not current_user.is_superuser and (item.owner_id != current_user.id):
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    updated_item = update_item_crud(session=session, db_item=item, item_in=item_in)
+    updated_item = crud.update_item (session=session, db_item=item, item_in=item_in)
     return updated_item
 
 

@@ -3,6 +3,7 @@ import { ViewStyle, Alert } from "react-native"
 import { View, ScrollView } from "react-native"
 
 import { Button } from "@/components/lib/Button"
+import { ColorPicker } from "@/components/lib/ColorPicker"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
 import { TextField } from "@/components/lib/TextField"
@@ -46,6 +47,7 @@ export function TagsScreen() {
       { body: newTag },
       {
         onSuccess: () => {
+          console.log("tag created", newTag)
           setNewTag({ name: "", description: "", color: "#007AFF" })
         },
         onError: (error) => {
@@ -157,11 +159,10 @@ export function TagsScreen() {
             style={themed($input)}
             multiline
           />
-          <TextField
+          <ColorPicker
             label="Color"
             value={newTag.color || "#007AFF"}
-            onChangeText={(text) => setNewTag({ ...newTag, color: text })}
-            placeholder="#007AFF"
+            onColorChange={(color) => {console.log("color change", color); setNewTag({ ...newTag, color })}}
             style={themed($input)}
           />
         </PopupForm>
@@ -196,10 +197,10 @@ export function TagsScreen() {
                       style={themed($input)}
                       multiline
                     />
-                    <TextField
+                    <ColorPicker
                       label="Color"
                       value={editForm.color || "#007AFF"}
-                      onChangeText={(text) => setEditForm({ ...editForm, color: text })}
+                      onColorChange={(color) => setEditForm({ ...editForm, color })}
                       style={themed($input)}
                     />
                     <View style={themed($formActions)}>

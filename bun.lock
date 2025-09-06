@@ -53,6 +53,7 @@
         "react-native-safe-area-context": "5.4.0",
         "react-native-screens": "~4.11.1",
         "react-native-web": "^0.20.0",
+        "reanimated-color-picker": "^4.1.0",
         "zod": "^4.0.14",
         "zustand": "^5.0.7",
       },
@@ -1881,6 +1882,8 @@
     "reactotron-react-native-mmkv": ["reactotron-react-native-mmkv@0.2.8", "", { "peerDependencies": { "react-native-mmkv": "*", "reactotron-core-client": "*" } }, "sha512-Rz6Axaw9ymC8lHFDsJ14wYyMsw8PkfesLwbT570WzB6H5e+savz+0qliE9EtP8U002oFMFThV3FP+WkbzvqN6A=="],
 
     "readdirp": ["readdirp@4.1.2", "", {}, "sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg=="],
+
+    "reanimated-color-picker": ["reanimated-color-picker@4.1.0", "", { "peerDependencies": { "expo": ">=44.0.0", "react": "*", "react-native": "*", "react-native-gesture-handler": ">=2.0.0", "react-native-reanimated": "^2.0.0 || ^3.0.0" }, "optionalPeers": ["expo"] }, "sha512-XyeyhWW50quyi/C52D9LTwPEZjYh6QKMzmwz2ORo+MlUEGhq3onpodR0vdOj5ZMHQZEtWwMhOIcbpme+C9Av8A=="],
 
     "recyclerlistview": ["recyclerlistview@4.2.3", "", { "dependencies": { "lodash.debounce": "4.0.8", "prop-types": "15.8.1", "ts-object-utils": "0.0.5" }, "peerDependencies": { "react": ">= 15.2.1", "react-native": ">= 0.30.0" } }, "sha512-STR/wj/FyT8EMsBzzhZ1l2goYirMkIgfV3gYEPxI3Kf3lOnu6f7Dryhyw7/IkQrgX5xtTcDrZMqytvteH9rL3g=="],
 

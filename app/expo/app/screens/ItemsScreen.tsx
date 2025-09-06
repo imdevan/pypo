@@ -20,6 +20,7 @@ import { useTags } from "@/services/api/hooks/useTags"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
+import { colors } from "@/theme/colors"
 
 interface ItemsScreenProps {}
 
@@ -128,6 +129,28 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         <Text text={item.title} preset="subheading" />
         {item.description && (
           <Text text={item.description} preset="default" style={themed($itemDescription)} />
+        )}
+        {item.tags && item.tags.length > 0 && (
+          <View style={themed($tagsContainer)}>
+            {item.tags.map((tag) => (
+              <View
+                key={tag.id}
+                style={[
+                  themed($tagChip),
+                  tag.color && { backgroundColor: tag.color + '20', borderColor: tag.color }
+                ]}
+              >
+                <Text
+                  text={tag.name}
+                  preset="formHelper"
+                  style={[
+                    themed($tagText),
+                    tag.color && { color: tag.color }
+                  ]}
+                />
+              </View>
+            ))}
+          </View>
         )}
         <Text text={`ID: ${item.id}`} preset="formHelper" />
       </View>
@@ -349,4 +372,26 @@ const $dropdownLabelStyle = {
 
 const $dropdownSelectedItemStyle = {
   backgroundColor: "#e3f2fd",
+}
+
+const $tagsContainer = {
+  flexDirection: "row" as const,
+  flexWrap: "wrap" as const,
+  marginTop: 8,
+  marginBottom: 8,
+  gap: 6,
+}
+
+const $tagChip = {
+  backgroundColor: colors.background,
+  borderColor: colors.border,
+  borderWidth: 1,
+  borderRadius: 4,
+  paddingHorizontal: 8,
+  paddingVertical: 4,
+}
+
+const $tagText = {
+  fontSize: 12,
+  color: "#666",
 }

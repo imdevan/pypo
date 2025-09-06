@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { View } from "react-native"
+import { StyleProp, View, ViewStyle } from "react-native"
 import DropDownPicker from "react-native-dropdown-picker"
 
 import { colors } from "@/theme/colors"
@@ -26,6 +26,7 @@ export interface DropDownSingleProps {
   maxHeight?: number
   zIndex?: number
   zIndexInverse?: number
+  badgeColors?: string[] | undefined
 }
 
 export interface DropDownMultipleProps {
@@ -42,6 +43,7 @@ export interface DropDownMultipleProps {
   maxHeight?: number
   zIndex?: number
   zIndexInverse?: number
+  badgeColors?: string[] | undefined
 }
 
 export type DropDownBaseProps = DropDownSingleProps | DropDownMultipleProps
@@ -75,6 +77,7 @@ export function DropDown({
   maxHeight = 200,
   zIndex = 100,
   zIndexInverse = 1000,
+  badgeColors,
 }: DropDownBaseProps) {
   const { themed } = useAppTheme()
   const [open, setOpen] = useState(false)
@@ -84,6 +87,8 @@ export function DropDown({
       {label && <Text text={label} preset="formLabel" style={themed($dropdownLabel)} />}
       {/* @ts-ignore - react-native-dropdown-picker has complex discriminated union types */}
       <DropDownPicker
+        mode="BADGE"
+        showBadgeDot={false}
         items={items}
         multiple={multiple}
         value={value}
@@ -93,6 +98,7 @@ export function DropDown({
         placeholder={placeholder}
         loading={loading}
         style={themed($dropdownStyle)}
+        badgeColors={badgeColors}
         dropDownContainerStyle={themed($dropdownListStyle)}
         textStyle={themed($dropdownTextStyle)}
         placeholderStyle={themed($dropdownPlaceholderStyle)}

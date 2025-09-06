@@ -203,9 +203,10 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           items={tagOptions}
           multiple={true}
           value={selectedTagIds}
-          setValue={(value) => setSelectedTagIds(value as string[])}
+          setValue={(value: string[] | null) => setSelectedTagIds(value || [])}
           placeholder="Select tags..."
           loading={tagsLoading}
+          badgeColors={tags?.map((tag) => tag.color || colors.background)}
           searchable={true}
           searchPlaceholder="Search tags..."
           closeAfterSelecting={false}

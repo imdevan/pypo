@@ -6,6 +6,7 @@ import { Button } from "@/components/lib/Button"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
 import { TextField } from "@/components/lib/TextField"
+import { PopupForm } from "@/components/PopupForm"
 import { useTags, useCreateTag, useUpdateTag, useDeleteTag } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
@@ -23,7 +24,6 @@ export function TagsScreen() {
   const updateTagMutation = useUpdateTag()
   const deleteTagMutation = useDeleteTag()
 
-  const [isCreating, setIsCreating] = useState(false)
   const [editingTag, setEditingTag] = useState<TagPublic | null>(null)
   const [newTag, setNewTag] = useState<TagCreate>({
     name: "",
@@ -47,7 +47,6 @@ export function TagsScreen() {
       {
         onSuccess: () => {
           setNewTag({ name: "", description: "", color: "#007AFF" })
-          setIsCreating(false)
         },
         onError: (error) => {
           Alert.alert("Error", "Failed to create tag")
@@ -123,8 +122,7 @@ export function TagsScreen() {
     setEditForm({ name: "", description: "", color: "#007AFF" })
   }
 
-  const cancelCreating = () => {
-    setIsCreating(false)
+  const resetNewTag = () => {
     setNewTag({ name: "", description: "", color: "#007AFF" })
   }
 
@@ -137,61 +135,36 @@ export function TagsScreen() {
         </View>
 
         {/* Create New Tag Section */}
-        <View style={themed($section)}>
-          <View style={themed($sectionHeader)}>
-            <Text text="Create New Tag" style={themed($sectionTitle)} />
-            {!isCreating && (
-              <Button
-                text="Add Tag"
-                onPress={() => setIsCreating(true)}
-                style={themed($addButton)}
-                textStyle={themed($addButtonText)}
-              />
-            )}
-          </View>
-
-          {isCreating && (
-            <View style={themed($formCard)}>
-              <TextField
-                label="Tag Name"
-                value={newTag.name}
-                onChangeText={(text) => setNewTag({ ...newTag, name: text })}
-                placeholder="Enter tag name"
-                style={themed($input)}
-              />
-              <TextField
-                label="Description"
-                value={newTag.description || ""}
-                onChangeText={(text) => setNewTag({ ...newTag, description: text })}
-                placeholder="Enter description (optional)"
-                style={themed($input)}
-                multiline
-              />
-              <TextField
-                label="Color"
-                value={newTag.color || "#007AFF"}
-                onChangeText={(text) => setNewTag({ ...newTag, color: text })}
-                placeholder="#007AFF"
-                style={themed($input)}
-              />
-              <View style={themed($formActions)}>
-                <Button
-                  text="Cancel"
-                  onPress={cancelCreating}
-                  style={themed($cancelButton)}
-                  textStyle={themed($cancelButtonText)}
-                />
-                <Button
-                  text="Create"
-                  onPress={handleCreateTag}
-                  style={themed($saveButton)}
-                  textStyle={themed($saveButtonText)}
-                  disabled={createTagMutation.isPending}
-                />
-              </View>
-            </View>
-          )}
-        </View>
+        <PopupForm
+          title="Create New Tag"
+          triggerText="Add Tag"
+          onSuccess={handleCreateTag}
+          onCancel={resetNewTag}
+          disabled={createTagMutation.isPending}
+        >
+          <TextField
+            label="Tag Name"
+            value={newTag.name}
+            onChangeText={(text) => setNewTag({ ...newTag, name: text })}
+            placeholder="Enter tag name"
+            style={themed($input)}
+          />
+          <TextField
+            label="Description"
+            value={newTag.description || ""}
+            onChangeText={(text) => setNewTag({ ...newTag, description: text })}
+            placeholder="Enter description (optional)"
+            style={themed($input)}
+            multiline
+          />
+          <TextField
+            label="Color"
+            value={newTag.color || "#007AFF"}
+            onChangeText={(text) => setNewTag({ ...newTag, color: text })}
+            placeholder="#007AFF"
+            style={themed($input)}
+          />
+        </PopupForm>
 
         {/* Tags List Section */}
         <View style={themed($section)}>
@@ -325,37 +298,11 @@ const $section: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.xl,
 })
 
-const $sectionHeader: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
-  marginBottom: spacing.md,
-})
-
 const $sectionTitle: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
   fontSize: 18,
   fontFamily: typography.primary.bold,
   marginBottom: spacing.md,
   color: colors.text,
-})
-
-const $addButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  backgroundColor: colors.tint,
-  paddingHorizontal: spacing.md,
-  paddingVertical: spacing.sm,
-})
-
-const $addButtonText: ThemedStyle<any> = ({ colors }) => ({
-  color: colors.background,
-  fontSize: 14,
-})
-
-const $formCard: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  backgroundColor: colors.palette.neutral200,
-  padding: spacing.lg,
-  borderRadius: spacing.sm,
-  borderWidth: 1,
-  borderColor: colors.border,
 })
 
 const $input: ThemedStyle<ViewStyle> = ({ spacing }) => ({

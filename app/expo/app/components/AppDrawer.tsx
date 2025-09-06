@@ -150,10 +150,9 @@ export function AppDrawer() {
       </View>
 
       <Button
+        preset="outline"
         text="Logout"
         onPress={logout}
-        style={themed($logoutButton)}
-        textStyle={themed($logoutButtonText)}
       />
     </View>
   )

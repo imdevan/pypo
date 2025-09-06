@@ -10,11 +10,13 @@ import type { ThemedStyle } from "@/theme/types"
 interface PopupFormProps {
   title?: string
   triggerText?: string
-  onSuccess?: () => void | Promise<void>
+  onSuccess?: () => Promise<void> | void
   onCancel?: () => void
   children: ReactNode
   disabled?: boolean
   saveDisabled?: boolean
+  error?: string | null
+  onClearError?: () => void
 }
 
 /**
@@ -29,24 +31,33 @@ export function PopupForm({
   children,
   disabled = false,
   saveDisabled = false,
+  error = null,
+  onClearError,
 }: PopupFormProps) {
   const { themed } = useAppTheme()
   const [isOpen, setIsOpen] = useState(false)
 
   const handleOpen = () => {
     setIsOpen(true)
+    onClearError?.()
   }
 
   const handleCancel = () => {
     setIsOpen(false)
     onCancel?.()
+    onClearError?.()
   }
 
   const handleSuccess = async () => {
     try {
+      console.log("PopupForm: Starting handleSuccess")
       await onSuccess?.()
+      console.log("PopupForm: onSuccess completed successfully, closing form")
+      // If we reach here, the operation was successful, so close the form
       setIsOpen(false)
+      onClearError?.()
     } catch (error) {
+      console.log("PopupForm: Error caught, keeping form open:", error)
       // Don't close the form if there's an error
       // The error handling should be done in the onSuccess callback
     }
@@ -69,6 +80,11 @@ export function PopupForm({
 
       {isOpen && (
         <View style={themed($formCard)}>
+          {error && (
+            <View style={themed($errorContainer)}>
+              <Text text={error} style={themed($errorText)} />
+            </View>
+          )}
           {children}
           <View style={themed($formActions)}>
             <Button
@@ -152,4 +168,20 @@ const $saveButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
 
 const $saveButtonText: ThemedStyle<any> = ({ colors }) => ({
   color: colors.background,
+})
+
+const $errorContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.error + "20", // 20% opacity
+  borderColor: colors.error,
+  borderWidth: 1,
+  borderRadius: spacing.xs,
+  padding: spacing.sm,
+  marginBottom: spacing.md,
+})
+
+const $errorText: ThemedStyle<any> = ({ colors, typography }) => ({
+  color: colors.error,
+  fontSize: 14,
+  fontFamily: typography.primary.medium,
+  textAlign: "center",
 })

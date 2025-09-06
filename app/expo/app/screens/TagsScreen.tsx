@@ -13,6 +13,7 @@ import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { TagPublic, TagCreate, TagUpdate } from "@/client/types.gen"
 import { $styles } from "@/theme/styles"
+import { ColorFormatsObject } from "reanimated-color-picker"
 
 /**
  * TagsScreen displays and manages global tags
@@ -36,25 +37,35 @@ export function TagsScreen() {
     description: "",
     color: "#007AFF",
   })
+  const [createTagError, setCreateTagError] = useState<string | null>(null)
 
-  const handleCreateTag = () => {
-    if (!newTag.name.trim()) {
-      Alert.alert("Error", "Tag name is required")
-      return
-    }
-
-    createTagMutation.mutate(
-      { body: newTag },
-      {
-        onSuccess: () => {
-          console.log("tag created", newTag)
-          setNewTag({ name: "", description: "", color: "#007AFF" })
-        },
-        onError: (error) => {
-          Alert.alert("Error", "Failed to create tag")
-        },
+  const handleCreateTag = (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      if (!newTag.name.trim()) {
+        console.log("TagsScreen: Tag name validation failed")
+        setCreateTagError("Tag name is required")
+        reject(new Error("Tag name is required"))
+        return
       }
-    )
+
+      createTagMutation.mutate(
+        { body: newTag },
+        {
+          onSuccess: () => {
+            setNewTag({ name: "", description: "", color: "#007AFF" })
+            setCreateTagError(null)
+            resolve()
+          },
+          onError: (error: any) => {
+            // Extract the detail message from the error response
+            const errorMessage = error?.response?.data?.detail || 
+                                "Failed to create tag"
+            setCreateTagError(errorMessage)
+            reject(new Error(errorMessage))
+          },
+        }
+      )
+    })
   }
 
   const handleUpdateTag = () => {
@@ -126,6 +137,7 @@ export function TagsScreen() {
 
   const resetNewTag = () => {
     setNewTag({ name: "", description: "", color: "#007AFF" })
+    setCreateTagError(null)
   }
 
   return (
@@ -143,6 +155,8 @@ export function TagsScreen() {
           onSuccess={handleCreateTag}
           onCancel={resetNewTag}
           disabled={createTagMutation.isPending}
+          error={createTagError}
+          onClearError={() => setCreateTagError(null)}
         >
           <TextField
             label="Tag Name"
@@ -162,7 +176,7 @@ export function TagsScreen() {
           <ColorPicker
             label="Color"
             value={newTag.color || "#007AFF"}
-            onColorChange={(color) => {console.log("color change", color); setNewTag({ ...newTag, color })}}
+            onColorChange={(color) => {console.log("color change", color); setNewTag({ ...newTag, color: color.slice(0, -2) })}}
             style={themed($input)}
           />
         </PopupForm>

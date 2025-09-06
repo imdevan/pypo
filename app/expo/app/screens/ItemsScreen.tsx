@@ -2,25 +2,25 @@ import React, { FC, useState } from "react"
 import { Alert, View } from "react-native"
 import type { ViewStyle } from "react-native"
 import { type ContentStyle } from "@shopify/flash-list"
-import DropDownPicker from "react-native-dropdown-picker"
 
 import type { ItemPublic } from "@/client/types.gen"
 import { DebugView } from "@/components/DebugView"
 import { Button } from "@/components/lib/Button"
+import { DropDown } from "@/components/lib/DropDown"
 import { EmptyState } from "@/components/lib/EmptyState"
 import { ListView } from "@/components/lib/ListView"
-import { PopupForm } from "@/components/PopupForm"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
 import { TextField } from "@/components/lib/TextField"
 import { MotiView } from "@/components/MotiView"
+import { PopupForm } from "@/components/PopupForm"
 import { extractErrorMessage } from "@/services/api/errorHandling"
 import { useItems, useCreateItem, useDeleteItem } from "@/services/api/hooks"
 import { useTags } from "@/services/api/hooks/useTags"
+import { colors } from "@/theme/colors"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
-import { colors } from "@/theme/colors"
 
 interface ItemsScreenProps {}
 
@@ -30,7 +30,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const [newItemTitle, setNewItemTitle] = useState("")
   const [newItemDescription, setNewItemDescription] = useState("")
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
-  const [dropdownOpen, setDropdownOpen] = useState(false)
   const [debugInfo, setDebugInfo] = useState("")
 
   // TanStack Query hooks
@@ -41,10 +40,10 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
 
   // Extract items from the response
   const items = itemsData?.data || []
-  
+
   // Extract tags from the response and format for dropdown
   const tags = tagsData?.data || []
-  const tagOptions = tags.map(tag => ({
+  const tagOptions = tags.map((tag) => ({
     label: tag.name,
     value: tag.id,
   }))
@@ -77,7 +76,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     setNewItemTitle("")
     setNewItemDescription("")
     setSelectedTagIds([])
-    setDropdownOpen(false)
   }
 
   const deleteItem = async (id: string) => {
@@ -137,16 +135,13 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
                 key={tag.id}
                 style={[
                   themed($tagChip),
-                  tag.color && { backgroundColor: tag.color + '20', borderColor: tag.color }
+                  tag.color && { backgroundColor: tag.color + "20", borderColor: tag.color },
                 ]}
               >
                 <Text
                   text={tag.name}
                   preset="formHelper"
-                  style={[
-                    themed($tagText),
-                    tag.color && { color: tag.color }
-                  ]}
+                  style={[themed($tagText), tag.color && { color: tag.color }]}
                 />
               </View>
             ))}
@@ -203,32 +198,18 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           placeholder="Item description (optional)"
           containerStyle={themed($inputField)}
         />
-        <View style={themed($dropdownContainer)}>
-          <Text text="Tags (optional)" preset="formLabel" style={themed($dropdownLabel)} />
-          <DropDownPicker
-            items={tagOptions}
-            multiple={true}
-            value={selectedTagIds}
-            setValue={setSelectedTagIds}
-            open={dropdownOpen}
-            setOpen={setDropdownOpen}
-            placeholder="Select tags..."
-            loading={tagsLoading}
-            style={themed($dropdownStyle)}
-            dropDownContainerStyle={themed($dropdownListStyle)}
-            textStyle={themed($dropdownTextStyle)}
-            placeholderStyle={themed($dropdownPlaceholderStyle)}
-            labelStyle={themed($dropdownLabelStyle)}
-            selectedItemContainerStyle={themed($dropdownSelectedItemStyle)}
-            closeAfterSelecting={false}
-            zIndex={100}
-            zIndexInverse={1000}
-            maxHeight={200}
-            listMode="SCROLLVIEW"
-            searchable={true}
-            searchPlaceholder="Search tags..."
-          />
-        </View>
+        <DropDown
+          label="Tags (optional)"
+          items={tagOptions}
+          multiple={true}
+          value={selectedTagIds}
+          setValue={(value) => setSelectedTagIds(value as string[])}
+          placeholder="Select tags..."
+          loading={tagsLoading}
+          searchable={true}
+          searchPlaceholder="Search tags..."
+          closeAfterSelecting={false}
+        />
       </PopupForm>
 
       <View style={themed($itemsSection)}>
@@ -324,55 +305,6 @@ const $testButton = { marginTop: 8 }
 const $emptyState: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xxl,
 })
-
-const $dropdownContainer = {
-  marginBottom: 12,
-  position: 'relative' as const,
-  zIndex: 100,
-  elevation: 5,
-}
-
-const $dropdownLabel = {
-  marginBottom: 8,
-}
-
-const $dropdownStyle = {
-  backgroundColor: "#f8f9fa",
-  borderColor: "#e9ecef",
-  borderWidth: 1,
-  borderRadius: 8,
-  minHeight: 50,
-  zIndex: 100,
-  elevation: 5,
-}
-
-const $dropdownListStyle = {
-  backgroundColor: "#f8f9fa",
-  borderColor: "#e9ecef",
-  borderWidth: 1,
-  borderRadius: 8,
-  zIndex: 100,
-  elevation: 5,
-}
-
-const $dropdownTextStyle = {
-  fontSize: 16,
-  color: "#212529",
-}
-
-const $dropdownPlaceholderStyle = {
-  color: "#6c757d",
-  fontSize: 16,
-}
-
-const $dropdownLabelStyle = {
-  fontSize: 16,
-  color: "#212529",
-}
-
-const $dropdownSelectedItemStyle = {
-  backgroundColor: "#e3f2fd",
-}
 
 const $tagsContainer = {
   flexDirection: "row" as const,

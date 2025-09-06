@@ -93,6 +93,8 @@ export function PopupForm({
 
 const $section: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.xl,
+  zIndex: 100,
+  elevation: 5,
 })
 
 const $sectionHeader: ThemedStyle<ViewStyle> = ({ spacing }) => ({

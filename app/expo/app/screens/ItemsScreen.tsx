@@ -2,6 +2,7 @@ import React, { FC, useState } from "react"
 import { Alert, View } from "react-native"
 import type { ViewStyle } from "react-native"
 import { type ContentStyle } from "@shopify/flash-list"
+import DropDownPicker from "react-native-dropdown-picker"
 
 import type { ItemPublic } from "@/client/types.gen"
 import { DebugView } from "@/components/DebugView"
@@ -15,6 +16,7 @@ import { TextField } from "@/components/lib/TextField"
 import { MotiView } from "@/components/MotiView"
 import { extractErrorMessage } from "@/services/api/errorHandling"
 import { useItems, useCreateItem, useDeleteItem } from "@/services/api/hooks"
+import { useTags } from "@/services/api/hooks/useTags"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
@@ -26,15 +28,25 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
 
   const [newItemTitle, setNewItemTitle] = useState("")
   const [newItemDescription, setNewItemDescription] = useState("")
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
+  const [dropdownOpen, setDropdownOpen] = useState(false)
   const [debugInfo, setDebugInfo] = useState("")
 
   // TanStack Query hooks
   const { data: itemsData, isLoading: loading, error: itemsError, refetch } = useItems()
+  const { data: tagsData, isLoading: tagsLoading } = useTags()
   const createItemMutation = useCreateItem()
   const deleteItemMutation = useDeleteItem()
 
   // Extract items from the response
   const items = itemsData?.data || []
+  
+  // Extract tags from the response and format for dropdown
+  const tags = tagsData?.data || []
+  const tagOptions = tags.map(tag => ({
+    label: tag.name,
+    value: tag.id,
+  }))
 
   const createItem = async () => {
     console.log("Creating item", newItemTitle.trim(), newItemDescription.trim())
@@ -50,7 +62,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         body: {
           title: newItemTitle.trim(),
           description: newItemDescription.trim() || undefined,
-          tag_ids: undefined,
+          tag_ids: selectedTagIds.length > 0 ? selectedTagIds : undefined,
         },
       })
 
@@ -63,6 +75,8 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const resetNewItem = () => {
     setNewItemTitle("")
     setNewItemDescription("")
+    setSelectedTagIds([])
+    setDropdownOpen(false)
   }
 
   const deleteItem = async (id: string) => {
@@ -166,6 +180,32 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           placeholder="Item description (optional)"
           containerStyle={themed($inputField)}
         />
+        <View style={themed($dropdownContainer)}>
+          <Text text="Tags (optional)" preset="formLabel" style={themed($dropdownLabel)} />
+          <DropDownPicker
+            items={tagOptions}
+            multiple={true}
+            value={selectedTagIds}
+            setValue={setSelectedTagIds}
+            open={dropdownOpen}
+            setOpen={setDropdownOpen}
+            placeholder="Select tags..."
+            loading={tagsLoading}
+            style={themed($dropdownStyle)}
+            dropDownContainerStyle={themed($dropdownListStyle)}
+            textStyle={themed($dropdownTextStyle)}
+            placeholderStyle={themed($dropdownPlaceholderStyle)}
+            labelStyle={themed($dropdownLabelStyle)}
+            selectedItemContainerStyle={themed($dropdownSelectedItemStyle)}
+            closeAfterSelecting={false}
+            zIndex={100}
+            zIndexInverse={1000}
+            maxHeight={200}
+            listMode="SCROLLVIEW"
+            searchable={true}
+            searchPlaceholder="Search tags..."
+          />
+        </View>
       </PopupForm>
 
       <View style={themed($itemsSection)}>
@@ -229,7 +269,7 @@ const $debugSection = {
   borderRadius: 8,
 }
 
-const $itemsSection = { flex: 1 }
+const $itemsSection = { flex: 1, zIndex: 10, elevation: 1 }
 
 const $inputField = { marginBottom: 12 }
 
@@ -261,3 +301,52 @@ const $testButton = { marginTop: 8 }
 const $emptyState: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xxl,
 })
+
+const $dropdownContainer = {
+  marginBottom: 12,
+  position: 'relative' as const,
+  zIndex: 100,
+  elevation: 5,
+}
+
+const $dropdownLabel = {
+  marginBottom: 8,
+}
+
+const $dropdownStyle = {
+  backgroundColor: "#f8f9fa",
+  borderColor: "#e9ecef",
+  borderWidth: 1,
+  borderRadius: 8,
+  minHeight: 50,
+  zIndex: 100,
+  elevation: 5,
+}
+
+const $dropdownListStyle = {
+  backgroundColor: "#f8f9fa",
+  borderColor: "#e9ecef",
+  borderWidth: 1,
+  borderRadius: 8,
+  zIndex: 100,
+  elevation: 5,
+}
+
+const $dropdownTextStyle = {
+  fontSize: 16,
+  color: "#212529",
+}
+
+const $dropdownPlaceholderStyle = {
+  color: "#6c757d",
+  fontSize: 16,
+}
+
+const $dropdownLabelStyle = {
+  fontSize: 16,
+  color: "#212529",
+}
+
+const $dropdownSelectedItemStyle = {
+  backgroundColor: "#e3f2fd",
+}

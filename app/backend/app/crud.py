@@ -1,7 +1,7 @@
 import uuid
 from typing import Any
 
-from sqlmodel import Session, select
+from sqlmodel import Session, select, desc
 
 from app.core.security import get_password_hash, verify_password
 from app.models import Item, ItemCreate, ItemUpdate, User, UserCreate, UserUpdate, Tag, TagCreate, TagUpdate, ItemTag
@@ -147,7 +147,7 @@ def get_items_by_tag(*, session: Session, tag_id: uuid.UUID, skip: int = 0, limi
         select(Item)
         .join(ItemTag, Item.id == ItemTag.item_id)
         .where(ItemTag.tag_id == tag_id)
-        .order_by(Item.created_at.desc())
+        .order_by(desc(Item.created_at))
         .offset(skip)
         .limit(limit)
     )

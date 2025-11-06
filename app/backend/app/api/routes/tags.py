@@ -13,7 +13,7 @@ from app.crud import (
     update_tag,
     get_items_by_tag,
 )
-from app.models import Tag, TagCreate, TagPublic, TagsPublic, TagUpdate, Item, ItemPublic, ItemsPublic, Message
+from app.models import Tag, TagCreate, TagPublic, TagsPublic, TagUpdate, Item, ItemPublic, ItemsPublic, Message, ItemTag
 
 router = APIRouter(prefix="/tags", tags=["tags"])
 

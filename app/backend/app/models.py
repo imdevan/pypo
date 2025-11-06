@@ -33,7 +33,7 @@ class UserCreate(UserBase):
     
     @field_validator('password')
     @classmethod
-    def validate_password(cls, v):
+    def validate_password(cls, v: str) -> str:
         return validate_password_strength(v)
 
 
@@ -44,7 +44,7 @@ class UserRegister(SQLModel):
     
     @field_validator('password')
     @classmethod
-    def validate_password(cls, v):
+    def validate_password(cls, v: str) -> str:
         return validate_password_strength(v)
 
 
@@ -55,7 +55,7 @@ class UserUpdate(UserBase):
     
     @field_validator('password')
     @classmethod
-    def validate_password(cls, v):
+    def validate_password(cls, v: str) -> str:
         if v is not None:
             return validate_password_strength(v)
         return v
@@ -72,7 +72,7 @@ class UpdatePassword(SQLModel):
     
     @field_validator('new_password')
     @classmethod
-    def validate_new_password(cls, v):
+    def validate_new_password(cls, v: str) -> str:
         return validate_password_strength(v)
 
 
@@ -207,5 +207,5 @@ class NewPassword(SQLModel):
     
     @field_validator('new_password')
     @classmethod
-    def validate_new_password(cls, v):
+    def validate_password(cls, v: str) -> str:
         return validate_password_strength(v)

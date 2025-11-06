@@ -134,7 +134,7 @@ export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
 
 /**
  * This is the primary hook that you will use to access the theme context in your components.
- * Documentation: https://docs.infinite.red/ignite-cli/boilerplate/app/theme/useAppTheme.tsx/
+ * Documentation: https://docs.infinite.red/ignite-cli/boilerplate/app/theme/context.ts/#useapptheme
  */
 export const useAppTheme = () => {
   const context = useContext(ThemeContext)

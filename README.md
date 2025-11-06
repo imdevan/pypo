@@ -1,9 +1,3 @@
-# Dance Partner
-
-An app to help people get better at dancing by reviewing their own dance videos
-
-Made with [PyPo](https://github.com/imdevan/pypo)
-
 # PyPo
 
 🐍 Python + 🏃🏻‍♂️ Expo

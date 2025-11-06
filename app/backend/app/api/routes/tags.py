@@ -122,7 +122,8 @@ def read_items_by_tag(
     count_statement = (
         select(func.count())
         .select_from(Item)
-        .join(ItemTag, Item.id == ItemTag.item_id)
+        .join(ItemTag)
+        .where(ItemTag.item_id == Item.id)
         .where(ItemTag.tag_id == tag_id)
     )
     count = session.exec(count_statement).one()

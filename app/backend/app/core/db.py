@@ -1,6 +1,7 @@
 from sqlmodel import Session, create_engine, select
-from sqlalchemy import event, Mapper, Connection, InstanceState
+from sqlalchemy import event
 import datetime
+from typing import Any 
 
 from app import crud
 from app.core.config import settings
@@ -11,29 +12,42 @@ engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
 
 # Event listeners to automatically update updated_at field
 @event.listens_for(User, 'before_update')
-def update_user_timestamp(mapper: Mapper, connection: Connection, target: InstanceState) -> None:
+def update_user_timestamp(mapper: Any, connection: Any, target: User) -> None:
     target.updated_at = datetime.datetime.now(datetime.timezone.utc)
 
 
 @event.listens_for(User, 'before_insert')
-def set_user_timestamps(mapper: Mapper, connection: Connection, target: InstanceState) -> None:
+def set_user_timestamps(mapper: Any, connection: Any, target: User) -> None:
     if not target.created_at:
         target.created_at = datetime.datetime.now(datetime.timezone.utc)
     if not target.updated_at:
         target.updated_at = datetime.datetime.now(datetime.timezone.utc)
 
 
-# Import Item model for event listeners
-from app.models import Item
+# Import Item and Tag models for event listeners
+from app.models import Item, Tag
 
 
 @event.listens_for(Item, 'before_update')
-def update_item_timestamp(mapper: Mapper, connection: Connection, target: InstanceState) -> None:
+def update_item_timestamp(mapper: Any, connection: Any, target: Item) -> None:
     target.updated_at = datetime.datetime.now(datetime.timezone.utc)
 
 
 @event.listens_for(Item, 'before_insert')
-def set_item_timestamps(mapper: Mapper, connection: Connection, target: InstanceState) -> None:
+def set_item_timestamps(mapper: Any, connection: Any, target: User) -> None:
+    if not target.created_at:
+        target.created_at = datetime.datetime.now(datetime.timezone.utc)
+    if not target.updated_at:
+        target.updated_at = datetime.datetime.now(datetime.timezone.utc)
+
+
+@event.listens_for(Tag, 'before_update')
+def update_tag_timestamp(mapper: Any, connection: Any, target: Tag) -> None:
+    target.updated_at = datetime.datetime.now(datetime.timezone.utc)
+
+
+@event.listens_for(Tag, 'before_insert')
+def set_tag_timestamps(mapper: Any, connection: Any, target: Tag) -> None:
     if not target.created_at:
         target.created_at = datetime.datetime.now(datetime.timezone.utc)
     if not target.updated_at:

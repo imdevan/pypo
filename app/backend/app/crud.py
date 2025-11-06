@@ -130,7 +130,7 @@ def get_tag_by_name(*, session: Session, name: str) -> Tag | None:
 
 def get_tags(*, session: Session, skip: int = 0, limit: int = 100) -> list[Tag]:
     statement = select(Tag).order_by(Tag.name).offset(skip).limit(limit)
-    return session.exec(statement).all()
+    return list(session.exec(statement).all())
 
 
 def delete_tag(*, session: Session, tag_id: uuid.UUID) -> bool:
@@ -145,10 +145,11 @@ def delete_tag(*, session: Session, tag_id: uuid.UUID) -> bool:
 def get_items_by_tag(*, session: Session, tag_id: uuid.UUID, skip: int = 0, limit: int = 100) -> list[Item]:
     statement = (
         select(Item)
-        .join(ItemTag, Item.id == ItemTag.item_id)
+        .join(ItemTag)
+        .where(ItemTag.item_id == Item.id)
         .where(ItemTag.tag_id == tag_id)
         .order_by(desc(Item.created_at))
         .offset(skip)
         .limit(limit)
     )
-    return session.exec(statement).all()
+    return list(session.exec(statement).all())

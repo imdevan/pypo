@@ -141,7 +141,7 @@ export function TagsScreen() {
   }
 
   return (
-    <Screen preset="auto" contentContainerStyle={[$styles.container, themed($container)]}>
+    <Screen preset="auto" contentContainerStyle={[themed($styles.container)]}>
         {/* Header Section */}
         <View style={themed($headerSection)}>
           <Text text="Global Tags" style={themed($title)} />
@@ -284,11 +284,6 @@ export function TagsScreen() {
     </Screen>
   )
 }
-
-const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  flex: 1,
-  marginBottom: spacing.lg,
-})
 
 const $headerSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   alignItems: "center",

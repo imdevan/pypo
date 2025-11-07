@@ -243,6 +243,7 @@ export function Screen(props: ScreenProps) {
   const {
     theme: { colors },
     themeContext,
+    themed
   } = useAppTheme()
   const {
     backgroundColor,
@@ -272,7 +273,7 @@ export function Screen(props: ScreenProps) {
         behavior={isIos ? "padding" : "height"}
         keyboardVerticalOffset={keyboardOffset}
         {...KeyboardAvoidingViewProps}
-        style={[$styles.flex1, KeyboardAvoidingViewProps?.style]}
+        style={[themed($styles.flex1), KeyboardAvoidingViewProps?.style]}
       >
         {isNonScrolling(props.preset) ? (
           <ScreenWithoutScrolling {...props} />

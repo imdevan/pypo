@@ -159,7 +159,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   )
 
   return (
-    <Screen preset="auto" contentContainerStyle={$styles.container}>
+    <Screen preset="auto" contentContainerStyle={themed($styles.container)}>
       {/* Debug Info */}
       <DebugView>
         <View style={themed($debugSection)}>
@@ -263,7 +263,6 @@ const $header: ThemedStyle<ViewStyle> = ({ spacing, width }) => ({
   justifyContent: "space-between" as const,
   alignItems: "center" as const,
   marginBottom: spacing.sm,
-  maxWidth: width > 1200 ? 800 : null
 })
 
 const $debugSection: ThemedStyle<ViewStyle> = ({colors}) => ({
@@ -284,7 +283,7 @@ const $itemsList: ThemedStyle<ContentStyle> = ({ spacing }) => ({
   paddingBottom: spacing.lg,
 })
 
-const $itemContainer = {
+const $itemContainer: ViewStyle = {
   flexDirection: "row" as const,
   alignItems: "center" as const,
   padding: 16,

@@ -125,7 +125,7 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"showroom">> =
  */
       <Screen
         preset="fixed"
-        contentContainerStyle={$styles.flex1}
+        contentContainerStyle={themed($styles.container)}
         {...(isAndroid ? { KeyboardAvoidingViewProps: { behavior: undefined } } : {})}
       >
         <SectionListWithKeyboardAwareScrollView

@@ -13,6 +13,8 @@ export const lightTheme: Theme = {
   typography,
   timing,
   isDark: false,
+  width: 0,
+  height: 0,
 }
 export const darkTheme: Theme = {
   colors: colorsDark,
@@ -20,4 +22,6 @@ export const darkTheme: Theme = {
   typography,
   timing,
   isDark: true,
+  width: 0,
+  height: 0,
 }

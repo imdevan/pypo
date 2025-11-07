@@ -28,6 +28,8 @@ export interface Theme {
   typography: Typography
   timing: Timing
   isDark: boolean
+  width: number
+  height: number
 }
 
 /**

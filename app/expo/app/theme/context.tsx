@@ -7,7 +7,7 @@ import {
   useEffect,
   useMemo,
 } from "react"
-import { StyleProp, useColorScheme } from "react-native"
+import { StyleProp, useColorScheme, useWindowDimensions } from "react-native"
 import {
   DarkTheme as NavDarkTheme,
   DefaultTheme as NavDefaultTheme,
@@ -59,6 +59,8 @@ export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
   const systemColorScheme = useColorScheme()
   // Our saved theme context: can be "light", "dark", or undefined (system theme)
   const [themeScheme, setThemeScheme] = useMMKVString("ignite.themeScheme", storage)
+  // Get window dimensions
+  const { width, height } = useWindowDimensions()
 
   /**
    * This function is used to set the theme context and is exported from the useAppTheme() hook.
@@ -93,13 +95,13 @@ export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
   }, [themeContext])
 
   const theme: Theme = useMemo(() => {
-    switch (themeContext) {
-      case "dark":
-        return darkTheme
-      default:
-        return lightTheme
+    const baseTheme = themeContext === "dark" ? darkTheme : lightTheme
+    return {
+      ...baseTheme,
+      width,
+      height,
     }
-  }, [themeContext])
+  }, [themeContext, width, height])
 
   useEffect(() => {
     setImperativeTheming(theme)

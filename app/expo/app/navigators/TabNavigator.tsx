@@ -79,7 +79,7 @@ export function TabNavigator() {
           tabBarShowLabel: false,
           tabBarLabel: translate("tabNavigator:itemsTab"),
           tabBarIcon: ({ focused }) => (
-            <Icon icon="podcast" color={focused ? colors.tint : colors.tintInactive} size={30} />
+            <Icon name="list"  color={focused ? colors.tint : colors.tintInactive} size={30} />
           ),
         }}
       />
@@ -91,7 +91,7 @@ export function TabNavigator() {
           tabBarShowLabel: false,
           tabBarLabel: translate("tabNavigator:communityTab"),
           tabBarIcon: ({ focused }) => (
-            <Icon icon="community" color={focused ? colors.tint : colors.tintInactive} size={30} />
+            <Icon name="users" color={focused ? colors.tint : colors.tintInactive} size={30} />
           ),
         }}
       />

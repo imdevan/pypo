@@ -8,16 +8,22 @@ import {
   ViewProps,
   ViewStyle,
 } from "react-native"
-
+import Feather from "@expo/vector-icons/Feather"
+import { FeatherIconName } from "@react-native-vector-icons/feather"
 import { useAppTheme } from "@/theme/context"
 
 export type IconTypes = keyof typeof iconRegistry
 
 type BaseIconProps = {
   /**
-   * The name of the icon
+   * The name of the icon from the icon registry
    */
-  icon: IconTypes
+  icon?: IconTypes
+
+  /**
+   * The name of the Feather icon (alternative to icon prop)
+   */
+  name?: FeatherIconName
 
   /**
    * An optional tint color for the icon
@@ -55,6 +61,7 @@ export function PressableIcon(props: PressableIconProps) {
     icon,
     color,
     size,
+    name,
     style: $imageStyleOverride,
     containerStyle: $containerStyleOverride,
     ...pressableProps
@@ -71,7 +78,11 @@ export function PressableIcon(props: PressableIconProps) {
 
   return (
     <TouchableOpacity {...pressableProps} style={$containerStyleOverride}>
-      <Image style={$imageStyle} source={iconRegistry[icon]} />
+      {name ? (
+        <Feather name={name} size={size ?? 24} color={color ?? theme.colors.text} />
+      ) : icon ? (
+        <Image style={$imageStyle} source={iconRegistry[icon]} />
+      ) : null}
     </TouchableOpacity>
   )
 }
@@ -88,6 +99,7 @@ export function Icon(props: IconProps) {
     icon,
     color,
     size,
+    name,
     style: $imageStyleOverride,
     containerStyle: $containerStyleOverride,
     ...viewProps
@@ -104,7 +116,11 @@ export function Icon(props: IconProps) {
 
   return (
     <View {...viewProps} style={$containerStyleOverride}>
-      <Image style={$imageStyle} source={iconRegistry[icon]} />
+      {name ? (
+        <Feather name={name} size={size ?? 24} color={color ?? theme.colors.text} />
+      ) : icon ? (
+        <Image style={$imageStyle} source={iconRegistry[icon]} />
+      ) : null}
     </View>
   )
 }

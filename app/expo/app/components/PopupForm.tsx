@@ -24,7 +24,7 @@ interface PopupFormProps {
  * as children within a styled form card
  */
 export function PopupForm({
-  title = "Form",
+  title,
   triggerText = "Open Form",
   onSuccess,
   onCancel,
@@ -66,7 +66,8 @@ export function PopupForm({
   return (
     <View style={themed($section)}>
       <View style={themed($sectionHeader)}>
-        <Text text={title} style={themed($sectionTitle)} />
+        {title && <Text text={title} style={themed($sectionTitle)} />}
+        
         {!isOpen && (
           <Button
             text={triggerText}

@@ -160,10 +160,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
 
   return (
     <Screen preset="auto" contentContainerStyle={$styles.container}>
-      <View style={themed($header)}>
-        <Text text="My Items" preset="heading" />
-      </View>
-
       {/* Debug Info */}
       <DebugView>
         <View style={themed($debugSection)}>
@@ -178,8 +174,11 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         </View>
       </DebugView>
 
+      <View style={themed($header)}>
+        <Text text={`Items (${items.length})`} preset="heading" />
+      </View>
+{/*         
       <PopupForm
-        title="Create New Item"
         triggerText="Add Item"
         onSuccess={createItem}
         onCancel={resetNewItem}
@@ -211,14 +210,15 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           searchPlaceholder="Search tags..."
           closeAfterSelecting={false}
         />
-      </PopupForm>
+      </PopupForm> 
+*/}
 
       <View style={themed($itemsSection)}>
-        <Text
+        {/* <Text
           text={`Your Items (${items.length})`}
           preset="subheading"
           style={{ marginBottom: 16 }}
-        />
+        /> */}
         {loading ? (
           <MotiView
             from={{ opacity: 0 }}
@@ -258,29 +258,29 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   )
 }
 
-const $header = {
+const $header: ThemedStyle<ViewStyle> = ({ spacing, width }) => ({
   flexDirection: "row" as const,
   justifyContent: "space-between" as const,
   alignItems: "center" as const,
-  marginBottom: 20,
-}
+  marginBottom: spacing.sm,
+  maxWidth: width > 1200 ? 800 : null
+})
 
-const $debugSection = {
-  borderColor: "#f0f0f0",
+const $debugSection: ThemedStyle<ViewStyle> = ({colors}) => ({
+  borderColor: colors.border,
   borderWidth: 1,
   // color: "#191015",
   padding: 12,
   marginBottom: 16,
   borderRadius: 8,
-}
+})
 
 const $itemsSection = { flex: 1, zIndex: 10, elevation: 1 }
 
 const $inputField = { marginBottom: 12 }
 
 const $itemsList: ThemedStyle<ContentStyle> = ({ spacing }) => ({
-  paddingHorizontal: spacing.lg,
-  paddingTop: spacing.md,
+  paddingTop: spacing.sm,
   paddingBottom: spacing.lg,
 })
 

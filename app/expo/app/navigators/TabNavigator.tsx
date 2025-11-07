@@ -66,7 +66,7 @@ export function TabNavigator() {
           tabBarShowLabel: false,
           tabBarLabel: translate("tabNavigator:componentsTab"),
           tabBarIcon: ({ focused }) => (
-            <Icon icon="components" color={focused ? colors.tint : colors.tintInactive} size={30} />
+            <Icon name="layers" color={focused ? colors.tint : colors.tintInactive} size={30} />
           ),
         }}
       />

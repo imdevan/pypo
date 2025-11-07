@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { StyleProp, TextStyle, View, ViewStyle } from "react-native"
+import { TextStyle, View, ViewStyle } from "react-native"
 import DropDownPicker from "react-native-dropdown-picker"
 
 import { useAppTheme } from "@/theme/context"
@@ -179,32 +179,32 @@ const $dropdownContainer = {
 }
 
 const $dropdownLabel: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  marginBottom: 8,
   color:colors.text,
+  marginBottom: 8,
 })
 
 const $dropdownStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor: colors.background,
+  borderColor: colors.border,
   borderWidth: 1,
   borderRadius: 8,
   minHeight: 50,
   zIndex: 100,
   elevation: 5,
-  backgroundColor: colors.background,
-  borderColor: colors.border,
 })
 
 const $dropdownListStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor: colors.background,
+  borderColor: colors.border,
   borderWidth: 1,
   borderRadius: 8,
   zIndex: 100,
   elevation: 5,
-  backgroundColor: colors.background,
-  borderColor: colors.border
 })
 
 const $dropdownTextStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
-  fontSize: 16,
   color: colors.text,
+  fontSize: 16,
 });
 
 const $dropdownPlaceholderStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
@@ -213,8 +213,8 @@ const $dropdownPlaceholderStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
 })
 
 const $dropdownLabelStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.text,
   fontSize: 16,
-  color: colors.text
 })
 
 const $dropdownSelectedItemStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({

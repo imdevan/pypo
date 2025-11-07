@@ -12,6 +12,7 @@ import type { AppStackScreenProps } from "@/navigators/AppNavigator"
 import { useLogin } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+import { $styles } from "@/theme/styles"
 
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 
@@ -105,7 +106,7 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
   return (
     <Screen
       preset="auto"
-      contentContainerStyle={themed($screenContentContainer)}
+      contentContainerStyle={themed($styles.container)}
       safeAreaEdges={["top", "bottom"]}
     >
       <Text testID="login-heading" tx="loginScreen:logIn" preset="heading" style={themed($logIn)} />
@@ -178,11 +179,6 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
     </Screen>
   )
 }
-
-const $screenContentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  paddingVertical: spacing.xxl,
-  paddingHorizontal: spacing.lg,
-})
 
 const $logIn: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginBottom: spacing.sm,

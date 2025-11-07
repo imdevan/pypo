@@ -10,6 +10,7 @@ import { useAuth } from "@/context/AuthContext"
 import { useCurrentUserData } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+import { $styles } from "@/theme/styles"
 
 /**
  * UserProfileScreen displays user information and profile details
@@ -32,7 +33,7 @@ export function UserProfileScreen() {
   }
 
   return (
-    <Screen preset="auto">
+    <Screen preset="auto" contentContainerStyle={themed($styles.container)}>
       <View style={themed($container)}>
         {/* Header Section */}
         <View style={themed($headerSection)}>

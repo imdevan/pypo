@@ -1,11 +1,11 @@
 import React, { useState } from "react"
-import { StyleProp, View, ViewStyle } from "react-native"
+import { StyleProp, TextStyle, View, ViewStyle } from "react-native"
 import DropDownPicker from "react-native-dropdown-picker"
 
-import { colors } from "@/theme/colors"
 import { useAppTheme } from "@/theme/context"
 
 import { Text } from "./Text"
+import { ThemedStyle } from "@/theme/types"
 
 export interface DropDownOption {
   label: string
@@ -79,7 +79,7 @@ export function DropDown({
   zIndexInverse = 1000,
   badgeColors,
 }: DropDownBaseProps) {
-  const { themed } = useAppTheme()
+  const { theme, themed } = useAppTheme()
   const [open, setOpen] = useState(false)
 
   return (
@@ -87,6 +87,7 @@ export function DropDown({
       {label && <Text text={label} preset="formLabel" style={themed($dropdownLabel)} />}
       {/* @ts-ignore - react-native-dropdown-picker has complex discriminated union types */}
       <DropDownPicker
+        theme={theme.isDark ? "DARK" : "LIGHT"}
         mode="BADGE"
         showBadgeDot={false}
         items={items}
@@ -136,13 +137,14 @@ export function DropDownControlled({
   zIndex = 100,
   zIndexInverse = 1000,
 }: DropDownProps) {
-  const { themed } = useAppTheme()
+  const { theme, themed } = useAppTheme()
 
   return (
     <View style={themed($dropdownContainer)}>
       {label && <Text text={label} preset="formLabel" style={themed($dropdownLabel)} />}
       {/* @ts-ignore - react-native-dropdown-picker has complex discriminated union types */}
       <DropDownPicker
+        theme={theme.isDark ? "DARK" : "LIGHT"}
         items={items}
         multiple={multiple}
         value={value}
@@ -176,44 +178,45 @@ const $dropdownContainer = {
   elevation: 5,
 }
 
-const $dropdownLabel = {
+const $dropdownLabel: ThemedStyle<ViewStyle> = ({ colors }) => ({
   marginBottom: 8,
-}
+  color:colors.text,
+})
 
-const $dropdownStyle = {
-  backgroundColor: colors.background,
-  borderColor: colors.border,
+const $dropdownStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderWidth: 1,
   borderRadius: 8,
   minHeight: 50,
   zIndex: 100,
   elevation: 5,
-}
-
-const $dropdownListStyle = {
   backgroundColor: colors.background,
   borderColor: colors.border,
+})
+
+const $dropdownListStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderWidth: 1,
   borderRadius: 8,
   zIndex: 100,
   elevation: 5,
-}
+  backgroundColor: colors.background,
+  borderColor: colors.border
+})
 
-const $dropdownTextStyle = {
+const $dropdownTextStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
   fontSize: 16,
   color: colors.text,
-}
+});
 
-const $dropdownPlaceholderStyle = {
+const $dropdownPlaceholderStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.textDim,
   fontSize: 16,
-}
+})
 
-const $dropdownLabelStyle = {
+const $dropdownLabelStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
   fontSize: 16,
-  color: colors.text,
-}
+  color: colors.text
+})
 
-const $dropdownSelectedItemStyle = {
-  backgroundColor: colors.palette.primary100,
-}
+const $dropdownSelectedItemStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor: colors.tint,
+})

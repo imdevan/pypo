@@ -1,12 +1,13 @@
 import React, { FC } from "react"
-import { View, ViewStyle } from "react-native"
+import { Alert, View, ViewStyle, TextStyle } from "react-native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 
 import { Button } from "@/components/lib/Button"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
 import { MotiView } from "@/components/MotiView"
-import { useItem } from "@/services/api/hooks"
+import { useItem, useDeleteItem } from "@/services/api/hooks"
+import { extractErrorMessage } from "@/services/api/errorHandling"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
@@ -20,7 +21,35 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
   const { itemId } = route.params
 
   const { data: itemData, isLoading } = useItem(itemId)
+  const deleteItemMutation = useDeleteItem()
   const item = itemData
+
+  const handleDelete = async () => {
+    Alert.alert(
+      "Delete Item",
+      "Are you sure you want to delete this item?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteItemMutation.mutateAsync({
+                path: { id: itemId },
+              })
+              navigation.goBack()
+            } catch (error) {
+              Alert.alert("Error", extractErrorMessage(error))
+            }
+          },
+        },
+      ],
+    )
+  }
 
   return (
     <Screen preset="auto" contentContainerStyle={themed($styles.container)}>
@@ -82,6 +111,14 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
             <Text text={`ID: ${item.id}`} preset="formHelper" style={themed($styles.mutedText)} />
             <Text text={`Owner: ${item.owner_id}`} preset="formHelper" style={themed($styles.mutedText)} />
           </View>
+
+          <Button
+            text="Delete Item"
+            preset="default"
+            onPress={handleDelete}
+            style={themed($deleteButton)}
+            disabled={deleteItemMutation.isPending}
+          />
         </MotiView>
       ) : (
         <Text text="Item not found" preset="default" />
@@ -134,7 +171,11 @@ const $tagChip: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   paddingVertical: spacing.xs,
 })
 
-const $tagText: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $tagText: ThemedStyle<TextStyle> = ({ colors }) => ({
   fontSize: 14,
   color: colors.text,
+})
+
+const $deleteButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginTop: spacing.lg,
 })

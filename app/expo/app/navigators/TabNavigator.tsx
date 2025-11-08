@@ -8,7 +8,7 @@ import { translate } from "@/i18n/translate"
 import { DemoCommunityScreen } from "@/screens/DemoCommunityScreen"
 import { DemoDebugScreen } from "@/screens/DemoDebugScreen"
 import { DemoShowroomScreen } from "@/screens/DemoShowroomScreen/DemoShowroomScreen"
-import { ItemsScreen } from "@/screens/ItemsScreen"
+import { ItemsStackNavigator } from "@/navigators/ItemsStackNavigator"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 
@@ -73,7 +73,7 @@ export function TabNavigator() {
 
       <Tab.Screen
         name="items"
-        component={ItemsScreen}
+        component={ItemsStackNavigator}
         options={{
           tabBarAccessibilityLabel: translate("tabNavigator:podcastListTab"),
           tabBarShowLabel: false,

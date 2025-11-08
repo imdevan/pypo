@@ -2,7 +2,7 @@
 export { useLogin, useRegister, useCurrentUser, useTestToken } from "./useAuth"
 
 // Items hooks
-export { useItems, useCreateItem, useUpdateItem, useDeleteItem } from "./useItems"
+export { useItems, useItem, useCreateItem, useUpdateItem, useDeleteItem } from "./useItems"
 
 // Tags hooks
 export { useTags, useCreateTag, useUpdateTag, useDeleteTag } from "./useTags"

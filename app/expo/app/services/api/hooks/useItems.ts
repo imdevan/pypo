@@ -3,6 +3,7 @@ import type { AxiosError } from "axios"
 
 import {
   itemsReadItemsOptions,
+  itemsReadItemOptions,
   itemsCreateItemMutation,
   itemsUpdateItemMutation,
   itemsDeleteItemMutation,
@@ -19,6 +20,25 @@ export const useItems = () => {
       headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
     }),
     enabled: !!authToken,
+    retry: (failureCount, error) => {
+      if ((error as AxiosError)?.response?.status === 401) {
+        return false
+      }
+      return failureCount < 3
+    },
+  })
+}
+
+// Get single item query
+export const useItem = (itemId: string) => {
+  const { authToken } = useAuth()
+  
+  return useQuery({
+    ...itemsReadItemOptions({
+      path: { id: itemId },
+      headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
+    }),
+    enabled: !!authToken && !!itemId,
     retry: (failureCount, error) => {
       if ((error as AxiosError)?.response?.status === 401) {
         return false

@@ -24,11 +24,13 @@ export function UserProfileScreen() {
   // Show edit form when in editing mode
   if (isEditing && userData) {
     return (
-      <EditProfileForm
-        userData={userData}
-        onCancel={() => setIsEditing(false)}
-        onSuccess={() => setIsEditing(false)}
-      />
+      <Screen preset="auto" contentContainerStyle={themed($styles.container)}>
+        <EditProfileForm
+          userData={userData}
+          onCancel={() => setIsEditing(false)}
+          onSuccess={() => setIsEditing(false)}
+        />
+      </Screen>
     )
   }
 
@@ -122,8 +124,6 @@ export function UserProfileScreen() {
 }
 
 const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  flex: 1,
-  paddingHorizontal: spacing.lg,
   marginBottom: spacing.lg,
 })
 

@@ -21,6 +21,8 @@ import { colors } from "@/theme/colors"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
+import { PressableIcon } from "@/components/lib/Icon"
+import { IconProps } from "@expo/vector-icons/build/createIconSet"
 
 interface ItemsScreenProps {}
 
@@ -31,6 +33,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const [newItemDescription, setNewItemDescription] = useState("")
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
   const [debugInfo, setDebugInfo] = useState("")
+  const [formOpen, setFormOpen] = useState(true)
 
   // TanStack Query hooks
   const { data: itemsData, isLoading: loading, error: itemsError, refetch } = useItems()
@@ -76,6 +79,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     setNewItemTitle("")
     setNewItemDescription("")
     setSelectedTagIds([])
+    setFormOpen(false)
   }
 
   const deleteItem = async (id: string) => {
@@ -175,11 +179,17 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       </DebugView>
 
       <View style={themed($header)}>
-        <Text text={`Items (${items.length})`} preset="heading" />
+        <Text text={`Items`} preset="heading" />
+        <View style={$headerRight}>
+          {items.length > 0 && (
+            <Text text={`(${items.length})`} preset="heading" />
+          )}
+          {/* todo: fix styling style={themed(({colors}) => ({stroke: colors.tintColor}))} */}
+          <PressableIcon name ="plus" size={30} onPress={() => setFormOpen(state => !state)} />
+        </View>
       </View>
-{/*         
       <PopupForm
-        triggerText="Add Item"
+        open={formOpen}
         onSuccess={createItem}
         onCancel={resetNewItem}
         disabled={createItemMutation.isPending}
@@ -211,7 +221,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           closeAfterSelecting={false}
         />
       </PopupForm> 
-*/}
 
       <View style={themed($itemsSection)}>
         {/* <Text
@@ -229,6 +238,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           </MotiView>
         ) : (
           <ListView<ItemPublic>
+            showsVerticalScrollIndicator={false}
             data={items}
             estimatedItemSize={100}
             renderItem={({ item, index }) => renderItem({ item, index })}
@@ -256,6 +266,11 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       </View>
     </Screen>
   )
+}
+const $headerRight = {
+  flexDirection: "row" as const,
+  alignItems: "center" as const,
+  gap: 8,
 }
 
 const $header: ThemedStyle<ViewStyle> = ({ spacing, width }) => ({

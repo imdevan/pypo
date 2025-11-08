@@ -17,14 +17,18 @@ interface PopupFormProps {
   saveDisabled?: boolean
   error?: string | null
   onClearError?: () => void
+  open?: boolean
 }
 
 /**
  * PopupForm component that manages its own visibility state and renders form content
  * as children within a styled form card
+ * 
+ * if {open} is defined (true or false) it will override the button functionality
  */
 export function PopupForm({
   title,
+  open,
   triggerText = "Open Form",
   onSuccess,
   onCancel,
@@ -68,7 +72,7 @@ export function PopupForm({
       <View style={themed($sectionHeader)}>
         {title && <Text text={title} style={themed($sectionTitle)} />}
         
-        {!isOpen && (
+        {!isOpen && (typeof open === "undefined") && (
           <Button
             text={triggerText}
             onPress={handleOpen}
@@ -79,7 +83,7 @@ export function PopupForm({
         )}
       </View>
 
-      {isOpen && (
+      {isOpen || (!(typeof open === "undefined") && open === true) && (
         <View style={themed($formCard)}>
           {error && (
             <View style={themed($errorContainer)}>

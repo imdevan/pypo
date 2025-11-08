@@ -19,7 +19,7 @@ import { TextField } from "@/components/lib/TextField"
 import { MotiView } from "@/components/MotiView"
 import { PopupForm } from "@/components/PopupForm"
 import { extractErrorMessage } from "@/services/api/errorHandling"
-import { useItems, useCreateItem, useDeleteItem } from "@/services/api/hooks"
+import { useItems, useCreateItem } from "@/services/api/hooks"
 import { useTags } from "@/services/api/hooks/useTags"
 import { colors } from "@/theme/colors"
 import { useAppTheme } from "@/theme/context"
@@ -44,7 +44,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const { data: itemsData, isLoading: loading, error: itemsError, refetch } = useItems()
   const { data: tagsData, isLoading: tagsLoading } = useTags()
   const createItemMutation = useCreateItem()
-  const deleteItemMutation = useDeleteItem()
 
   // Extract items from the response
   const items = itemsData?.data || []
@@ -85,16 +84,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     setNewItemDescription("")
     setSelectedTagIds([])
     setFormOpen(false)
-  }
-
-  const deleteItem = async (id: string) => {
-    try {
-      await deleteItemMutation.mutateAsync({
-        path: { id },
-      })
-    } catch (error) {
-      Alert.alert("Error", extractErrorMessage(error))
-    }
   }
 
   // Update debug info when items load
@@ -160,12 +149,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           </View>
         )}
       </Pressable>
-      <Button
-        text="Delete"
-        preset="default"
-        onPress={() => deleteItem(item.id)}
-        style={themed($deleteButton)}
-      />
     </MotiView>
   )
 
@@ -306,12 +289,9 @@ const $itemsList: ThemedStyle<ContentStyle> = ({ spacing }) => ({
 })
 
 const $itemContainer: ViewStyle = {
-  flexDirection: "row" as const,
-  alignItems: "center" as const,
   padding: 16,
   marginBottom: 12,
   borderRadius: 8,
-  // backgroundColor: "#f5f5f5"
   borderColor: "#f5f5f5",
   borderWidth: 1,
 }
@@ -319,8 +299,6 @@ const $itemContainer: ViewStyle = {
 const $itemContent = { flex: 1 }
 
 const $itemDescription = { marginTop: 4, marginBottom: 8 }
-
-const $deleteButton = { marginLeft: 12 }
 
 const $testButton = { marginTop: 8 }
 

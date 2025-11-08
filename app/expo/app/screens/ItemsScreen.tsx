@@ -1,7 +1,11 @@
 import React, { FC, useState } from "react"
-import { Alert, View } from "react-native"
+import { Alert, View, Pressable } from "react-native"
 import type { ViewStyle } from "react-native"
 import { type ContentStyle } from "@shopify/flash-list"
+import { useNavigation } from "@react-navigation/native"
+import { NativeStackNavigationProp } from "@react-navigation/native-stack"
+
+import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
 
 import type { ItemPublic } from "@/client/types.gen"
 import { DebugView } from "@/components/DebugView"
@@ -28,6 +32,7 @@ interface ItemsScreenProps {}
 
 export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const { themed } = useAppTheme()
+  const navigation = useNavigation<NativeStackNavigationProp<ItemsStackParamList>>()
 
   const [newItemTitle, setNewItemTitle] = useState("")
   const [newItemDescription, setNewItemDescription] = useState("")
@@ -127,7 +132,10 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       }}
       style={themed($itemContainer)}
     >
-      <View style={themed($itemContent)}>
+      <Pressable
+        style={themed($itemContent)}
+        onPress={() => navigation.navigate("item", { itemId: item.id })}
+      >
         <Text text={item.title} preset="subheading" />
         {item.description && (
           <Text text={item.description} preset="default" style={themed($itemDescription)} />
@@ -151,7 +159,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             ))}
           </View>
         )}
-      </View>
+      </Pressable>
       <Button
         text="Delete"
         preset="default"

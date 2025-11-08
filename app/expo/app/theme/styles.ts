@@ -24,4 +24,8 @@ export const $styles: Styles = {
     justifyContent: "center",
     overflow: "hidden",
   } as ViewStyle,
+
+  mutedText: ({colors}) => ({
+    color: colors.textDim
+  })
 }

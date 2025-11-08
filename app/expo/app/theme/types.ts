@@ -21,6 +21,7 @@ export type Spacing = typeof spacingLight | typeof spacingDark
 export type Timing = typeof timing
 export type Typography = typeof typography
 
+// Todo: add platform to theme context as well
 // The overall Theme object should contain all of the data you need to style your app.
 export interface Theme {
   colors: Colors

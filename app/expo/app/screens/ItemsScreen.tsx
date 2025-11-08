@@ -33,7 +33,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const [newItemDescription, setNewItemDescription] = useState("")
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
   const [debugInfo, setDebugInfo] = useState("")
-  const [formOpen, setFormOpen] = useState(true)
+  const [formOpen, setFormOpen] = useState(false)
 
   // TanStack Query hooks
   const { data: itemsData, isLoading: loading, error: itemsError, refetch } = useItems()
@@ -151,7 +151,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             ))}
           </View>
         )}
-        <Text text={`ID: ${item.id}`} preset="formHelper" />
       </View>
       <Button
         text="Delete"

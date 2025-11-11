@@ -1,6 +1,8 @@
 import React, { FC } from "react"
-import { Alert, View, ViewStyle, TextStyle } from "react-native"
+import { View, ViewStyle, TextStyle } from "react-native"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
+
+import Alert from '@blazejkustra/react-native-alert';
 
 import { Button } from "@/components/lib/Button"
 import { Screen } from "@/components/lib/Screen"

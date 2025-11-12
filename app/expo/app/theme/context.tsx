@@ -38,6 +38,15 @@ export type ThemeContextType = {
 
 export const ThemeContext = createContext<ThemeContextType | null>(null)
 
+export const SCREEN_SIZE = {
+  xs: 300,
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+  xxl: 1536
+}
+
 export interface ThemeProviderProps {
   initialContext?: ThemeContextModeT
 }
@@ -96,10 +105,22 @@ export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
 
   const theme: Theme = useMemo(() => {
     const baseTheme = themeContext === "dark" ? darkTheme : lightTheme
+    // todo: consider caping screensizes
+    //  e.g. xs: SCREEN_SIZE.xs > width && width < SCREEN_SIZE.sm
+    const screen = {
+      xs: width > SCREEN_SIZE.xs,
+      sm: width > SCREEN_SIZE.sm,
+      md: width > SCREEN_SIZE.md,
+      lg: width > SCREEN_SIZE.lg,
+      xl: width > SCREEN_SIZE.xl,
+      xxl: width > SCREEN_SIZE.xxl
+    }
+
     return {
       ...baseTheme,
       width,
       height,
+      screen
     }
   }, [themeContext, width, height])
 

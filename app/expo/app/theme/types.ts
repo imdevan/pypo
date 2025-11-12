@@ -21,6 +21,15 @@ export type Spacing = typeof spacingLight | typeof spacingDark
 export type Timing = typeof timing
 export type Typography = typeof typography
 
+export type ScreenSizes = {
+  xs: boolean
+  sm: boolean
+  md: boolean
+  lg: boolean
+  xl: boolean
+  xxl: boolean
+}
+
 // Todo: add platform to theme context as well
 // The overall Theme object should contain all of the data you need to style your app.
 export interface Theme {
@@ -28,6 +37,7 @@ export interface Theme {
   spacing: Spacing
   typography: Typography
   timing: Timing
+  screen: ScreenSizes
   isDark: boolean
   width: number
   height: number

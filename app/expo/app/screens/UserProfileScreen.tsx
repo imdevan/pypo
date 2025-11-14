@@ -16,7 +16,7 @@ import { $styles } from "@/theme/styles"
  * UserProfileScreen displays user information and profile details
  */
 export function UserProfileScreen() {
-  const { authEmail, logout } = useAuth()
+  const { logout } = useAuth()
   const { themed } = useAppTheme()
   const { data: userData, isLoading, error } = useCurrentUserData()
   const [isEditing, setIsEditing] = useState(false)
@@ -124,7 +124,7 @@ export function UserProfileScreen() {
 }
 
 const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginBottom: spacing.lg,
+  paddingBottom: spacing.lg,
 })
 
 const $headerSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
@@ -132,16 +132,13 @@ const $headerSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.xl,
 })
 
-const $iconColor = ({ colors }: any) => colors.tint
-
-const $title: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+const $title: ThemedStyle<any> = ({ colors, typography }) => ({
   fontSize: 24,
   fontFamily: typography.primary.bold,
   color: colors.text,
 })
 
 const $infoSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  flex: 1,
   marginBottom: spacing.xl,
 })
 
@@ -161,25 +158,25 @@ const $label: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
   marginBottom: spacing.xs,
 })
 
-const $value: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+const $value: ThemedStyle<any> = ({ colors, typography }) => ({
   fontSize: 16,
   fontFamily: typography.primary.normal,
   color: colors.text,
 })
 
-const $statusValue: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+const $statusValue: ThemedStyle<any> = ({ colors, typography }) => ({
   fontSize: 16,
   fontFamily: typography.primary.medium,
   color: colors.palette.primary500,
 })
 
-const $errorValue: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+const $errorValue: ThemedStyle<any> = ({ colors, typography }) => ({
   fontSize: 16,
   fontFamily: typography.primary.medium,
   color: colors.error,
 })
 
-const $superuserValue: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+const $superuserValue: ThemedStyle<any> = ({ colors, typography }) => ({
   fontSize: 16,
   fontFamily: typography.primary.medium,
   color: colors.palette.accent500,

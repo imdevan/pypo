@@ -53,6 +53,10 @@ export type ItemCreate = {
      */
     description?: string | null;
     /**
+     * Image Url
+     */
+    image_url?: string | null;
+    /**
      * Tag Ids
      */
     tag_ids?: Array<string> | null;
@@ -70,6 +74,10 @@ export type ItemPublic = {
      * Description
      */
     description?: string | null;
+    /**
+     * Image Url
+     */
+    image_url: string | null;
     /**
      * Id
      */
@@ -104,6 +112,10 @@ export type ItemUpdate = {
      * Description
      */
     description?: string | null;
+    /**
+     * Image Url
+     */
+    image_url?: string | null;
     /**
      * Tag Ids
      */

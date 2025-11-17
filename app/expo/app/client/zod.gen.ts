@@ -51,6 +51,10 @@ export const zItemCreate = z.object({
         z.string().max(255),
         z.null()
     ])),
+    image_url: z.optional(z.union([
+        z.string().max(2048),
+        z.null()
+    ])),
     tag_ids: z.optional(z.union([
         z.array(z.uuid()),
         z.null()
@@ -84,6 +88,10 @@ export const zItemPublic = z.object({
         z.string().max(255),
         z.null()
     ])),
+    image_url: z.union([
+        z.string(),
+        z.null()
+    ]),
     id: z.uuid(),
     owner_id: z.uuid(),
     created_at: z.iso.datetime(),
@@ -104,6 +112,10 @@ export const zItemUpdate = z.object({
     ])),
     description: z.optional(z.union([
         z.string().max(255),
+        z.null()
+    ])),
+    image_url: z.optional(z.union([
+        z.string().max(2048),
         z.null()
     ])),
     tag_ids: z.optional(z.union([

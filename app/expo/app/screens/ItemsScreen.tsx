@@ -1,22 +1,23 @@
-import React, { FC, useState } from "react"
-import { Alert, View, Pressable } from "react-native"
-import type { ViewStyle } from "react-native"
+import React, { FC, useMemo, useState } from "react"
+import { Alert, View, Pressable, Image } from "react-native"
+import type { ViewStyle, ImageStyle } from "react-native"
 import { type ContentStyle } from "@shopify/flash-list"
 import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
 import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
-
+// import { MasonryList } from "@/components/lib/MasonryList"
 import type { ItemPublic } from "@/client/types.gen"
-import { DebugView } from "@/components/DebugView"
+import { MasonryFlashList } from "@shopify/flash-list"
+import { DebugView } from "@/components/lib/DebugView"
 import { Button } from "@/components/lib/Button"
 import { DropDown } from "@/components/lib/DropDown"
 import { EmptyState } from "@/components/lib/EmptyState"
-import { ListView } from "@/components/lib/ListView"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
 import { TextField } from "@/components/lib/TextField"
-import { MotiView } from "@/components/MotiView"
+import { ImageUrlInput } from "@/components/lib/ImageUrlInput"
+import { MotiView } from "@/components/lib/MotiView"
 import { PopupForm } from "@/components/PopupForm"
 import { extractErrorMessage } from "@/services/api/errorHandling"
 import { useItems, useCreateItem } from "@/services/api/hooks"
@@ -26,16 +27,16 @@ import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
 import { PressableIcon } from "@/components/lib/Icon"
-import { IconProps } from "@expo/vector-icons/build/createIconSet"
 
 interface ItemsScreenProps {}
 
 export const ItemsScreen: FC<ItemsScreenProps> = () => {
-  const { themed } = useAppTheme()
+  const { theme, themed } = useAppTheme()
   const navigation = useNavigation<NativeStackNavigationProp<ItemsStackParamList>>()
 
   const [newItemTitle, setNewItemTitle] = useState("")
   const [newItemDescription, setNewItemDescription] = useState("")
+  const [newItemImageUrl, setNewItemImageUrl] = useState("")
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
   const [debugInfo, setDebugInfo] = useState("")
   const [formOpen, setFormOpen] = useState(false)
@@ -54,7 +55,8 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     label: tag.name,
     value: tag.id,
   }))
-
+  const numColumns = useMemo(() => theme.screen.lg ? 4 : theme.screen.md ? 3 : theme.screen.sm ? 2 : 1, [theme.screen])
+  
   const createItem = async () => {
     console.log("Creating item", newItemTitle.trim(), newItemDescription.trim())
 
@@ -69,6 +71,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         body: {
           title: newItemTitle.trim(),
           description: newItemDescription.trim() || undefined,
+          image_url: newItemImageUrl.trim() || undefined,
           tag_ids: selectedTagIds.length > 0 ? selectedTagIds : undefined,
         },
       })
@@ -82,6 +85,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const resetNewItem = () => {
     setNewItemTitle("")
     setNewItemDescription("")
+    setNewItemImageUrl("")
     setSelectedTagIds([])
     setFormOpen(false)
   }
@@ -95,7 +99,14 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     }
   }, [itemsData, itemsError, items.length])
 
-  const renderItem = ({ item, index }: { item: ItemPublic; index: number }) => (
+
+  const renderItem = ({ item, index }: { item: ItemPublic; index: number }) => {
+    const modIndex = index % numColumns
+    const itemStyles = {
+      marginLeft: modIndex == 0 ? 0 : 16
+    }
+    
+    return (
     <MotiView
       key={item.id}
       from={{
@@ -119,12 +130,19 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         scale: 0.9,
         translateY: -20,
       }}
-      style={themed($itemContainer)}
+      style={[themed($itemContainer), themed(itemStyles)]}
     >
       <Pressable
         style={themed($itemContent)}
         onPress={() => navigation.navigate("item", { itemId: item.id })}
       >
+        {item.image_url && (
+          <Image
+            source={{ uri: item.image_url }}
+            style={themed($itemImage)}
+            resizeMode="cover"
+          />
+        )}
         <Text text={item.title} preset="subheading" />
         {item.description && (
           <Text text={item.description} preset="default" style={themed($itemDescription)} />
@@ -150,7 +168,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         )}
       </Pressable>
     </MotiView>
-  )
+  )}
 
   return (
     <Screen preset="auto" contentContainerStyle={themed($styles.container)}>
@@ -197,6 +215,12 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           placeholder="Item description (optional)"
           containerStyle={themed($inputField)}
         />
+        <ImageUrlInput
+          value={newItemImageUrl}
+          onChangeText={setNewItemImageUrl}
+          placeholder="Image URL (optional)"
+          containerStyle={themed($inputField)}
+        />
         <DropDown
           label="Tags (optional)"
           items={tagOptions}
@@ -227,9 +251,11 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             <Text text="Loading items..." preset="default" />
           </MotiView>
         ) : (
-          <ListView<ItemPublic>
+          <MasonryFlashList<ItemPublic>
+            numColumns={numColumns}
             showsVerticalScrollIndicator={false}
             data={items}
+            ItemSeparatorComponent={() => <View style={{ height: 12, width: 12 }} />} // gap between items
             estimatedItemSize={100}
             renderItem={({ item, index }) => renderItem({ item, index })}
             ListEmptyComponent={
@@ -257,6 +283,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     </Screen>
   )
 }
+
 const $headerRight = {
   flexDirection: "row" as const,
   alignItems: "center" as const,
@@ -297,6 +324,15 @@ const $itemContainer: ViewStyle = {
 }
 
 const $itemContent = { flex: 1 }
+
+const $itemImage: ThemedStyle<ImageStyle> = ({ colors, spacing }) => ({
+  width: "100%",
+  height: 150,
+  borderRadius: 6,
+  marginBottom: spacing.xs,
+  borderWidth: 1,
+  borderColor: colors.border,
+})
 
 const $itemDescription = { marginTop: 4, marginBottom: 8 }
 

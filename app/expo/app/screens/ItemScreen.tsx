@@ -7,7 +7,7 @@ import Alert from '@blazejkustra/react-native-alert';
 import { Button } from "@/components/lib/Button"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
-import { MotiView } from "@/components/MotiView"
+import { MotiView } from "@/components/lib/MotiView"
 import { useItem, useDeleteItem } from "@/services/api/hooks"
 import { extractErrorMessage } from "@/services/api/errorHandling"
 import { useAppTheme } from "@/theme/context"

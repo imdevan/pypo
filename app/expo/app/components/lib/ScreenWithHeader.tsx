@@ -4,6 +4,7 @@ import { Platform } from "react-native"
 import { Screen, ScreenProps } from "@/components/lib/Screen"
 import { DrawerIconButton } from "@/screens/DemoShowroomScreen/DrawerIconButton"
 import { $styles } from "@/theme/styles"
+import { useAppTheme } from "@/theme/context"
 
 export interface ScreenWithHeaderProps extends Omit<ScreenProps, "children"> {
   /**
@@ -26,12 +27,13 @@ export interface ScreenWithHeaderProps extends Omit<ScreenProps, "children"> {
  */
 export function ScreenWithHeader(props: ScreenWithHeaderProps) {
   const { headerComponent, onDrawerToggle, children, ...screenProps } = props
+  const { themed } = useAppTheme();
   const isAndroid = Platform.OS === "android"
 
   return (
     <Screen
       preset="fixed"
-      contentContainerStyle={$styles.flex1}
+      contentContainerStyle={themed($styles.flex1)}
       safeAreaEdges={["top"]}
       {...(isAndroid ? { KeyboardAvoidingViewProps: { behavior: undefined } } : {})}
       {...screenProps}

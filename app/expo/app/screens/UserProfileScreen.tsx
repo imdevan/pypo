@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { ViewStyle } from "react-native"
 import { View } from "react-native"
 
-import { EditProfileForm } from "@/components/EditProfileForm"
+import { EditProfileForm } from "@/components/demo/EditProfileForm"
 import { Button } from "@/components/lib/Button"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"

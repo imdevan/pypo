@@ -3,7 +3,7 @@ import { createDrawerNavigator, DrawerContentComponentProps } from "@react-navig
 import { NavigatorScreenParams } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
-import { MainDrawerWrapper } from "@/components/MainDrawerWrapper"
+import { MainDrawerWrapper } from "@/components/lib/MainDrawerWrapper"
 import { UserProfileScreen } from "@/screens/UserProfileScreen"
 import { TagsScreen } from "@/screens/TagsScreen"
 import type { ThemedStyle } from "@/theme/types"

@@ -35,96 +35,95 @@ export function UserProfileScreen() {
   }
 
   return (
-    <Screen preset="auto" contentContainerStyle={themed($styles.container)}>
-      <View style={themed($container)}>
-        {/* Header Section */}
-        <View style={themed($headerSection)}>
-          <Text text="User Profile" style={themed($title)} />
-        </View>
+    <Screen preset="auto" contentContainerStyle={themed($container)}>
+      {/* Header Section */}
+      <View style={themed($headerSection)}>
+        <Text text="User Profile" style={themed($title)} />
+      </View>
 
-        {/* User Information Section */}
-        <View style={themed($infoSection)}>
-          {isLoading ? (
+      {/* User Information Section */}
+      <View style={themed($infoSection)}>
+        {isLoading ? (
+          <View style={themed($infoCard)}>
+            <Text text="Loading user data..." style={themed($value)} />
+          </View>
+        ) : error ? (
+          <View style={themed($infoCard)}>
+            <Text text="Error loading user data" style={themed($errorValue)} />
+          </View>
+        ) : userData ? (
+          <>
             <View style={themed($infoCard)}>
-              <Text text="Loading user data..." style={themed($value)} />
+              <Text text="Email Address" style={themed($label)} />
+              <Text text={userData.email || "No email available"} style={themed($value)} />
             </View>
-          ) : error ? (
+
             <View style={themed($infoCard)}>
-              <Text text="Error loading user data" style={themed($errorValue)} />
+              <Text text="Full Name" style={themed($label)} />
+              <Text text={userData.full_name || "No name provided"} style={themed($value)} />
             </View>
-          ) : userData ? (
-            <>
-              <View style={themed($infoCard)}>
-                <Text text="Email Address" style={themed($label)} />
-                <Text text={userData.email || "No email available"} style={themed($value)} />
-              </View>
 
-              <View style={themed($infoCard)}>
-                <Text text="Full Name" style={themed($label)} />
-                <Text text={userData.full_name || "No name provided"} style={themed($value)} />
-              </View>
-
-              <View style={themed($infoCard)}>
-                <Text text="Account Status" style={themed($label)} />
-                <Text
-                  text={userData.is_active ? "Active" : "Inactive"}
-                  style={themed(userData.is_active ? $statusValue : $errorValue)}
-                />
-              </View>
-
-              <View style={themed($infoCard)}>
-                <Text text="Member Since" style={themed($label)} />
-                <Text
-                  text={new Date(userData.created_at).toLocaleDateString()}
-                  style={themed($value)}
-                />
-              </View>
-
-              <View style={themed($infoCard)}>
-                <Text text="Last Updated" style={themed($label)} />
-                <Text
-                  text={new Date(userData.updated_at).toLocaleDateString()}
-                  style={themed($value)}
-                />
-              </View>
-
-              {userData.is_superuser && (
-                <View style={themed($infoCard)}>
-                  <Text text="User Role" style={themed($label)} />
-                  <Text text="Superuser" style={themed($superuserValue)} />
-                </View>
-              )}
-            </>
-          ) : (
             <View style={themed($infoCard)}>
-              <Text text="No user data available" style={themed($value)} />
+              <Text text="Account Status" style={themed($label)} />
+              <Text
+                text={userData.is_active ? "Active" : "Inactive"}
+                style={themed(userData.is_active ? $statusValue : $errorValue)}
+              />
             </View>
-          )}
-        </View>
 
-        {/* Actions Section */}
-        <View style={themed($actionsSection)}>
-          <Button
-            text="Edit Profile"
-            style={themed($editButton)}
-            textStyle={themed($editButtonText)}
-            onPress={() => setIsEditing(true)}
-          />
+            <View style={themed($infoCard)}>
+              <Text text="Member Since" style={themed($label)} />
+              <Text
+                text={new Date(userData.created_at).toLocaleDateString()}
+                style={themed($value)}
+              />
+            </View>
 
-          <Button
-            text="Logout"
-            onPress={logout}
-            style={themed($logoutButton)}
-            textStyle={themed($logoutButtonText)}
-          />
-        </View>
+            <View style={themed($infoCard)}>
+              <Text text="Last Updated" style={themed($label)} />
+              <Text
+                text={new Date(userData.updated_at).toLocaleDateString()}
+                style={themed($value)}
+              />
+            </View>
+
+            {userData.is_superuser && (
+              <View style={themed($infoCard)}>
+                <Text text="User Role" style={themed($label)} />
+                <Text text="Superuser" style={themed($superuserValue)} />
+              </View>
+            )}
+          </>
+        ) : (
+          <View style={themed($infoCard)}>
+            <Text text="No user data available" style={themed($value)} />
+          </View>
+        )}
+      </View>
+
+      {/* Actions Section */}
+      <View style={themed($actionsSection)}>
+        <Button
+          text="Edit Profile"
+          style={themed($editButton)}
+          textStyle={themed($editButtonText)}
+          onPress={() => setIsEditing(true)}
+        />
+
+        <Button
+          text="Logout"
+          onPress={logout}
+          style={themed($logoutButton)}
+          textStyle={themed($logoutButtonText)}
+        />
       </View>
     </Screen>
   )
 }
 
 const $container: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  paddingBottom: spacing.lg,
+  padding: spacing.lg,
+  paddingBottom: spacing.xxl,
 })
 
 const $headerSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({

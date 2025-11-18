@@ -89,6 +89,45 @@ Nevertheless, if it doesn't detect a change but a syntax error, it will just sto
 
 ...this previous detail is what makes it useful to have the container alive doing nothing and then, in a Bash session, make it run the live reload server.
 
+## Seeding the Database
+
+### Automatic Seeding on Initialization
+
+The database can be automatically seeded with fake data when it's first initialized. This is controlled by the `SEED_DB` environment variable in your `.env` file:
+
+```env
+SEED_DB=true
+```
+
+When enabled, the seeding runs during the prestart phase (after migrations and initial data creation). This creates:
+- 20 random tags with names, descriptions, and colors
+- 50 random items with titles, descriptions, and images
+- All items owned by the first superuser
+- Each item randomly assigned 0-5 tags
+
+Set `SEED_DB=false` or remove it to disable automatic seeding in production.
+
+### Manual Seeding
+
+You can also manually seed the database at any time:
+
+**In Docker:**
+```console
+$ docker compose exec backend python -m app.seed_data
+```
+
+**Locally:**
+```console
+$ bash ./scripts/seed.sh
+```
+
+Or directly with Python:
+```console
+$ python -m app.seed_data
+```
+
+To customize the number of tags and items, modify the `seed_database()` call in `app/seed_data.py`.
+
 ## Backend tests
 
 To test the backend run:

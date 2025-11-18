@@ -11,3 +11,9 @@ alembic upgrade head
 
 # Create initial data in DB
 python app/initial_data.py
+
+# Seed database with fake data if enabled
+if [ "${SEED_DB:-false}" = "true" ]; then
+    echo "Seeding database with fake data..."
+    python app/seed_data.py
+fi

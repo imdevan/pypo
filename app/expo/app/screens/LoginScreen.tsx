@@ -105,10 +105,11 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
 
   return (
     <Screen
-      preset="auto"
-      contentContainerStyle={themed($styles.container)}
+      preset="scroll"
+      contentContainerStyle={themed([$styles.container, $loginContainer])}
       safeAreaEdges={["top", "bottom"]}
     >
+
       <Text testID="login-heading" tx="loginScreen:logIn" preset="heading" style={themed($logIn)} />
       <Text tx="loginScreen:enterDetails" preset="subheading" style={themed($enterDetails)} />
       {attemptsCount > 2 && (
@@ -182,6 +183,10 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
 
 const $logIn: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginBottom: spacing.sm,
+})
+
+const $loginContainer: ThemedStyle<TextStyle> = ({ spacing }) => ({
+  marginTop: spacing.xxxl,
 })
 
 const $enterDetails: ThemedStyle<TextStyle> = ({ spacing }) => ({

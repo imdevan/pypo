@@ -1,6 +1,6 @@
 import React, { FC, useMemo, useState } from "react"
-import { Alert, View, Pressable, Image } from "react-native"
-import type { ViewStyle, ImageStyle } from "react-native"
+import { Alert, View } from "react-native"
+import type { ViewStyle } from "react-native"
 import { type ContentStyle } from "@shopify/flash-list"
 import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
@@ -19,6 +19,7 @@ import { TextField } from "@/components/lib/TextField"
 import { ImageUrlInput } from "@/components/lib/ImageUrlInput"
 import { MotiView } from "@/components/lib/MotiView"
 import { PopupForm } from "@/components/lib/PopupForm"
+import { ItemCard } from "@/components/lib/ItemCard"
 import { extractErrorMessage } from "@/services/api/errorHandling"
 import { useItems, useCreateItem } from "@/services/api/hooks"
 import { useTags } from "@/services/api/hooks/useTags"
@@ -28,7 +29,7 @@ import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
 import { PressableIcon } from "@/components/lib/Icon"
 
-interface ItemsScreenProps {}
+interface ItemsScreenProps { }
 
 export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const { theme, themed } = useAppTheme()
@@ -56,7 +57,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     value: tag.id,
   }))
   const numColumns = useMemo(() => theme.screen.lg ? 4 : theme.screen.md ? 3 : theme.screen.sm ? 2 : 1, [theme.screen])
-  
+
   const createItem = async () => {
     console.log("Creating item", newItemTitle.trim(), newItemDescription.trim())
 
@@ -102,73 +103,40 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
 
   const renderItem = ({ item, index }: { item: ItemPublic; index: number }) => {
     const modIndex = index % numColumns
-    const itemStyles = {
-      marginLeft: modIndex == 0 ? 0 : 16
+    const itemMargin = {
+      marginLeft: modIndex == 0 ? 0 : 24
     }
-    
+
     return (
-    <MotiView
-      key={item.id}
-      from={{
-        opacity: 0,
-        scale: 0.9,
-        translateY: 20,
-      }}
-      animate={{
-        opacity: 1,
-        scale: 1,
-        translateY: 0,
-      }}
-      transition={{
-        type: "spring",
-        damping: 15,
-        stiffness: 150,
-        delay: index * 100, // Stagger animation by 100ms per item
-      }}
-      exit={{
-        opacity: 0,
-        scale: 0.9,
-        translateY: -20,
-      }}
-      style={[themed($itemContainer), themed(itemStyles)]}
-    >
-      <Pressable
-        style={themed($itemContent)}
-        onPress={() => navigation.navigate("item", { itemId: item.id })}
+      <MotiView
+        key={item.id}
+        from={{
+          opacity: 0,
+          scale: 0.9,
+          translateY: 20,
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+          translateY: 0,
+        }}
+        transition={{
+          type: "spring",
+          damping: 15,
+          stiffness: 150,
+          delay: index * 100, // Stagger animation by 100ms per item
+        }}
+        exit={{
+          opacity: 0,
+          scale: 0.9,
+          translateY: -20,
+        }}
+        style={[themed(itemMargin)]}
       >
-        {item.image_url && (
-          <Image
-            source={{ uri: item.image_url }}
-            style={themed($itemImage)}
-            resizeMode="cover"
-          />
-        )}
-        <Text text={item.title} preset="subheading" />
-        {item.description && (
-          <Text text={item.description} preset="default" style={themed($itemDescription)} />
-        )}
-        {item.tags && item.tags.length > 0 && (
-          <View style={themed($tagsContainer)}>
-            {item.tags.map((tag) => (
-              <View
-                key={tag.id}
-                style={[
-                  themed($tagChip),
-                  tag.color && { backgroundColor: tag.color + "20", borderColor: tag.color },
-                ]}
-              >
-                <Text
-                  text={tag.name}
-                  preset="formHelper"
-                  style={[themed($tagText), tag.color && { color: tag.color }]}
-                />
-              </View>
-            ))}
-          </View>
-        )}
-      </Pressable>
-    </MotiView>
-  )}
+        <ItemCard item={item} onPress={() => navigation.navigate("item", { itemId: item.id })} />
+      </MotiView>
+    )
+  }
 
   return (
     <Screen preset="auto" contentContainerStyle={themed($styles.container)}>
@@ -193,7 +161,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             <Text text={`(${items.length})`} preset="heading" />
           )}
           {/* todo: fix styling style={themed(({colors}) => ({stroke: colors.tintColor}))} */}
-          <PressableIcon name ="plus" size={30} onPress={() => setFormOpen(state => !state)} />
+          <PressableIcon name="plus" size={30} onPress={() => setFormOpen(state => !state)} />
         </View>
       </View>
       <PopupForm
@@ -234,7 +202,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           searchPlaceholder="Search tags..."
           closeAfterSelecting={false}
         />
-      </PopupForm> 
+      </PopupForm>
 
       <View style={themed($itemsSection)}>
         {/* <Text
@@ -255,7 +223,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             numColumns={numColumns}
             showsVerticalScrollIndicator={false}
             data={items}
-            ItemSeparatorComponent={() => <View style={{ height: 12, width: 12 }} />} // gap between items
+            ItemSeparatorComponent={() => <View style={{ height: theme.spacing.xxl, width: theme.spacing.xxl }} />} // gap between items
             estimatedItemSize={100}
             renderItem={({ item, index }) => renderItem({ item, index })}
             ListEmptyComponent={
@@ -297,7 +265,7 @@ const $header: ThemedStyle<ViewStyle> = ({ spacing, width }) => ({
   marginBottom: spacing.sm,
 })
 
-const $debugSection: ThemedStyle<ViewStyle> = ({colors}) => ({
+const $debugSection: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderColor: colors.border,
   borderWidth: 1,
   // color: "#191015",
@@ -315,51 +283,8 @@ const $itemsList: ThemedStyle<ContentStyle> = ({ spacing }) => ({
   paddingBottom: spacing.lg,
 })
 
-const $itemContainer: ViewStyle = {
-  padding: 16,
-  marginBottom: 12,
-  borderRadius: 8,
-  borderColor: "#f5f5f5",
-  borderWidth: 1,
-}
-
-const $itemContent = { flex: 1 }
-
-const $itemImage: ThemedStyle<ImageStyle> = ({ colors, spacing }) => ({
-  width: "100%",
-  height: 150,
-  borderRadius: 6,
-  marginBottom: spacing.xs,
-  borderWidth: 1,
-  borderColor: colors.border,
-})
-
-const $itemDescription = { marginTop: 4, marginBottom: 8 }
-
 const $testButton = { marginTop: 8 }
 
 const $emptyState: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xxl,
 })
-
-const $tagsContainer = {
-  flexDirection: "row" as const,
-  flexWrap: "wrap" as const,
-  marginTop: 8,
-  marginBottom: 8,
-  gap: 6,
-}
-
-const $tagChip = {
-  backgroundColor: colors.background,
-  borderColor: colors.border,
-  borderWidth: 1,
-  borderRadius: 4,
-  paddingHorizontal: 8,
-  paddingVertical: 4,
-}
-
-const $tagText = {
-  fontSize: 12,
-  color: "#666",
-}

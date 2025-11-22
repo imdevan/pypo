@@ -26,8 +26,7 @@ export const TagChip: FC<TagChipProps> = ({ tag }) => {
   // dark  | low  | p800
   // light | high | p200
   const textColor = useMemo(() => {
-    return theme.isDark ? lumi > 0.5 ? neutral200 : neutral800 :
-      lumi > 0.5 ? neutral800 : neutral200;
+    return theme.isDark ? neutral800 : neutral200
   }, [tag.color, theme.isDark])
 
   // Theme is light; lumi is high = p800
@@ -56,7 +55,7 @@ export const TagChip: FC<TagChipProps> = ({ tag }) => {
       <Text
         text={tag.name}
         // style={[themed($tagText), tag.color && { color: neutral800 }]}
-        style={[themed($tagText), tag.color && { color: neutral800 }]}
+        style={[themed($tagText), tag.color && { color: textColor }]}
       />
     </View>
   )

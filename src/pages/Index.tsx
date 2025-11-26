@@ -1,6 +1,7 @@
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
+import { CodeShowcase } from "@/components/CodeShowcase";
 import { VideoSection } from "@/components/VideoSection";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
@@ -20,6 +21,7 @@ const Index = () => {
       <div className="pt-20">
         <Hero />
         <Features />
+        <CodeShowcase />
         <VideoSection />
         <CTA />
         <Footer />

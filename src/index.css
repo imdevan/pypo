@@ -167,4 +167,32 @@ All colors MUST be HSL.
   .hard-shadow-sm {
     box-shadow: 4px 4px 0 hsl(var(--border));
   }
+  
+  .hard-shadow-accent {
+    box-shadow: 8px 8px 0 hsl(var(--accent));
+  }
+  
+  @keyframes bounce-once {
+    0%, 100% {
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+    }
+    50% {
+      transform: translateY(-25%);
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+  }
+  
+  .text-gradient-warm {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--gradient-1)),
+      hsl(var(--gradient-4)),
+      hsl(var(--gradient-5))
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }

@@ -42,7 +42,7 @@ export const CodeShowcase = () => {
           </p>
         </div>
 
-        <div className="border-2 border-border hard-shadow bg-card">
+        <div className="border-2 border-accent hard-shadow-accent bg-card">
           <div className="flex border-b-2 border-border">
             {codeExamples.map((example, index) => (
               <button

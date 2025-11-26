@@ -27,7 +27,7 @@ export const Hero = () => {
           >
             <Button 
               size="lg" 
-              className="text-lg px-8 py-6 border-2 border-foreground bg-foreground text-background hover:bg-background hover:text-foreground transition-all duration-300 hard-shadow relative overflow-hidden"
+              className="text-lg px-8 py-6 border-2 border-foreground bg-foreground text-background hover:bg-background hover:text-foreground hover:border-accent transition-all duration-300 relative overflow-hidden shadow-[8px_8px_0_hsl(var(--border))] hover:shadow-[8px_8px_0_hsl(var(--accent))]"
             >
               <span className="relative z-10 flex items-center gap-2">
                 <Github className="h-5 w-5" />
@@ -35,10 +35,9 @@ export const Hero = () => {
                   {"Get Started".split("").map((char, i) => (
                     <span 
                       key={i} 
-                      className="inline-block group-hover:animate-bounce"
+                      className="inline-block group-hover:[animation:bounce-once_0.6s_ease-in-out_1]"
                       style={{ 
-                        animationDelay: `${i * 0.05}s`,
-                        animationDuration: '0.6s'
+                        animationDelay: `${i * 0.05}s`
                       }}
                     >
                       {char === " " ? "\u00A0" : char}
@@ -53,7 +52,7 @@ export const Hero = () => {
           <Button 
             size="lg" 
             variant="outline"
-            className="text-lg px-8 py-6 border-2 border-border hover:bg-muted transition-colors hard-shadow"
+            className="text-lg px-8 py-6 border-2 border-border hover:border-accent transition-all duration-300 shadow-[8px_8px_0_hsl(var(--border))] hover:shadow-[8px_8px_0_hsl(var(--accent))] group"
             onClick={() => {
               document.getElementById('video-section')?.scrollIntoView({ 
                 behavior: 'smooth',
@@ -62,7 +61,9 @@ export const Hero = () => {
             }}
           >
             <Play className="mr-2 h-5 w-5" />
-            Watch Demo
+            <span className="group-hover:text-gradient-warm transition-all duration-300">
+              Watch Demo
+            </span>
           </Button>
         </div>
       </div>

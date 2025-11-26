@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Github } from "lucide-react";
+import { Github, Play } from "lucide-react";
 
 export const Hero = () => {
   return (
@@ -31,7 +31,20 @@ export const Hero = () => {
             >
               <span className="relative z-10 flex items-center gap-2">
                 <Github className="h-5 w-5" />
-                Get Started
+                <span className="inline-flex">
+                  {"Get Started".split("").map((char, i) => (
+                    <span 
+                      key={i} 
+                      className="inline-block group-hover:animate-bounce"
+                      style={{ 
+                        animationDelay: `${i * 0.05}s`,
+                        animationDuration: '0.6s'
+                      }}
+                    >
+                      {char === " " ? "\u00A0" : char}
+                    </span>
+                  ))}
+                </span>
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--gradient-1))] via-[hsl(var(--gradient-2))] to-[hsl(var(--gradient-3))] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </Button>
@@ -41,7 +54,14 @@ export const Hero = () => {
             size="lg" 
             variant="outline"
             className="text-lg px-8 py-6 border-2 border-border hover:bg-muted transition-colors hard-shadow"
+            onClick={() => {
+              document.getElementById('video-section')?.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+              });
+            }}
           >
+            <Play className="mr-2 h-5 w-5" />
             Watch Demo
           </Button>
         </div>

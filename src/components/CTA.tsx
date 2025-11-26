@@ -27,7 +27,20 @@ export const CTA = () => {
             >
               <span className="relative z-10 flex items-center gap-2">
                 <Github className="h-5 w-5" />
-                View on GitHub
+                <span className="inline-flex">
+                  {"View on GitHub".split("").map((char, i) => (
+                    <span 
+                      key={i} 
+                      className="inline-block group-hover:animate-bounce"
+                      style={{ 
+                        animationDelay: `${i * 0.05}s`,
+                        animationDuration: '0.6s'
+                      }}
+                    >
+                      {char === " " ? "\u00A0" : char}
+                    </span>
+                  ))}
+                </span>
               </span>
               <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--gradient-1))] via-[hsl(var(--gradient-2))] to-[hsl(var(--gradient-3))] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </Button>

@@ -1,6 +1,6 @@
 export const VideoSection = () => {
   return (
-    <section className="py-24 px-4">
+    <section id="video-section" className="py-24 px-4">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-12 space-y-4">
           <h2 className="text-4xl md:text-5xl font-bold">

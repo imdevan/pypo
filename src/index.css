@@ -26,13 +26,17 @@ All colors MUST be HSL.
     --muted: 240 10% 95%;
     --muted-foreground: 240 5% 45%;
 
-    --accent: 45 95% 50%;
-    --accent-foreground: 240 10% 10%;
+    /* --accent: 45 95% 50%; */
+    /* --accent-foreground: 240 10% 10%; */
+    --accent: 240 10% 10%;
+    --accent-foreground: 48 100% 96%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 10% 85%;
+    --accent-border: 240 10% 10%;
+    --border: 240 10% 10%;
+    /* --border: 240 10% 85%; */
     --input: 240 10% 85%;
     --ring: 240 80% 60%;
 
@@ -80,12 +84,16 @@ All colors MUST be HSL.
     --muted: 240 10% 15%;
     --muted-foreground: 240 5% 65%;
 
-    --accent: 45 95% 55%;
-    --accent-foreground: 240 10% 10%;
+    --accent: 48 100% 96%;
+    /* --accent: 45 95% 55%; */
+    /* --accent-foreground: 240 10% 10%; */
+    /* --accent-foreground: 240 10% 10%; */
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 62.8% 50.6%;
     --destructive-foreground: 0 0% 100%;
 
+    --accent-border: 48 100% 96%;
     --border: 240 10% 20%;
     --input: 240 10% 20%;
     --ring: 240 80% 65%;

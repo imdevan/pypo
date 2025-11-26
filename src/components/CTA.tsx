@@ -13,26 +13,26 @@ export const CTA = () => {
             Clone the repo, run the setup, and start building your next big thing.
           </p>
         </div>
-        
+
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-          <a 
-            href="https://github.com/imdevan/pypo" 
-            target="_blank" 
+          <a
+            href="https://github.com/imdevan/pypo"
+            target="_blank"
             rel="noopener noreferrer"
             className="group"
           >
-            <Button 
-              size="lg" 
-              className="text-lg px-8 py-6 border-2 border-foreground bg-foreground text-background hover:bg-background hover:text-foreground hover:border-accent transition-all duration-300 relative overflow-hidden shadow-[8px_8px_0_hsl(var(--border))] hover:shadow-[8px_8px_0_hsl(var(--accent))]"
+            <Button
+              size="lg"
+              className="text-lg px-8 py-6 bg-foreground text-background hover:bg-background hover:text-accent-foreground transition-all duration-300 relative overflow-hidden shadow-[8px_8px_0_hsl(var(--border))] hover:shadow-[8px_8px_0_hsl(var(--accent))]"
             >
               <span className="relative z-10 flex items-center gap-2">
                 <Github className="h-5 w-5" />
                 <span className="inline-flex">
                   {"View on GitHub".split("").map((char, i) => (
-                    <span 
-                      key={i} 
+                    <span
+                      key={i}
                       className="inline-block group-hover:[animation:bounce-once_0.6s_ease-in-out_1]"
-                      style={{ 
+                      style={{
                         animationDelay: `${i * 0.05}s`
                       }}
                     >
@@ -44,14 +44,14 @@ export const CTA = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--gradient-1))] via-[hsl(var(--gradient-2))] to-[hsl(var(--gradient-3))] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </Button>
           </a>
-          
-          <a 
-            href="https://github.com/imdevan/pypo#quick-start" 
-            target="_blank" 
+
+          <a
+            href="https://github.com/imdevan/pypo#quick-start"
+            target="_blank"
             rel="noopener noreferrer"
           >
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               variant="outline"
               className="text-lg px-8 py-6 border-2 border-border hover:border-accent transition-all duration-300 shadow-[8px_8px_0_hsl(var(--border))] hover:shadow-[8px_8px_0_hsl(var(--accent))] group"
             >
@@ -62,7 +62,7 @@ export const CTA = () => {
             </Button>
           </a>
         </div>
-        
+
         <div className="pt-8">
           <p className="text-sm text-muted-foreground">
             MIT License • Free and Open Source

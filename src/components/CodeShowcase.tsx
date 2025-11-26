@@ -43,16 +43,15 @@ export const CodeShowcase = () => {
         </div>
 
         <div className="border-2 border-accent hard-shadow-accent bg-card">
-          <div className="flex border-b-2 border-border">
+          <div className="flex border-b-2 border-accent-border">
             {codeExamples.map((example, index) => (
               <button
                 key={index}
                 onClick={() => setActiveTab(index)}
-                className={`px-6 py-3 font-medium transition-colors border-r-2 border-border last:border-r-0 ${
-                  activeTab === index
-                    ? "bg-foreground text-background"
-                    : "bg-card hover:bg-muted"
-                }`}
+                className={`px-6 py-3 font-medium transition-colors border-r-2 border-accent-border last:border-r-0 ${activeTab === index
+                  ? "bg-foreground text-background"
+                  : "bg-card hover:bg-muted"
+                  }`}
               >
                 {example.title}
               </button>

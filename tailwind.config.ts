@@ -17,6 +17,7 @@ export default {
         mono: ['Fira Code', 'monospace'],
       },
       colors: {
+        'accent-border': "hsl(var(--accent-border))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

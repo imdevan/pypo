@@ -9,34 +9,40 @@ All colors MUST be HSL.
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 240 10% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 240 10% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 240 10% 10%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 240 80% 60%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 270 70% 55%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 240 10% 95%;
+    --muted-foreground: 240 5% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 45 95% 50%;
+    --accent-foreground: 240 10% 10%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 240 10% 85%;
+    --input: 240 10% 85%;
+    --ring: 240 80% 60%;
 
-    --radius: 0.5rem;
+    --radius: 0rem;
+    
+    --gradient-1: 25 100% 55%;
+    --gradient-2: 240 100% 63%;
+    --gradient-3: 200 100% 75%;
+    --gradient-4: 60 100% 45%;
+    --gradient-5: 45 100% 72%;
 
     --sidebar-background: 0 0% 98%;
 
@@ -56,33 +62,33 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 240 10% 8%;
+    --foreground: 0 0% 98%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 240 10% 10%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 240 10% 10%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 240 80% 65%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 270 70% 60%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 240 10% 15%;
+    --muted-foreground: 240 5% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 45 95% 55%;
+    --accent-foreground: 240 10% 10%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 50.6%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 240 10% 20%;
+    --input: 240 10% 20%;
+    --ring: 240 80% 65%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -100,6 +106,65 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-mono;
+  }
+}
+
+@layer utilities {
+  .gradient-border {
+    position: relative;
+    background: hsl(var(--card));
+  }
+  
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--gradient-1)),
+      hsl(var(--gradient-2)),
+      hsl(var(--gradient-3)),
+      hsl(var(--gradient-4)),
+      hsl(var(--gradient-5)),
+      hsl(var(--gradient-1))
+    );
+    background-size: 300% 300%;
+    animation: gradient-shift 45s linear infinite;
+    z-index: -1;
+  }
+  
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+  
+  .text-gradient {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--gradient-1)),
+      hsl(var(--gradient-2)),
+      hsl(var(--gradient-3)),
+      hsl(var(--gradient-4)),
+      hsl(var(--gradient-5)),
+      hsl(var(--gradient-1))
+    );
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 45s linear infinite;
+  }
+  
+  .hard-shadow {
+    box-shadow: 8px 8px 0 hsl(var(--border));
+  }
+  
+  .hard-shadow-sm {
+    box-shadow: 4px 4px 0 hsl(var(--border));
   }
 }

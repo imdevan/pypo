@@ -167,6 +167,7 @@ pre[class*="language-"] {
 :root:not(.dark) .token.function-name,
 :root:not(.dark) .token.function {
 	color: #b57614;
+	text-shadow: none;
 }
 
 .token.boolean,

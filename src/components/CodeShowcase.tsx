@@ -5,21 +5,32 @@ import "@/styles/prism-synthwave84-custom.css";
 
 const codeExamples = [
   {
+    title: "Mono Repo",
+    comment: `# turbo package manager on the bun runtime`,
+    code: `# one-line quickstart script
+bun i && bun dev`
+  },
+
+  {
     title: "Backend",
-    comment: "# fully dockerized environment",
+    comment: "# fully dockerized Fast API + SqlAlchemy and PostgreSQL",
     code: `cd app/backend/
 docker compose up --build # to seed the db`
   },
   {
     title: "Frontend",
-    comment: "# run the expo project",
-    code: `yarn i
-yarn dev`
+    comment: "# frontend bootstraped on Expo from Inifite Red's Ignite",
+    code: `cd app/expo
+bun i && bun dev`
   },
   {
-    title: "Build",
-    comment: "# turbo package manager",
-    code: `turbo build`
+    title: "DB",
+    comment: "# convient built in scripts",
+    code: `# generate db migrations easily
+tubo db:migrate
+
+# generate frontend queries from python models
+turbo db:sync`
   }
 ];
 

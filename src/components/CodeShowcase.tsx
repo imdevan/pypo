@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Prism from "prismjs";
 import "prismjs/components/prism-bash";
-import "prismjs/themes/prism-tomorrow.css";
+import "@/styles/prism-synthwave84-custom.css";
 
 const codeExamples = [
   {

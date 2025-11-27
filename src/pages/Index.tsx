@@ -14,10 +14,9 @@ const Index = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercentage = (currentScrollY / scrollHeight) * 100;
+      const viewportHeight = window.innerHeight;
       
-      if (Math.abs(currentScrollY - lastScrollY) > scrollHeight * 0.25) {
+      if (Math.abs(currentScrollY - lastScrollY) > viewportHeight * 0.05) {
         setNavVisible(currentScrollY < lastScrollY);
         setLastScrollY(currentScrollY);
       }

@@ -27,7 +27,7 @@ bun i && bun dev`
     title: "DB",
     comment: "# convient built in scripts",
     code: `# generate db migrations easily
-tubo db:migrate
+turbo db:migrate
 
 # generate frontend queries from python models
 turbo db:sync`
@@ -38,6 +38,19 @@ export const CodeShowcase = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
+    Prism.languages.insertBefore('bash', 'function', {
+      bun_function: {
+        pattern: /\b(?:bun|turbo)\b/,
+        alias: 'function'
+      }
+    });
+
+    // Prism.languages.insertBefore('bash', 'function', {
+    //   bun_function: {
+    //     pattern: /\bbun\b/,
+    //     alias: 'function'
+    //   }
+    // });
     Prism.highlightAll();
   }, [activeTab]);
 

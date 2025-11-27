@@ -45,13 +45,13 @@ pre[class*="language-"] {
 /* Dark mode background */
 .dark pre[class*="language-"],
 .dark :not(pre) > code[class*="language-"] {
-	background-image: linear-gradient(to bottom, #2a2139 75%, #34294f);
+	/* background-image: linear-gradient(to bottom, #2a2139 75%, #34294f); */
 }
 
 /* Light mode background - adjusted for visibility */
 :root:not(.dark) pre[class*="language-"],
 :root:not(.dark) :not(pre) > code[class*="language-"] {
-	background-image: linear-gradient(to bottom, #f5e6ff 75%, #e8d5ff);
+	/* background-image: linear-gradient(to bottom, #f5e6ff 75%, #e8d5ff); */
 }
 
 /* Inline code */

@@ -48,10 +48,17 @@ pre[class*="language-"] {
 	/* background-image: linear-gradient(to bottom, #2a2139 75%, #34294f); */
 }
 
-/* Light mode background - tomorrow theme */
+/* Light mode background - gruvbox light */
 :root:not(.dark) pre[class*="language-"],
 :root:not(.dark) :not(pre) > code[class*="language-"] {
-	background: #f5f5f5;
+	background: #f9f5d7;
+}
+
+/* Light mode base text color - gruvbox light */
+:root:not(.dark) code[class*="language-"],
+:root:not(.dark) pre[class*="language-"] {
+	color: #3c3836;
+	text-shadow: none;
 }
 
 /* Inline code */
@@ -70,22 +77,22 @@ pre[class*="language-"] {
 	color: #8e8e8e;
 }
 
-/* Light mode comments - tomorrow theme */
+/* Light mode comments - gruvbox light */
 :root:not(.dark) .token.comment,
 :root:not(.dark) .token.block-comment,
 :root:not(.dark) .token.prolog,
 :root:not(.dark) .token.doctype,
 :root:not(.dark) .token.cdata {
-	color: #999999;
+	color: #7c6f64;
 }
 
 .token.punctuation {
 	color: #ccc;
 }
 
-/* Light mode punctuation - tomorrow theme */
+/* Light mode punctuation - gruvbox light */
 :root:not(.dark) .token.punctuation {
-	color: #cccccc;
+	color: #7c6f64;
 }
 
 .token.tag,
@@ -98,18 +105,27 @@ pre[class*="language-"] {
 	color: #e2777a;
 }
 
-/* Light mode tags/numbers - tomorrow theme */
+/* Light mode tags - gruvbox light */
 :root:not(.dark) .token.tag,
-:root:not(.dark) .token.attr-name,
+:root:not(.dark) .token.tag .punctuation,
+:root:not(.dark) .token.doctype,
+:root:not(.dark) .token.builtin {
+	color: #b57614;
+}
+
+:root:not(.dark) .token.attr-name {
+	color: #7c6f64;
+}
+
 :root:not(.dark) .token.namespace,
 :root:not(.dark) .token.deleted {
-	color: #e2777a;
+	color: #9d0006;
 }
 
 :root:not(.dark) .token.number,
 :root:not(.dark) .token.unit,
 :root:not(.dark) .token.hexcode {
-	color: #f08d49;
+	color: #8f3f71;
 }
 
 .token.property,
@@ -118,17 +134,28 @@ pre[class*="language-"] {
 	text-shadow: 0 0 2px #100c0f, 0 0 10px #257c5575, 0 0 35px #21272475;
 }
 
-/* Light mode property - tomorrow theme */
+/* Light mode property - gruvbox light */
 :root:not(.dark) .token.property,
-:root:not(.dark) .token.class-name,
 :root:not(.dark) .token.constant,
-:root:not(.dark) .token.symbol {
-	color: #f8c555;
+:root:not(.dark) .token.variable {
+	color: #9d0006;
 	text-shadow: none;
 }
 
-:root:not(.dark) .token.selector {
-	color: #cc99cd;
+:root:not(.dark) .token.class-name {
+	color: #b57614;
+	text-shadow: none;
+}
+
+:root:not(.dark) .token.symbol {
+	color: #8f3f71;
+	text-shadow: none;
+}
+
+:root:not(.dark) .token.selector,
+:root:not(.dark) .token.important,
+:root:not(.dark) .token.atrule {
+	color: #9d0006;
 	text-shadow: none;
 }
 
@@ -136,9 +163,10 @@ pre[class*="language-"] {
 	color: #6196cc;
 }
 
-/* Light mode function-name - tomorrow theme */
-:root:not(.dark) .token.function-name {
-	color: #6196cc;
+/* Light mode function-name - gruvbox light */
+:root:not(.dark) .token.function-name,
+:root:not(.dark) .token.function {
+	color: #b57614;
 }
 
 .token.boolean,
@@ -148,16 +176,14 @@ pre[class*="language-"] {
 	text-shadow: 0 0 2px #001716, 0 0 3px #03edf975, 0 0 5px #03edf975, 0 0 8px #03edf975;
 }
 
-/* Light mode boolean/function - tomorrow theme */
-:root:not(.dark) .token.boolean,
-:root:not(.dark) .token.number,
-:root:not(.dark) .token.function {
-	color: #f08d49;
+/* Light mode boolean - gruvbox light */
+:root:not(.dark) .token.boolean {
+	color: #9d0006;
 	text-shadow: none;
 }
 
 :root:not(.dark) .token.selector .token.id {
-	color: #f8c555;
+	color: #b57614;
 	text-shadow: none;
 }
 
@@ -185,13 +211,10 @@ pre[class*="language-"] {
 	text-shadow: 0 0 2px #393a33, 0 0 8px #f39f0575, 0 0 2px #f39f0575;
 }
 
-/* Light mode keywords - tomorrow theme */
-:root:not(.dark) .token.important,
-:root:not(.dark) .token.atrule,
+/* Light mode keywords - gruvbox light */
 :root:not(.dark) .token.keyword,
-:root:not(.dark) .token.selector .token.class,
-:root:not(.dark) .token.builtin {
-	color: #cc99cd;
+:root:not(.dark) .token.selector .token.class {
+	color: #9d0006;
 	text-shadow: none;
 }
 
@@ -203,13 +226,19 @@ pre[class*="language-"] {
 	color: #f87c32;
 }
 
-/* Light mode strings - tomorrow theme */
+/* Light mode strings - gruvbox light */
 :root:not(.dark) .token.string,
-:root:not(.dark) .token.char,
+:root:not(.dark) .token.char {
+	color: #797403;
+}
+
 :root:not(.dark) .token.attr-value,
-:root:not(.dark) .token.regex,
-:root:not(.dark) .token.variable {
-	color: #7ec699;
+:root:not(.dark) .token.attr-value .punctuation {
+	color: #7c6f64;
+}
+
+:root:not(.dark) .token.regex {
+	background: #797403;
 }
 
 .token.operator,
@@ -218,11 +247,18 @@ pre[class*="language-"] {
 	color: #67cdcc;
 }
 
-/* Light mode operator - tomorrow theme */
-:root:not(.dark) .token.operator,
-:root:not(.dark) .token.entity,
+/* Light mode operator - gruvbox light */
+:root:not(.dark) .token.operator {
+	color: #7c6f64;
+}
+
+:root:not(.dark) .token.entity {
+	color: #8f3f71;
+}
+
 :root:not(.dark) .token.url {
-	color: #67cdcc;
+	color: #797403;
+	text-decoration: underline;
 }
 
 .token.important,
@@ -242,7 +278,7 @@ pre[class*="language-"] {
 	color: green;
 }
 
-/* Light mode inserted - tomorrow theme */
+/* Light mode inserted - gruvbox light */
 :root:not(.dark) .token.inserted {
-	color: #7ec699;
+	background: #7c6f64;
 }

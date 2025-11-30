@@ -45,7 +45,7 @@ export const Hero = () => {
                   ))}
                 </span>
               </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--gradient-1))] via-[hsl(var(--gradient-2))] to-[hsl(var(--gradient-3))] opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-[gradient-shift_8s_linear_infinite]" style={{ backgroundSize: '300% 300%' }} />
+              <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--gradient-1))] via-[hsl(var(--gradient-2))] to-[hsl(var(--gradient-3))] opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-gradient-shift" style={{ backgroundSize: '300% 300%' }} />
             </Button>
           </a>
 

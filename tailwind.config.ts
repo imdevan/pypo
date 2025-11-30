@@ -13,6 +13,11 @@ export default {
       },
     },
     extend: {
+      transitionDuration: {
+        '2000': '2000ms', // Custom 2-second duration
+        'low-and-slow': '4000ms', // Custom 2-second duration
+        'fast': '50ms', // Custom fast duration
+      },
       fontFamily: {
         mono: ['Fira Code', 'monospace'],
       },

@@ -248,7 +248,7 @@ const $pressedViewPresets: Record<Presets, ThemedStyle<ViewStyle>> = {
   outline: ({ colors }) => ({
     backgroundColor: colors.palette.neutral800,
     color: colors.background,
-   }),
+  }),
 }
 
 const $pressedTextPresets: Record<Presets, ThemedStyle<TextStyle>> = {

@@ -3,9 +3,9 @@ import { TextStyle, View, ViewStyle } from "react-native"
 import DropDownPicker from "react-native-dropdown-picker"
 
 import { useAppTheme } from "@/theme/context"
+import { ThemedStyle } from "@/theme/types"
 
 import { Text } from "./Text"
-import { ThemedStyle } from "@/theme/types"
 
 export interface DropDownOption {
   label: string
@@ -179,7 +179,7 @@ const $dropdownContainer = {
 }
 
 const $dropdownLabel: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  color:colors.text,
+  color: colors.text,
   marginBottom: 8,
 })
 
@@ -205,7 +205,7 @@ const $dropdownListStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
 const $dropdownTextStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.text,
   fontSize: 16,
-});
+})
 
 const $dropdownPlaceholderStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.textDim,

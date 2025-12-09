@@ -243,7 +243,7 @@ export function Screen(props: ScreenProps) {
   const {
     theme: { colors },
     themeContext,
-    themed
+    themed,
   } = useAppTheme()
   const {
     backgroundColor,

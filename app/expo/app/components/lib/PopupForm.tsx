@@ -24,7 +24,7 @@ interface PopupFormProps {
 /**
  * PopupForm component that manages its own visibility state and renders form content
  * as children within a styled form card
- * 
+ *
  * if {open} is defined (true or false) it will override the button functionality
  */
 export function PopupForm({
@@ -72,8 +72,8 @@ export function PopupForm({
     <View style={themed($section)}>
       <View style={themed($sectionHeader)}>
         {title && <Text text={title} style={themed($sectionTitle)} />}
-        
-        {!isOpen && (typeof open === "undefined") && (
+
+        {!isOpen && typeof open === "undefined" && (
           <Button
             text={triggerText}
             onPress={handleOpen}
@@ -84,31 +84,32 @@ export function PopupForm({
         )}
       </View>
 
-      {isOpen || (!(typeof open === "undefined") && open === true) && (
-        <View style={themed($formCard)}>
-          {error && (
-            <View style={themed($errorContainer)}>
-              <Text text={error} style={themed($errorText)} />
+      {isOpen ||
+        (!(typeof open === "undefined") && open === true && (
+          <View style={themed($formCard)}>
+            {error && (
+              <View style={themed($errorContainer)}>
+                <Text text={error} style={themed($errorText)} />
+              </View>
+            )}
+            {children}
+            <View style={themed($formActions)}>
+              <Button
+                text="Cancel"
+                onPress={handleCancel}
+                style={themed($cancelButton)}
+                textStyle={themed($cancelButtonText)}
+              />
+              <Button
+                text="Save"
+                onPress={handleSuccess}
+                style={themed($saveButton)}
+                textStyle={themed($saveButtonText)}
+                disabled={saveDisabled}
+              />
             </View>
-          )}
-          {children}
-          <View style={themed($formActions)}>
-            <Button
-              text="Cancel"
-              onPress={handleCancel}
-              style={themed($cancelButton)}
-              textStyle={themed($cancelButtonText)}
-            />
-            <Button
-              text="Save"
-              onPress={handleSuccess}
-              style={themed($saveButton)}
-              textStyle={themed($saveButtonText)}
-              disabled={saveDisabled}
-            />
           </View>
-        </View>
-      )}
+        ))}
     </View>
   )
 }

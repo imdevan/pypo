@@ -25,6 +25,7 @@ import { QueryClientProvider } from "@tanstack/react-query"
 import { KeyboardProvider } from "react-native-keyboard-controller"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
 
+import { AlertProvider } from "./context/AlertContext"
 import { AuthProvider } from "./context/AuthContext"
 import { DrawerProvider } from "./context/DrawerContext"
 import { initI18n } from "./i18n"
@@ -35,7 +36,6 @@ import { ThemeProvider } from "./theme/context"
 import { customFontsToLoad } from "./theme/typography"
 import { loadDateFnsLocale } from "./utils/formatDate"
 import * as storage from "./utils/storage"
-import { AlertProvider } from "./context/AlertContext"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 

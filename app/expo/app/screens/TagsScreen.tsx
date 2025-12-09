@@ -1,19 +1,19 @@
 import React, { useState } from "react"
 import { ViewStyle, Alert } from "react-native"
 import { View, ScrollView } from "react-native"
+import { ColorFormatsObject } from "reanimated-color-picker"
 
+import { TagPublic, TagCreate, TagUpdate } from "@/client/types.gen"
 import { Button } from "@/components/lib/Button"
 import { ColorPicker } from "@/components/lib/ColorPicker"
+import { PopupForm } from "@/components/lib/PopupForm"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
 import { TextField } from "@/components/lib/TextField"
-import { PopupForm } from "@/components/lib/PopupForm"
 import { useTags, useCreateTag, useUpdateTag, useDeleteTag } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
-import type { ThemedStyle } from "@/theme/types"
-import { TagPublic, TagCreate, TagUpdate } from "@/client/types.gen"
 import { $styles } from "@/theme/styles"
-import { ColorFormatsObject } from "reanimated-color-picker"
+import type { ThemedStyle } from "@/theme/types"
 
 /**
  * TagsScreen displays and manages global tags
@@ -58,12 +58,11 @@ export function TagsScreen() {
           },
           onError: (error: any) => {
             // Extract the detail message from the error response
-            const errorMessage = error?.response?.data?.detail || 
-                                "Failed to create tag"
+            const errorMessage = error?.response?.data?.detail || "Failed to create tag"
             setCreateTagError(errorMessage)
             reject(new Error(errorMessage))
           },
-        }
+        },
       )
     })
   }
@@ -84,7 +83,7 @@ export function TagsScreen() {
         onError: (error) => {
           Alert.alert("Error", "Failed to update tag")
         },
-      }
+      },
     )
   }
 
@@ -95,7 +94,7 @@ export function TagsScreen() {
         onError: (error) => {
           Alert.alert("Error", "Failed to delete tag")
         },
-      }
+      },
     )
 
     // Alert.alert(
@@ -142,145 +141,146 @@ export function TagsScreen() {
 
   return (
     <Screen preset="auto" contentContainerStyle={[themed($styles.container)]}>
-        {/* Header Section */}
-        <View style={themed($headerSection)}>
-          <Text text="Global Tags" style={themed($title)} />
-          <Text text="Manage tags for categorizing items" style={themed($subtitle)} />
-        </View>
+      {/* Header Section */}
+      <View style={themed($headerSection)}>
+        <Text text="Global Tags" style={themed($title)} />
+        <Text text="Manage tags for categorizing items" style={themed($subtitle)} />
+      </View>
 
-        {/* Create New Tag Section */}
-        <PopupForm
-          title="Create New Tag"
-          triggerText="Add Tag"
-          onSuccess={handleCreateTag}
-          onCancel={resetNewTag}
-          disabled={createTagMutation.isPending}
-          error={createTagError}
-          onClearError={() => setCreateTagError(null)}
-        >
-          <TextField
-            label="Tag Name"
-            value={newTag.name}
-            onChangeText={(text) => setNewTag({ ...newTag, name: text })}
-            placeholder="Enter tag name"
-            style={themed($input)}
-          />
-          <TextField
-            label="Description"
-            value={newTag.description || ""}
-            onChangeText={(text) => setNewTag({ ...newTag, description: text })}
-            placeholder="Enter description (optional)"
-            style={themed($input)}
-            multiline
-          />
-          <ColorPicker
-            label="Color"
-            value={newTag.color || "#007AFF"}
-            onColorChange={(color) => {console.log("color change", color); setNewTag({ ...newTag, color: color.slice(0, -2) })}}
-            style={themed($input)}
-          />
-        </PopupForm>
+      {/* Create New Tag Section */}
+      <PopupForm
+        title="Create New Tag"
+        triggerText="Add Tag"
+        onSuccess={handleCreateTag}
+        onCancel={resetNewTag}
+        disabled={createTagMutation.isPending}
+        error={createTagError}
+        onClearError={() => setCreateTagError(null)}
+      >
+        <TextField
+          label="Tag Name"
+          value={newTag.name}
+          onChangeText={(text) => setNewTag({ ...newTag, name: text })}
+          placeholder="Enter tag name"
+          style={themed($input)}
+        />
+        <TextField
+          label="Description"
+          value={newTag.description || ""}
+          onChangeText={(text) => setNewTag({ ...newTag, description: text })}
+          placeholder="Enter description (optional)"
+          style={themed($input)}
+          multiline
+        />
+        <ColorPicker
+          label="Color"
+          value={newTag.color || "#007AFF"}
+          onColorChange={(color) => {
+            console.log("color change", color)
+            setNewTag({ ...newTag, color: color.slice(0, -2) })
+          }}
+          style={themed($input)}
+        />
+      </PopupForm>
 
-        {/* Tags List Section */}
-        <View style={themed($section)}>
-          <Text text="Existing Tags" style={themed($sectionTitle)} />
-          {isLoading ? (
-            <View style={themed($infoCard)}>
-              <Text text="Loading tags..." style={themed($value)} />
-            </View>
-          ) : error ? (
-            <View style={themed($infoCard)}>
-              <Text text="Error loading tags" style={themed($errorValue)} />
-            </View>
-          ) : tagsData?.data && tagsData.data.length > 0 ? (
-            tagsData.data.map((tag) => (
-              <View key={tag.id} style={themed($tagCard)}>
-                {editingTag?.id === tag.id ? (
-                  // Edit Form
-                  <View style={themed($editForm)}>
-                    <TextField
-                      label="Tag Name"
-                      value={editForm.name || ""}
-                      onChangeText={(text) => setEditForm({ ...editForm, name: text })}
-                      style={themed($input)}
+      {/* Tags List Section */}
+      <View style={themed($section)}>
+        <Text text="Existing Tags" style={themed($sectionTitle)} />
+        {isLoading ? (
+          <View style={themed($infoCard)}>
+            <Text text="Loading tags..." style={themed($value)} />
+          </View>
+        ) : error ? (
+          <View style={themed($infoCard)}>
+            <Text text="Error loading tags" style={themed($errorValue)} />
+          </View>
+        ) : tagsData?.data && tagsData.data.length > 0 ? (
+          tagsData.data.map((tag) => (
+            <View key={tag.id} style={themed($tagCard)}>
+              {editingTag?.id === tag.id ? (
+                // Edit Form
+                <View style={themed($editForm)}>
+                  <TextField
+                    label="Tag Name"
+                    value={editForm.name || ""}
+                    onChangeText={(text) => setEditForm({ ...editForm, name: text })}
+                    style={themed($input)}
+                  />
+                  <TextField
+                    label="Description"
+                    value={editForm.description || ""}
+                    onChangeText={(text) => setEditForm({ ...editForm, description: text })}
+                    style={themed($input)}
+                    multiline
+                  />
+                  <ColorPicker
+                    label="Color"
+                    value={editForm.color || "#007AFF"}
+                    onColorChange={(color) => setEditForm({ ...editForm, color })}
+                    style={themed($input)}
+                  />
+                  <View style={themed($formActions)}>
+                    <Button
+                      text="Cancel"
+                      onPress={cancelEditing}
+                      style={themed($cancelButton)}
+                      textStyle={themed($cancelButtonText)}
                     />
-                    <TextField
-                      label="Description"
-                      value={editForm.description || ""}
-                      onChangeText={(text) => setEditForm({ ...editForm, description: text })}
-                      style={themed($input)}
-                      multiline
+                    <Button
+                      text="Save"
+                      onPress={handleUpdateTag}
+                      style={themed($saveButton)}
+                      textStyle={themed($saveButtonText)}
+                      disabled={updateTagMutation.isPending}
                     />
-                    <ColorPicker
-                      label="Color"
-                      value={editForm.color || "#007AFF"}
-                      onColorChange={(color) => setEditForm({ ...editForm, color })}
-                      style={themed($input)}
-                    />
-                    <View style={themed($formActions)}>
-                      <Button
-                        text="Cancel"
-                        onPress={cancelEditing}
-                        style={themed($cancelButton)}
-                        textStyle={themed($cancelButtonText)}
-                      />
-                      <Button
-                        text="Save"
-                        onPress={handleUpdateTag}
-                        style={themed($saveButton)}
-                        textStyle={themed($saveButtonText)}
-                        disabled={updateTagMutation.isPending}
-                      />
-                    </View>
                   </View>
-                ) : (
-                  // Tag Display
-                  <View style={themed($tagContent)}>
-
-                    <View style={themed($tagInfo)}>
-                      <View style={themed($tagHeader)}>
-                        <View
-                          style={[
-                            themed($colorIndicator),
-                            { backgroundColor: tag.color || "#007AFF" },
-                          ]}
-                        />
-                        <Text text={tag.name} style={themed($tagName)} />
-                      </View>
-                      {!!tag.description && (
-                        <Text text={tag.description} style={themed($tagDescription)} />
-                      )}
-                      <Text
-                        text={`Created: ${new Date(tag.created_at).toLocaleDateString()}`}
-                        style={themed($tagDate)}
+                </View>
+              ) : (
+                // Tag Display
+                <View style={themed($tagContent)}>
+                  <View style={themed($tagInfo)}>
+                    <View style={themed($tagHeader)}>
+                      <View
+                        style={[
+                          themed($colorIndicator),
+                          { backgroundColor: tag.color || "#007AFF" },
+                        ]}
                       />
+                      <Text text={tag.name} style={themed($tagName)} />
                     </View>
-                    <View style={themed($tagActions)}>
-                      <Button
-                        text="Edit"
-                        onPress={() => startEditing(tag)}
-                        style={themed($editButton)}
-                        textStyle={themed($editButtonText)}
-                      />
-                      <Button
-                        text="Delete"
-                        onPress={() => handleDeleteTag(tag)}
-                        style={themed($deleteButton)}
-                        textStyle={themed($deleteButtonText)}
-                        disabled={deleteTagMutation.isPending}
-                      />
-                    </View>
-                    
+                    {!!tag.description && (
+                      <Text text={tag.description} style={themed($tagDescription)} />
+                    )}
+                    <Text
+                      text={`Created: ${new Date(tag.created_at).toLocaleDateString()}`}
+                      style={themed($tagDate)}
+                    />
                   </View>
-                )}
-              </View>
-            ))
-          ) : (
-            <View style={themed($infoCard)}>
-              <Text text="No tags found. Create your first tag!" style={themed($value)} />
+                  <View style={themed($tagActions)}>
+                    <Button
+                      text="Edit"
+                      onPress={() => startEditing(tag)}
+                      style={themed($editButton)}
+                      textStyle={themed($editButtonText)}
+                    />
+                    <Button
+                      text="Delete"
+                      onPress={() => handleDeleteTag(tag)}
+                      style={themed($deleteButton)}
+                      textStyle={themed($deleteButtonText)}
+                      disabled={deleteTagMutation.isPending}
+                    />
+                  </View>
+                </View>
+              )}
             </View>
-          )} 
-        </View>
+          ))
+        ) : (
+          <View style={themed($infoCard)}>
+            <Text text="No tags found. Create your first tag!" style={themed($value)} />
+          </View>
+        )}
+      </View>
     </Screen>
   )
 }

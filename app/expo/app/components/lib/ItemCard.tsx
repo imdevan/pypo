@@ -1,10 +1,12 @@
 import React, { FC } from "react"
 import { View, Pressable, Image } from "react-native"
 import type { ImageStyle } from "react-native"
+
 import type { ItemPublic } from "@/client/types.gen"
 import { Text } from "@/components/lib/Text"
 import { useAppTheme } from "@/theme/context"
 import { type ThemedStyle } from "@/theme/types"
+
 import { TagChip } from "./TagChip"
 
 interface ItemCardProps {
@@ -18,9 +20,7 @@ export const ItemCard: FC<ItemCardProps> = ({ item, onPress }) => {
   return (
     <Pressable style={themed($itemContent)} onPress={onPress}>
       {item.image_url && (
-        <Image
-          source={{ uri: item.image_url }} style={themed($itemImage)} resizeMode="cover"
-        />
+        <Image source={{ uri: item.image_url }} style={themed($itemImage)} resizeMode="cover" />
       )}
       {item.tags && item.tags.length > 0 && (
         <View style={themed($tagsContainer)}>

@@ -1,4 +1,4 @@
-import {View} from 'react-native'
+import { View } from "react-native"
 
 export const MasonryList: FC = () => View
 // import { MasonryFlashList } from "@shopify/flash-list"
@@ -13,9 +13,9 @@ export const MasonryList: FC = () => View
 //   numColumns,
 //   showsVerticalScrollIndicator,
 //   items,
-//   ItemSeparatorComponent, 
+//   ItemSeparatorComponent,
 //   estimatedItemSize=100,
-//   renderItem, 
+//   renderItem,
 //   contentContainerStyle
 // }) => {
 //

@@ -1,23 +1,25 @@
 import React, { FC, useMemo, useState } from "react"
 import { Alert, View } from "react-native"
 import type { ViewStyle } from "react-native"
-import { type ContentStyle } from "@shopify/flash-list"
 import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
-
-import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
-// import { MasonryList } from "@/components/lib/MasonryList"
-import type { ItemPublic } from "@/client/types.gen"
+import { type ContentStyle } from "@shopify/flash-list"
 import { MasonryFlashList } from "@shopify/flash-list"
-import { DebugView } from "@/components/lib/DebugView"
+
+import type { ItemPublic } from "@/client/types.gen"
 import { Button } from "@/components/lib/Button"
+import { DebugView } from "@/components/lib/DebugView"
 import { DropDown } from "@/components/lib/DropDown"
 import { EmptyState } from "@/components/lib/EmptyState"
-import { Screen } from "@/components/lib/Screen"
-import { Text } from "@/components/lib/Text"
-import { TextField } from "@/components/lib/TextField"
+import { PressableIcon } from "@/components/lib/Icon"
 import { ImageUrlInput } from "@/components/lib/ImageUrlInput"
 import { MotiView } from "@/components/lib/MotiView"
+import { Screen } from "@/components/lib/Screen"
+import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
+// import { MasonryList } from "@/components/lib/MasonryList"
+
+import { Text } from "@/components/lib/Text"
+import { TextField } from "@/components/lib/TextField"
 import { PopupForm } from "@/components/lib/PopupForm"
 import { ItemCard } from "@/components/lib/ItemCard"
 import { extractErrorMessage } from "@/services/api/errorHandling"
@@ -27,9 +29,8 @@ import { colors } from "@/theme/colors"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
-import { PressableIcon } from "@/components/lib/Icon"
 
-interface ItemsScreenProps { }
+interface ItemsScreenProps {}
 
 export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const { theme, themed } = useAppTheme()
@@ -56,7 +57,10 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     label: tag.name,
     value: tag.id,
   }))
-  const numColumns = useMemo(() => theme.screen.lg ? 4 : theme.screen.md ? 3 : theme.screen.sm ? 2 : 1, [theme.screen])
+  const numColumns = useMemo(
+    () => (theme.screen.lg ? 4 : theme.screen.md ? 3 : theme.screen.sm ? 2 : 1),
+    [theme.screen],
+  )
 
   const createItem = async () => {
     console.log("Creating item", newItemTitle.trim(), newItemDescription.trim())
@@ -100,11 +104,10 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     }
   }, [itemsData, itemsError, items.length])
 
-
   const renderItem = ({ item, index }: { item: ItemPublic; index: number }) => {
     const modIndex = index % numColumns
     const itemMargin = {
-      marginLeft: modIndex == 0 ? 0 : 24
+      marginLeft: modIndex == 0 ? 0 : 24,
     }
 
     return (
@@ -131,7 +134,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           scale: 0.9,
           translateY: -20,
         }}
-        style={[themed(itemMargin)]}
+        style={themed(itemMargin)}
       >
         <ItemCard item={item} onPress={() => navigation.navigate("item", { itemId: item.id })} />
       </MotiView>
@@ -157,11 +160,9 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
       <View style={themed($header)}>
         <Text text={`Items`} preset="heading" />
         <View style={$headerRight}>
-          {items.length > 0 && (
-            <Text text={`(${items.length})`} preset="heading" />
-          )}
+          {items.length > 0 && <Text text={`(${items.length})`} preset="heading" />}
           {/* todo: fix styling style={themed(({colors}) => ({stroke: colors.tintColor}))} */}
-          <PressableIcon name="plus" size={30} onPress={() => setFormOpen(state => !state)} />
+          <PressableIcon name="plus" size={30} onPress={() => setFormOpen((state) => !state)} />
         </View>
       </View>
       <PopupForm
@@ -223,7 +224,9 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             numColumns={numColumns}
             showsVerticalScrollIndicator={false}
             data={items}
-            ItemSeparatorComponent={() => <View style={{ height: theme.spacing.xxl, width: theme.spacing.xxl }} />} // gap between items
+            ItemSeparatorComponent={() => (
+              <View style={{ height: theme.spacing.xxl, width: theme.spacing.xxl }} />
+            )} // gap between items
             estimatedItemSize={100}
             renderItem={({ item, index }) => renderItem({ item, index })}
             ListEmptyComponent={

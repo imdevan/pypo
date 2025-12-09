@@ -5,10 +5,10 @@
  * and a "main" flow which the user will use once logged in.
  */
 import { ComponentProps } from "react"
-import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native"
-import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 import { useEffect, useState } from "react"
 import * as Linking from "expo-linking"
+import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native"
+import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 
 import Config from "@/config"
 import { useAuth } from "@/context/AuthContext"
@@ -49,8 +49,6 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
   T
 >
 
-
-
 // Custom component to handle authenticated user routing
 const AuthenticatedNavigator = () => {
   const [isReady, setIsReady] = useState(false)
@@ -61,7 +59,7 @@ const AuthenticatedNavigator = () => {
       try {
         // Check if there's an initial URL
         const initialUrl = await Linking.getInitialURL()
-        
+
         if (initialUrl) {
           // If there's a deep link, let the linking configuration handle it
           // Don't set an initial route

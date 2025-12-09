@@ -10,6 +10,7 @@ import {
 } from "react-native"
 import Feather from "@expo/vector-icons/Feather"
 import { FeatherIconName } from "@react-native-vector-icons/feather"
+
 import { useAppTheme } from "@/theme/context"
 
 export type IconTypes = keyof typeof iconRegistry

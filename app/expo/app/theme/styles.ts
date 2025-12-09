@@ -16,7 +16,7 @@ export const $styles: Styles = {
   container: ({ spacing, width }) => ({
     paddingHorizontal: spacing.lg,
     width: width > 1200 ? 800 : width > 600 ? width - spacing.lg : width - spacing.sm,
-    margin: "auto",
+    alignSelf: "center",
     flex: 1,
   }),
 

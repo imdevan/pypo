@@ -3,8 +3,7 @@ import { Alert, View } from "react-native"
 import type { ViewStyle } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
-import { type ContentStyle } from "@shopify/flash-list"
-import { MasonryFlashList } from "@shopify/flash-list"
+import { FlashList } from "@shopify/flash-list"
 
 import type { ItemPublic } from "@/client/types.gen"
 import { Button } from "@/components/lib/Button"
@@ -220,15 +219,17 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             <Text text="Loading items..." preset="default" />
           </MotiView>
         ) : (
-          <MasonryFlashList<ItemPublic>
+          <FlashList<ItemPublic>
             numColumns={numColumns}
             showsVerticalScrollIndicator={false}
             data={items}
+            masonry
             ItemSeparatorComponent={() => (
               <View style={{ height: theme.spacing.xxl, width: theme.spacing.xxl }} />
             )} // gap between items
-            estimatedItemSize={100}
-            renderItem={({ item, index }) => renderItem({ item, index })}
+            renderItem={({ item, index }: { item: ItemPublic; index: number }) =>
+              renderItem({ item, index })
+            }
             ListEmptyComponent={
               <MotiView
                 from={{ opacity: 0, scale: 0.9 }}
@@ -281,7 +282,7 @@ const $itemsSection = { flex: 1, zIndex: 10, elevation: 1 }
 
 const $inputField = { marginBottom: 12 }
 
-const $itemsList: ThemedStyle<ContentStyle> = ({ spacing }) => ({
+const $itemsList: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingTop: spacing.sm,
   paddingBottom: spacing.lg,
 })

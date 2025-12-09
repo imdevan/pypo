@@ -6,3 +6,7 @@ android
 ignite/ignite.json
 package.json
 .eslintignore
+*.app
+*.tar.gz
+dist
+build

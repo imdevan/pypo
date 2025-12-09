@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react"
+import { FC, useEffect, useMemo, useState } from "react"
 import { Alert, View } from "react-native"
 import type { ViewStyle } from "react-native"
 import { useNavigation } from "@react-navigation/native"
@@ -27,7 +27,7 @@ import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
 
-interface ItemsScreenProps {}
+interface ItemsScreenProps { }
 
 export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const { theme, themed } = useAppTheme()
@@ -93,7 +93,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   }
 
   // Update debug info when items load
-  React.useEffect(() => {
+  useEffect(() => {
     if (itemsData) {
       setDebugInfo(`Loaded ${items.length} items successfully`)
     } else if (itemsError) {

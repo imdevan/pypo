@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react"
+import { FC, useState } from "react"
 import { View, Image, ActivityIndicator } from "react-native"
 import type { ViewStyle, ImageStyle } from "react-native"
 
@@ -90,7 +90,7 @@ const $previewContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   alignItems: "center",
 })
 
-const $previewImage: ThemedStyle<ImageStyle> = ({ colors, spacing }) => ({
+const $previewImage: ThemedStyle<ImageStyle> = ({ colors }) => ({
   width: 120,
   height: 120,
   borderRadius: 8,

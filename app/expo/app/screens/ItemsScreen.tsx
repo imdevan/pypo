@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from "react"
+import { FC, useMemo, useState } from "react"
 import { Alert, View } from "react-native"
 import type { ViewStyle } from "react-native"
 import { useNavigation } from "@react-navigation/native"
@@ -16,8 +16,6 @@ import { ItemCard } from "@/components/lib/ItemCard"
 import { MotiView } from "@/components/lib/MotiView"
 import { PopupForm } from "@/components/lib/PopupForm"
 import { Screen } from "@/components/lib/Screen"
-// import { MasonryList } from "@/components/lib/MasonryList"
-
 import { Text } from "@/components/lib/Text"
 import { TextField } from "@/components/lib/TextField"
 import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
@@ -106,7 +104,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const renderItem = ({ item, index }: { item: ItemPublic; index: number }) => {
     const modIndex = index % numColumns
     const itemMargin = {
-      marginLeft: modIndex == 0 ? 0 : 24,
+      marginLeft: modIndex === 0 ? 0 : 24,
     }
 
     return (
@@ -262,7 +260,7 @@ const $headerRight = {
   gap: 8,
 }
 
-const $header: ThemedStyle<ViewStyle> = ({ spacing, width }) => ({
+const $header: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row" as const,
   justifyContent: "space-between" as const,
   alignItems: "center" as const,

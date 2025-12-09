@@ -1,4 +1,4 @@
-import { FC, ReactNode, useRef, useCallback } from "react"
+import { FC, ReactNode, useRef } from "react"
 import { Image, ImageStyle, View, ViewStyle } from "react-native"
 import { type ContentStyle } from "@shopify/flash-list"
 import { Drawer } from "react-native-drawer-layout"
@@ -8,9 +8,8 @@ import { useDrawer } from "@/context/DrawerContext"
 import { isRTL } from "@/i18n"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
-import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 
-import { ScreenWithHeader } from "./lib/ScreenWithHeader"
+import { ScreenWithHeader } from "./ScreenWithHeader"
 
 const logo = require("@assets/images/logo.png")
 
@@ -34,7 +33,6 @@ export const DrawerWrapper: FC<DrawerWrapperProps> = ({
 }) => {
   const menuRef = useRef<ListViewRef<DrawerItem>>(null)
   const { themed } = useAppTheme()
-  // const $drawerInsets = useSafeAreaInsetsStyle(["top"])
   const { isOpen, openDrawer, closeDrawer, toggleDrawer } = useDrawer(drawerId)
 
   return (
@@ -74,7 +72,11 @@ interface DrawerListItemProps {
   onItemPress?: (sectionIndex: number, itemIndex?: number) => void
 }
 
-const DrawerListItem: FC<DrawerListItemProps> = ({ item, sectionIndex, onItemPress }) => {
+const DrawerListItem: FC<DrawerListItemProps> = ({
+  item,
+  sectionIndex,
+  onItemPress: _onItemPress,
+}) => {
   const { themed } = useAppTheme()
   const { Text } = require("@/components/lib/Text")
   const { ListItem } = require("@/components/lib/ListItem")
@@ -82,7 +84,7 @@ const DrawerListItem: FC<DrawerListItemProps> = ({ item, sectionIndex, onItemPre
   return (
     <View>
       <Text
-        onPress={() => onItemPress?.(sectionIndex)}
+        onPress={() => _onItemPress?.(sectionIndex)}
         preset="bold"
         style={themed($menuContainer)}
       >
@@ -91,7 +93,7 @@ const DrawerListItem: FC<DrawerListItemProps> = ({ item, sectionIndex, onItemPre
       {item.useCases.map((useCase, index) => (
         <ListItem
           key={`section${sectionIndex}-${useCase}`}
-          onPress={() => onItemPress?.(sectionIndex, index)}
+          onPress={() => _onItemPress?.(sectionIndex, index)}
           text={useCase}
           rightIcon={isRTL ? "caretLeft" : "caretRight"}
         />

@@ -13,7 +13,6 @@ import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navig
 import Config from "@/config"
 import { useAuth } from "@/context/AuthContext"
 import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
-import { ItemsScreen } from "@/screens/ItemsScreen"
 import { LoginScreen } from "@/screens/LoginScreen"
 import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { useAppTheme } from "@/theme/context"
@@ -54,6 +53,10 @@ const AuthenticatedNavigator = () => {
   const [isReady, setIsReady] = useState(false)
   const [initialRoute, setInitialRoute] = useState<keyof AppStackParamList>("app")
 
+  const {
+    theme: { colors },
+  } = useAppTheme()
+
   useEffect(() => {
     const prepareNavigation = async () => {
       try {
@@ -80,10 +83,6 @@ const AuthenticatedNavigator = () => {
   if (!isReady) {
     return null
   }
-
-  const {
-    theme: { colors },
-  } = useAppTheme()
 
   return (
     <Stack.Navigator

@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { TextStyle, View, ViewStyle } from "react-native"
 import DropDownPicker from "react-native-dropdown-picker"
 

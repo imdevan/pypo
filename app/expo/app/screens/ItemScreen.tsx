@@ -1,4 +1,4 @@
-import React, { FC } from "react"
+import { FC } from "react"
 import { View, ViewStyle, TextStyle } from "react-native"
 import Alert from "@blazejkustra/react-native-alert"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
@@ -131,12 +131,11 @@ const $header: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.md,
 })
 
-const $backButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $backButton: ThemedStyle<ViewStyle> = () => ({
   alignSelf: "flex-start",
-  marginBottom: spacing.sm,
 })
 
-const $content: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $content: ThemedStyle<ViewStyle> = () => ({
   flex: 1,
 })
 

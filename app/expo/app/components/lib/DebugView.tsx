@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef, ForwardedRef } from "react"
+import { forwardRef, ForwardedRef } from "react"
 // eslint-disable-next-line no-restricted-imports
 import { View, ViewProps } from "react-native"
 
@@ -16,10 +16,10 @@ export interface DVProps extends ViewProps {
  * @returns The DebugView component.
  */
 export const DebugView = forwardRef(function DebugView(
-  { debugLevel = DebugMode.BASIC, ...props }: DVProps,
+  { debugLevel: _debugLevel = DebugMode.BASIC, ...props }: DVProps,
   ref: ForwardedRef<View>,
 ) {
-  const { debugMode, isDebugEnabled } = useDebugStore()
+  const { isDebugEnabled } = useDebugStore()
 
   if (!isDebugEnabled()) {
     return null

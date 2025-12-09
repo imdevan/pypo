@@ -114,10 +114,6 @@ const $title: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginBottom: spacing.sm,
 })
 
-const $tagline: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  marginBottom: spacing.xxl,
-})
-
 const $description: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginBottom: spacing.lg,
 })

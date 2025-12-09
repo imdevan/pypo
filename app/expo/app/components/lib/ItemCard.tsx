@@ -1,4 +1,4 @@
-import React, { FC } from "react"
+import { FC } from "react"
 import { View, Pressable, Image } from "react-native"
 import type { ImageStyle } from "react-native"
 
@@ -25,7 +25,7 @@ export const ItemCard: FC<ItemCardProps> = ({ item, onPress }) => {
       {item.tags && item.tags.length > 0 && (
         <View style={themed($tagsContainer)}>
           {item.tags.map((tag) => (
-            <TagChip tag={tag} />
+            <TagChip key={tag.id} tag={tag} />
           ))}
         </View>
       )}
@@ -57,12 +57,4 @@ const $tagsContainer = {
   marginTop: 8,
   marginBottom: 8,
   gap: 6,
-}
-
-const $itemContainer: ViewStyle = {
-  // padding: 16,
-  // marginBottom: 12,
-  // borderRadius: 8,
-  // borderColor: "#f5f5f5",
-  // borderWidth: 1,
 }

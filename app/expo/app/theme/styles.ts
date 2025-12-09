@@ -1,6 +1,6 @@
 import { ViewStyle, TextStyle } from "react-native"
 
-import { ThemedStyle, ThemedStyleArray } from "./types"
+import { ThemedStyle } from "./types"
 
 export type Styles = Record<
   string,

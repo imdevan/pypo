@@ -1,8 +1,8 @@
-import { FC, ReactElement, useCallback, useEffect, useRef, useState } from "react"
+import { FC, ReactElement, useCallback, useEffect, useRef } from "react"
 import { SectionList, TextStyle, View, ViewStyle, Platform } from "react-native"
 import { RouteProp, useRoute } from "@react-navigation/native"
 
-import { Screen, ScreenProps } from "@/components/lib/Screen"
+import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
 // import { DrawerWrapper } from "@/components/DrawerWrapper"
 import { TxKeyPath } from "@/i18n"
@@ -102,16 +102,6 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"showroom">> = function D
       }
     }
   }, [])
-
-  const drawerData = Object.values(Demos).map((d) => ({
-    name: d.name,
-    useCases: d.data({ theme, themed }).map((u) => {
-      if (hasValidStringProp(u.props, "name")) {
-        return translate((u.props as { name: TxKeyPath }).name)
-      }
-      return ""
-    }),
-  }))
 
   const isAndroid = Platform.OS === "android"
 

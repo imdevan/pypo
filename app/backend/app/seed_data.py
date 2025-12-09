@@ -4,7 +4,11 @@ Database seeding script using Faker to generate fake data.
 This script creates random tags and items for development and testing.
 It can be run manually or automatically during database initialization
 by setting SEED_DB=true in the environment.
+
+Faker docs:
+https://faker.readthedocs.io/en/master/locales/az_AZ.html#faker.providers.internet.az_AZ.Provider.image_url
 """
+
 import logging
 import random
 
@@ -51,7 +55,9 @@ def seed_tags(session: Session, count: int = 20) -> list[Tag]:
     return tags
 
 
-def seed_items(session: Session, owner_id: str, tags: list[Tag], count: int = 50) -> None:
+def seed_items(
+    session: Session, owner_id: str, tags: list[Tag], count: int = 50
+) -> None:
     """Create random items for the given owner."""
     logger.info(f"Creating {count} items...")
 
@@ -60,16 +66,21 @@ def seed_items(session: Session, owner_id: str, tags: list[Tag], count: int = 50
         num_tags = random.randint(0, min(5, len(tags)))
         selected_tags = random.sample(tags, num_tags) if num_tags > 0 else []
         tag_ids = [tag.id for tag in selected_tags]
-
         item_in = ItemCreate(
-            title=fake.sentence(nb_words=random.randint(3, 8)).rstrip('.'),
+            title=fake.sentence(nb_words=random.randint(3, 8)).rstrip("."),
             description=fake.paragraph(nb_sentences=random.randint(1, 3)),
-            image_url=fake.image_url() if random.random() > 0.3 else None,
             tag_ids=tag_ids if tag_ids else None,
+            image_url=fake.image_url(
+                width=400,
+                height=300,
+                placeholder_url=f"https://picsum.photos/300/400/?blur=2&random={i}",
+            )
+            if random.random() > 0.1
+            else None,
         )
-
+        tag_ids = (tag_ids if tag_ids else None,)
         item = create_item(session=session, item_in=item_in, owner_id=owner_id)
-        logger.info(f"Created item {i+1}/{count}: {item.title}")
+        logger.info(f"Created item {i + 1}/{count}: {item.title}")
 
 
 def seed_database(num_tags: int = 20, num_items: int = 50) -> None:

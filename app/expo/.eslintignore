@@ -10,3 +10,4 @@ package.json
 *.tar.gz
 dist
 build
+app/client

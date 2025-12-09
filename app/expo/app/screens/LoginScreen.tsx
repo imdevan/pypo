@@ -9,7 +9,6 @@ import { Text } from "@/components/lib/Text"
 import { TextField, type TextFieldAccessoryProps } from "@/components/lib/TextField"
 import { useAuth } from "@/context/AuthContext"
 import type { AppStackScreenProps } from "@/navigators/AppNavigator"
-import { useLogin } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
@@ -25,8 +24,6 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
   const [attemptsCount, setAttemptsCount] = useState(0)
   const [serverError, setServerError] = useState("")
   const { authEmail, setAuthEmail, login, register, isLoading } = useAuth()
-  const { error: loginError } = useLogin()
-  console.log("🚀 ~ LoginScreen ~ loginError:", loginError)
 
   const {
     themed,

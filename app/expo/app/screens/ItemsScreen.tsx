@@ -220,6 +220,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
           <FlashList<ItemPublic>
             numColumns={numColumns}
             showsVerticalScrollIndicator={false}
+            optimizeItemArrangement={false}
             data={items}
             masonry
             ItemSeparatorComponent={() => (

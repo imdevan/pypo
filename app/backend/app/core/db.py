@@ -7,7 +7,12 @@ from app import crud
 from app.core.config import settings
 from app.models import User, UserCreate
 
-engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
+# SQLite-specific engine configuration
+engine = create_engine(
+    str(settings.SQLALCHEMY_DATABASE_URI),
+    echo=False,
+    connect_args={"check_same_thread": False}  # Allow SQLite to be used with multiple threads
+)
 
 
 # Event listeners to automatically update updated_at field

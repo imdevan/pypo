@@ -25,12 +25,6 @@ export const DevelopmentLinks: FC = () => {
       icon: "view",
     },
     {
-      title: "Database Admin",
-      description: "Adminer database web administration",
-      url: "http://localhost:8080",
-      icon: "settings",
-    },
-    {
       title: "Backend API",
       description: "JSON based web API based on OpenAPI",
       url: "http://localhost:8000",

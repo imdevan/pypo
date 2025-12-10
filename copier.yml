@@ -46,12 +46,12 @@ emails_from_email:
   help: The email account to send emails from, you can set it later in .env
   default: info@example.com
 
-postgres_password:
+sqlite_db_path:
   type: str
+  default: app.db
   help: |
-    'The password for the PostgreSQL database, stored in .env,
-    you can generate one with:
-    python -c "import secrets; print(secrets.token_urlsafe(32))"'
+    'The path to the SQLite database file, stored in .env.
+    For production, consider using an absolute path like /app/data/app.db'
   default: ChangeThis123!
 
 sentry_dsn:

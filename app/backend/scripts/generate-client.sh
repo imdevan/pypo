@@ -4,7 +4,7 @@ set -e
 set -x
 
 # cd app/backend
-python -c "import app.main; import json; print(json.dumps(app.main.app.openapi()))" > ./openapi.json
+uv run python -c "import app.main; import json; print(json.dumps(app.main.app.openapi()))" >./openapi.json
 
 mv openapi.json ../expo/
 
@@ -12,3 +12,4 @@ mv openapi.json ../expo/
 cd ../expo
 bun generate:client
 bunx biome format --write ./app/client
+

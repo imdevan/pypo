@@ -40,7 +40,7 @@ jobs:
       env:
         VIRTUAL_ENV: backend/.venv
         SECRET_KEY: just-for-generating-client
-        POSTGRES_PASSWORD: just-for-generating-client
+        SQLITE_DB_PATH: app.db
         FIRST_SUPERUSER_PASSWORD: just-for-generating-client
     - name: Add changes to git
       run: |

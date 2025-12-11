@@ -37,16 +37,28 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
   // Use TanStack Query hooks
   const loginMutation = useLogin()
   const registerMutation = useRegister()
-  const testTokenQuery = useTestToken(authToken)
+  
+  // Only test token if it exists and looks valid (not empty string)
+  const shouldTestToken = authToken && authToken.trim().length > 0
+  const testTokenQuery = useTestToken(shouldTestToken ? authToken : undefined)
+
+  // Clear invalid tokens on startup
+  useEffect(() => {
+    if (authToken && !shouldTestToken) {
+      console.log("Clearing invalid token on startup")
+      setAuthToken(undefined)
+      setAuthEmail("")
+    }
+  }, [authToken, shouldTestToken, setAuthToken, setAuthEmail])
 
   // Test token validity on app startup if token exists
   useEffect(() => {
-    if (authToken && testTokenQuery.isError) {
+    if (shouldTestToken && testTokenQuery.isError) {
       console.log("Token is invalid, clearing it")
       setAuthToken(undefined)
       setAuthEmail("")
     }
-  }, [authToken, testTokenQuery.isError, setAuthToken, setAuthEmail])
+  }, [shouldTestToken, testTokenQuery.isError, setAuthToken, setAuthEmail])
 
   const login = useCallback(
     async (email: string, password: string) => {
@@ -123,7 +135,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
   }, [authEmail])
 
   const value = {
-    isAuthenticated: !!authToken,
+    isAuthenticated: shouldTestToken,
     authToken,
     authEmail,
     setAuthToken,

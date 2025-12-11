@@ -71,17 +71,25 @@ services:
     # TODO: remove once coverage is done locally
     volumes:
       - ./htmlcov:/app/htmlcov
+      - .:/app/data
     environment:
       SMTP_HOST: "mailcatcher"
       SMTP_PORT: "1025"
       SMTP_TLS: "false"
       EMAILS_FROM_EMAIL: "noreply@example.com"
+      SQLITE_DB_PATH: "/app/data/app.db"
 
   mailcatcher:
     image: schickling/mailcatcher
     ports:
       - "1080:1080"
       - "1025:1025"
+
+  prestart:
+    volumes:
+      - .:/app/data
+    environment:
+      SQLITE_DB_PATH: "/app/data/app.db"
 
 networks:
   traefik-public:

@@ -8,7 +8,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
 // import { MasonryList } from "@/components/lib/MasonryList"
 import type { ItemPublic } from "@/client/types.gen"
-import { MasonryFlashList } from "@shopify/flash-list"
+import { FlashList } from "@shopify/flash-list"
 import { DebugView } from "@/components/lib/DebugView"
 import { Button } from "@/components/lib/Button"
 import { DropDown } from "@/components/lib/DropDown"
@@ -219,12 +219,13 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             <Text text="Loading items..." preset="default" />
           </MotiView>
         ) : (
-          <MasonryFlashList<ItemPublic>
+          <FlashList<ItemPublic>
             numColumns={numColumns}
             showsVerticalScrollIndicator={false}
+            masonry
+            optimizeItemArrangement={false}
             data={items}
             ItemSeparatorComponent={() => <View style={{ height: theme.spacing.xxl, width: theme.spacing.xxl }} />} // gap between items
-            estimatedItemSize={100}
             renderItem={({ item, index }) => renderItem({ item, index })}
             ListEmptyComponent={
               <MotiView

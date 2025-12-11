@@ -2,20 +2,20 @@
 
 ## Overview
 
-Dance Partner is an offline-first iOS mobile application that helps dancers organize, annotate, and practice from their dance class recap videos. The system uses a hybrid architecture where Python models (SQLAlchemy/SQLModel) in the existing FastAPI backend define the schema as source of truth, and mobile devices use Turso embedded SQLite replicas that sync directly with Turso cloud.
+Dance Partner is an online-first iOS mobile application that helps dancers organize, annotate, and practice from their dance class recap videos. The system uses a client-server architecture where Python models (SQLAlchemy/SQLModel) in the existing FastAPI backend define the schema as source of truth, and mobile devices communicate exclusively through REST API endpoints with heavy local caching for performance.
 
 ### Key Architectural Decisions
 
 - **Python Models as Source of Truth:** SQLAlchemy/SQLModel models in existing `app/backend/` define the database schema; OpenAPI generates TypeScript client
 - **Extend Existing Backend:** Dance Partner models added to existing FastAPI backend alongside User/Item/Tag models
-- **Offline-First:** Turso embedded replicas on mobile ensure full functionality without network connectivity
+- **Online-First with Heavy Caching:** Mobile app requires network connectivity for data operations but uses aggressive local caching for performance
 - **Clerk Authentication:** `@clerk/clerk-expo` for mobile auth, FastAPI validates Clerk JWTs for API calls
 - **Asset ID Storage:** Videos referenced via `expo-media-library` asset IDs (not copied)
 - **Thumbnail Caching:** Thumbnails generated locally on recap creation for fast library browsing
-- **Global Data via API:** Global tags and dance styles fetched from FastAPI and cached locally
-- **Single Database:** Shared Turso database with user_id filtering for row-level isolation
-- **Multi-Device Support:** Device ID stored with exports to enable cross-device library import
-- **Dev/Prod Split:** FastAPI uses PostgreSQL (existing); mobile uses Turso embedded SQLite syncing to Turso cloud
+- **All Data via API:** All user data (recaps, notes, tags, dance styles) served through FastAPI REST endpoints
+- **Single Database:** FastAPI backend with PostgreSQL/SQLite as primary data store with user_id filtering for row-level isolation
+- **Multi-Device Support:** Data automatically synced across devices through shared backend; no manual export/import needed
+- **Cache Strategy:** React Query for API state management with configurable cache times and background refresh
 
 ## Architecture
 
@@ -24,19 +24,18 @@ flowchart TB
     subgraph Backend["Existing FastAPI Backend (app/backend/)"]
         PyModels[Python Models<br/>SQLAlchemy/SQLModel]
         FastAPI[FastAPI Server]
-        PostgreSQL[(PostgreSQL)]
+        PostgreSQL[(PostgreSQL/SQLite)]
         OpenAPI[OpenAPI Spec]
         TSClient[TypeScript Client<br/>Types + React Query]
     end
     
     subgraph Cloud["Cloud Services"]
-        TursoCloud[(Turso Cloud DB)]
         ClerkCloud[Clerk Auth]
     end
     
     subgraph Mobile["iOS App (Expo/React Native)"]
         UI[React Native UI]
-        TursoEmbed[(Turso Embedded SQLite)]
+        RQCache[React Query Cache]
         TC[Thumbnail Cache]
         ClerkSDK[Clerk Expo SDK]
         GenClient[Generated API Client]
@@ -53,13 +52,12 @@ flowchart TB
     OpenAPI --> TSClient
     TSClient --> GenClient
     
-    TursoEmbed <--> TursoCloud
-    
-    UI --> TursoEmbed
+    UI --> RQCache
     UI --> TC
     UI --> ClerkSDK
     UI --> GenClient
     GenClient --> FastAPI
+    RQCache --> GenClient
     
     ClerkSDK --> ClerkCloud
     FastAPI -.-> ClerkCloud
@@ -70,13 +68,13 @@ flowchart TB
 
 ### Data Flow
 
-1. **Schema Definition:** Python models (SQLAlchemy/SQLModel) in `app/backend/app/models.py` define schema → Alembic migrations run on PostgreSQL and Turso cloud → Schema propagates to mobile via Turso sync
+1. **Schema Definition:** Python models (SQLAlchemy/SQLModel) in `app/backend/app/models.py` define schema → Alembic migrations run on PostgreSQL/SQLite → Mobile receives data via REST API
 2. **User Authentication:** Mobile app authenticates via Clerk (`@clerk/clerk-expo`) → receives JWT → stores securely; FastAPI validates Clerk JWTs for protected endpoints
-3. **User Data (Recaps, Notes, Tags):** Written to Turso embedded SQLite → auto-syncs to Turso cloud (bypasses FastAPI)
-4. **Global Data (Global Tags, Dance Styles List):** Fetched from FastAPI via generated client → cached in local SQLite
-5. **Video Access:** `expo-media-library` asset IDs stored in DB → resolved at playback time via expo-media-library APIs
+3. **User Data (Recaps, Notes, Tags):** Created/updated via FastAPI REST endpoints → stored in backend database → cached locally via React Query
+4. **Data Caching:** React Query manages API state with configurable cache times → background refresh keeps data current → optimistic updates for better UX
+5. **Video Access:** `expo-media-library` asset IDs stored via API → resolved at playback time via expo-media-library APIs
 6. **TypeScript Types:** OpenAPI spec generated from FastAPI → openapi-typescript generates types, React Query hooks, Zod validation
-7. **Multi-Device Export:** Device ID (from `expo-application`) included in exports → enables identifying source device during import
+7. **Multi-Device Sync:** All data automatically synced across devices through shared backend → no manual export/import needed
 
 ## Components and Interfaces
 
@@ -107,16 +105,15 @@ interface Session {
 ```
 
 ```typescript
-// Dance Style Service
+// Dance Style Service (uses React Query hooks)
 interface DanceStyleService {
-  getGlobalStyles(): Promise<DanceStyle[]>;
-  getUserStyles(userId: string): Promise<DanceStyle[]>;
-  addStyleToUser(userId: string, styleId: string): Promise<void>;
-  createCustomStyle(userId: string, style: CreateDanceStyleInput): Promise<DanceStyle>;
-  updateStyle(styleId: string, updates: UpdateDanceStyleInput): Promise<DanceStyle>;
-  deleteStyle(styleId: string, reassignTo?: string): Promise<void>;
-  getLastViewedStyle(userId: string): Promise<string | null>;
-  setLastViewedStyle(userId: string, styleId: string): Promise<void>;
+  useGlobalStyles(): UseQueryResult<DanceStyle[]>;
+  useUserStyles(): UseQueryResult<DanceStyle[]>;
+  createStyle: UseMutationResult<DanceStyle, Error, CreateDanceStyleInput>;
+  updateStyle: UseMutationResult<DanceStyle, Error, { styleId: string; updates: UpdateDanceStyleInput }>;
+  deleteStyle: UseMutationResult<void, Error, { styleId: string; reassignTo?: string }>;
+  getLastViewedStyle(): string | null; // Local storage only
+  setLastViewedStyle(styleId: string): void; // Local storage only
 }
 
 interface CreateDanceStyleInput {
@@ -131,20 +128,18 @@ interface UpdateDanceStyleInput {
 ```
 
 ```typescript
-// Recap Service
+// Recap Service (uses React Query hooks)
 interface RecapService {
-  createVideoRecap(input: CreateVideoRecapInput): Promise<Recap>;
-  getRecap(recapId: string): Promise<Recap | null>;
-  getRecapsByStyle(styleId: string): Promise<Recap[]>;
-  getAllRecaps(userId: string): Promise<Recap[]>;
-  updateRecap(recapId: string, updates: UpdateRecapInput): Promise<Recap>;
-  deleteRecap(recapId: string): Promise<void>;
-  relinkVideo(recapId: string, newAssetId: string): Promise<Recap>;
-  checkVideoAvailability(assetId: string): Promise<boolean>;
+  useRecaps(filters?: { styleId?: string; tagId?: string; search?: string }): UseQueryResult<Recap[]>;
+  useRecap(recapId: string): UseQueryResult<Recap>;
+  createRecap: UseMutationResult<Recap, Error, CreateVideoRecapInput>;
+  updateRecap: UseMutationResult<Recap, Error, { recapId: string; updates: UpdateRecapInput }>;
+  deleteRecap: UseMutationResult<void, Error, string>;
+  relinkVideo: UseMutationResult<Recap, Error, { recapId: string; newAssetId: string }>;
+  checkVideoAvailability(assetId: string): Promise<boolean>; // Local check only
 }
 
 interface CreateVideoRecapInput {
-  userId: string;
   danceStyleId: string;
   title: string;
   description?: string;
@@ -155,19 +150,19 @@ interface UpdateRecapInput {
   title?: string;
   description?: string;
   danceStyleId?: string;
+  assetId?: string; // For re-linking
 }
 ```
 
 ```typescript
-// Tag Service
+// Tag Service (uses React Query hooks)
 interface TagService {
-  getGlobalTags(): Promise<Tag[]>;
-  getUserTags(userId: string): Promise<Tag[]>;
-  createTag(userId: string, input: CreateTagInput): Promise<Tag>;
-  deleteTag(tagId: string): Promise<void>;
-  applyTagToRecap(tagId: string, recapId: string): Promise<void>;
-  removeTagFromRecap(tagId: string, recapId: string): Promise<void>;
-  getRecapsByTag(tagId: string): Promise<Recap[]>;
+  useGlobalTags(): UseQueryResult<Tag[]>;
+  useUserTags(): UseQueryResult<Tag[]>;
+  createTag: UseMutationResult<Tag, Error, CreateTagInput>;
+  deleteTag: UseMutationResult<void, Error, string>;
+  applyTagToRecap: UseMutationResult<void, Error, { recapId: string; tagId: string }>;
+  removeTagFromRecap: UseMutationResult<void, Error, { recapId: string; tagId: string }>;
 }
 
 interface CreateTagInput {
@@ -177,26 +172,26 @@ interface CreateTagInput {
 ```
 
 ```typescript
-// Note Service
+// Note Service (uses React Query hooks)
 interface NoteService {
-  createNote(recapId: string, content: string): Promise<Note>;
-  getNotesByRecap(recapId: string): Promise<Note[]>;
-  updateNote(noteId: string, content: string): Promise<Note>;
-  deleteNote(noteId: string): Promise<void>;
+  useNotesByRecap(recapId: string): UseQueryResult<Note[]>;
+  createNote: UseMutationResult<Note, Error, { recapId: string; content: string }>;
+  updateNote: UseMutationResult<Note, Error, { noteId: string; content: string }>;
+  deleteNote: UseMutationResult<void, Error, string>;
 }
 ```
 
 ```typescript
-// Video Library Service
+// Video Library Service (uses React Query hooks)
 interface VideoLibraryService {
-  getAllVideos(userId: string): Promise<RecapWithThumbnail[]>;
-  getVideosByStyle(styleId: string): Promise<RecapWithThumbnail[]>;
-  getVideosByTag(tagId: string): Promise<RecapWithThumbnail[]>;
-  searchVideos(userId: string, query: string): Promise<RecapWithThumbnail[]>;
+  useAllVideos(): UseQueryResult<RecapWithThumbnail[]>;
+  useVideosByStyle(styleId: string): UseQueryResult<RecapWithThumbnail[]>;
+  useVideosByTag(tagId: string): UseQueryResult<RecapWithThumbnail[]>;
+  useSearchVideos(query: string): UseQueryResult<RecapWithThumbnail[]>;
 }
 
 interface RecapWithThumbnail extends Recap {
-  thumbnailUri: string | null;
+  thumbnailUri: string | null; // Local cache path
 }
 ```
 
@@ -252,6 +247,21 @@ interface ImportResult {
 }
 ```
 
+```typescript
+// Cache Management Service
+interface CacheService {
+  clearCache(): Promise<void>;
+  refreshAllData(): Promise<void>;
+  getCacheStatus(): CacheStatus;
+}
+
+interface CacheStatus {
+  lastRefresh: string;
+  cacheSize: number;
+  isOnline: boolean;
+}
+```
+
 ### Backend API Endpoints
 
 ```typescript
@@ -263,20 +273,87 @@ interface BackendAPI {
     response: { valid: boolean; userId?: string; error?: string };
   };
   
-  // Global Dance Styles
-  'GET /dance-styles/global': {
-    response: DanceStyle[];
-  };
-  
-  // Global Tags  
-  'GET /tags/global': {
-    response: Tag[];
-  };
-  
   // User sync (for Clerk user creation/lookup)
   'POST /users/sync': {
     request: { clerkUserId: string; email: string; displayName: string };
     response: User;
+  };
+  
+  // Dance Styles
+  'GET /dance-styles/global': {
+    response: DanceStyle[];
+  };
+  'GET /dance-styles/user': {
+    response: DanceStyle[];
+  };
+  'POST /dance-styles': {
+    request: CreateDanceStyleInput;
+    response: DanceStyle;
+  };
+  'PUT /dance-styles/{styleId}': {
+    request: UpdateDanceStyleInput;
+    response: DanceStyle;
+  };
+  'DELETE /dance-styles/{styleId}': {
+    request: { reassignTo?: string };
+    response: { success: boolean };
+  };
+  
+  // Recaps
+  'GET /recaps': {
+    query: { styleId?: string; tagId?: string; search?: string };
+    response: Recap[];
+  };
+  'GET /recaps/{recapId}': {
+    response: Recap;
+  };
+  'POST /recaps': {
+    request: CreateVideoRecapInput;
+    response: Recap;
+  };
+  'PUT /recaps/{recapId}': {
+    request: UpdateRecapInput;
+    response: Recap;
+  };
+  'DELETE /recaps/{recapId}': {
+    response: { success: boolean };
+  };
+  
+  // Tags
+  'GET /tags/global': {
+    response: Tag[];
+  };
+  'GET /tags/user': {
+    response: Tag[];
+  };
+  'POST /tags': {
+    request: CreateTagInput;
+    response: Tag;
+  };
+  'DELETE /tags/{tagId}': {
+    response: { success: boolean };
+  };
+  'POST /recaps/{recapId}/tags/{tagId}': {
+    response: { success: boolean };
+  };
+  'DELETE /recaps/{recapId}/tags/{tagId}': {
+    response: { success: boolean };
+  };
+  
+  // Notes
+  'GET /recaps/{recapId}/notes': {
+    response: Note[];
+  };
+  'POST /recaps/{recapId}/notes': {
+    request: { content: string };
+    response: Note;
+  };
+  'PUT /notes/{noteId}': {
+    request: { content: string };
+    response: Note;
+  };
+  'DELETE /notes/{noteId}': {
+    response: { success: boolean };
   };
 }
 ```
@@ -345,7 +422,7 @@ interface RecapTag {
 }
 ```
 
-### Database Schema (SQLite/Turso)
+### Database Schema (Backend: PostgreSQL/SQLite)
 
 ```sql
 -- Users table
@@ -559,6 +636,20 @@ Based on the prework analysis, the following properties have been identified. Re
 *For any* valid library data, serializing to JSON and then deserializing SHALL produce data equivalent to the original, including all entity fields and relationships.
 **Validates: Requirements 7.6, 7.7**
 
+### Multi-Device Sync Properties (Optional)
+
+**Property 28: Cross-device data consistency**
+*For any* user data created on one device, signing in on another device SHALL display the same data after sync completion.
+**Validates: Requirements 8.1, 8.3**
+
+**Property 29: Offline cache preserves data**
+*For any* cached data, when the device is offline, the app SHALL display the cached data and indicate offline status.
+**Validates: Requirements 8.4**
+
+**Property 30: Online sync updates backend**
+*For any* data modification when online, the change SHALL be immediately synced to the backend and reflected on other devices.
+**Validates: Requirements 8.2, 8.5**
+
 ## Error Handling
 
 ### Authentication Errors
@@ -579,13 +670,23 @@ Based on the prework analysis, the following properties have been identified. Re
 | Video deleted from Photos | Prompt user to re-link via expo-media-library picker |
 | Asset from different device | Flag for re-link (asset IDs are device-specific) |
 
-### Database Errors
+### API and Cache Errors
 
 | Error Condition | Handling Strategy |
 |----------------|-------------------|
-| Turso sync fails | Continue with local data, retry sync on next opportunity |
-| Local database corruption | Attempt recovery from Turso cloud, notify user if data loss |
-| Constraint violation | Return descriptive error, do not persist invalid data |
+| API request fails | Use cached data if available, show error message, retry with exponential backoff |
+| Network unavailable | Display cached data with offline indicator, queue mutations for later sync |
+| Cache corruption | Clear cache and refetch from API, notify user of refresh |
+| Constraint violation | Return descriptive error from API, do not persist invalid data |
+
+### Sync and Cache Errors
+
+| Error Condition | Handling Strategy |
+|----------------|-------------------|
+| Sync conflict | Use server data as source of truth, notify user of overwrite |
+| Partial sync failure | Retry failed items, report sync status to user |
+| Cache size limit exceeded | Implement LRU eviction, prioritize recently accessed data |
+| Background sync fails | Queue for retry, show sync status indicator |
 
 ### Import/Export Errors
 
@@ -596,13 +697,14 @@ Based on the prework analysis, the following properties have been identified. Re
 | Partial import failure | Rollback transaction, report which items failed |
 | Export file too large | Warn user, suggest selective export |
 
-### API Errors
+### API Response Errors
 
 | Error Condition | Handling Strategy |
 |----------------|-------------------|
-| Global tags/styles fetch fails | Use cached data if available, show stale indicator |
-| Network timeout | Retry with exponential backoff, use cached data |
-| API returns 401 | Trigger re-authentication |
+| Network timeout | Retry with exponential backoff, use cached data if available |
+| API returns 401 | Trigger re-authentication via Clerk |
+| API returns 403 | Display permission error, check user access |
+| API returns 404 | Handle gracefully, may indicate deleted resource |
 | API returns 5xx | Display temporary error, suggest retry later |
 
 ## Testing Strategy
@@ -635,8 +737,9 @@ Unit tests verify specific examples and edge cases:
 ### Integration Testing
 
 - **Clerk Integration:** Full authentication flow with Clerk test mode
-- **Turso Sync:** Local changes sync to cloud, cloud changes sync to local
+- **API Integration:** All CRUD operations through FastAPI endpoints
 - **expo-media-library:** Asset ID resolution across app restarts
 - **Export/Import:** Full round-trip with file system operations, device ID tracking
-- **Global Data API:** Fetch and cache global tags/styles from FastAPI
-- **Multi-Device:** Export from device A, import on device B, verify re-link prompts
+- **React Query Cache:** Cache invalidation, background refresh, optimistic updates
+- **Multi-Device Sync:** Data consistency across multiple authenticated sessions (optional)
+- **Offline/Online:** Cache behavior when network is unavailable/restored

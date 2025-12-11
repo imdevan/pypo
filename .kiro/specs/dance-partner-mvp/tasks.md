@@ -3,10 +3,10 @@
 ## Phase 1: Backend Foundation
 
 - [ ] 1. Extend existing FastAPI backend with Dance Partner models
-  - [-] 1.1 Configure Turso cloud database for mobile sync
-    - Create Turso database instance
-    - Configure libsql connection string
-    - Add Turso credentials to environment config
+  - [-] 1.1 Configure database for Dance Partner tables
+    - Use existing Turso db connection for production
+    - Configure SQLite for development
+    - Add database connection configuration
     - _Requirements: MVP Scope - Database Topology, Dev/Prod Split_
   - [ ] 1.2 Add Dance Partner models to existing `app/backend/app/models.py`
     - Extend existing User model with last_viewed_style_id field
@@ -21,7 +21,7 @@
     - **Validates: Requirements 7.6, 7.7**
   - [ ] 1.4 Create Alembic migration for Dance Partner tables
     - Generate migration from new models
-    - Test migration on PostgreSQL (existing) and Turso cloud
+    - Test migration on PostgreSQL (existing setup)
     - _Requirements: MVP Scope - Schema Management_
 
 - [ ] 2. Implement Clerk authentication integration
@@ -40,19 +40,42 @@
     - Test user retrieval on subsequent auth
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-- [ ] 3. Implement global data API endpoints
-  - [ ] 3.1 Create global dance styles endpoint
+- [ ] 3. Implement all Dance Partner API endpoints
+  - [ ] 3.1 Create dance style endpoints
     - GET /dance-styles/global - return list of global dance styles
+    - GET /dance-styles/user - return user's dance styles
+    - POST /dance-styles - create new dance style
+    - PUT /dance-styles/{styleId} - update dance style
+    - DELETE /dance-styles/{styleId} - delete dance style with reassignment option
     - Seed initial global dance styles (Zouk, WCS, Bachata, Salsa, etc.)
-    - _Requirements: 2.1, 2.2_
-  - [ ] 3.2 Create global tags endpoint
+    - _Requirements: 2.1, 2.2, 2.3, 2.6, 2.7_
+  - [ ] 3.2 Create recap endpoints
+    - GET /recaps - return user's recaps with optional filtering
+    - GET /recaps/{recapId} - return specific recap
+    - POST /recaps - create new recap
+    - PUT /recaps/{recapId} - update recap
+    - DELETE /recaps/{recapId} - delete recap
+    - _Requirements: 3.1, 3.3, 3.4, 3.5_
+  - [ ] 3.3 Create tag endpoints
     - GET /tags/global - return list of global tags
+    - GET /tags/user - return user's tags
+    - POST /tags - create new tag
+    - DELETE /tags/{tagId} - delete tag
+    - POST /recaps/{recapId}/tags/{tagId} - apply tag to recap
+    - DELETE /recaps/{recapId}/tags/{tagId} - remove tag from recap
     - Seed initial global tags for common dance moves/concepts
-    - _Requirements: 4.3_
-  - [ ]* 3.3 Write unit tests for global data endpoints
-    - Test global styles retrieval
-    - Test global tags retrieval
-    - _Requirements: 2.1, 2.2, 4.3_
+    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
+  - [ ] 3.4 Create note endpoints
+    - GET /recaps/{recapId}/notes - return notes for recap
+    - POST /recaps/{recapId}/notes - create new note
+    - PUT /notes/{noteId} - update note
+    - DELETE /notes/{noteId} - delete note
+    - _Requirements: 5.1, 5.3, 5.4, 5.5_
+  - [ ]* 3.5 Write unit tests for all API endpoints
+    - Test all CRUD operations
+    - Test filtering and search functionality
+    - Test error handling and validation
+    - _Requirements: All API endpoints_
 
 - [ ] 4. Generate OpenAPI client for mobile
   - [ ] 4.1 Configure OpenAPI spec generation
@@ -66,18 +89,19 @@
 
 ## Phase 2: Mobile App Foundation
 
-- [ ] 6. Set up Expo project and Turso embedded SQLite
-  - [ ] 6.1 Initialize Expo project in app/expo or create new
+- [ ] 6. Set up Expo project and React Query for API state management
+  - [ ] 6.1 Initialize Expo project in app/expo or extend existing
     - Set up Expo with TypeScript template
     - Configure for iOS development
-    - Add @libsql/client for React Native
-    - Configure embedded replica with Turso cloud sync
-    - Set up sync triggers (on app open, on data change)
-    - _Requirements: MVP Scope - Offline Strategy_
-  - [ ] 6.2 Create TypeScript data access layer
-    - Implement repository pattern matching Python models
-    - Create CRUD functions for all entities
-    - Implement query functions for filtering and search
+    - Add @tanstack/react-query for API state management
+    - Configure React Query client with cache settings
+    - Set up query invalidation and background refresh
+    - _Requirements: MVP Scope - Online Strategy_
+  - [ ] 6.2 Create TypeScript API client and hooks
+    - Generate TypeScript client from OpenAPI spec
+    - Create React Query hooks for all endpoints
+    - Implement optimistic updates for mutations
+    - Configure cache keys and invalidation strategies
     - _Requirements: All CRUD operations_
   - [ ]* 6.3 Write property test for tag slug generation
     - **Property 12: Tag creation generates correct slug**
@@ -103,12 +127,13 @@
     - Test sign-out clears all data
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-- [ ] 8. Set up device identification
-  - [ ] 8.1 Implement DeviceService
-    - Use expo-application to get unique device ID
-    - Use expo-device to get device name
-    - Store device info for export metadata
-    - _Requirements: 7.1, 7.11_
+- [ ] 8. Set up cache management
+  - [ ] 8.1 Implement CacheService
+    - Configure React Query cache settings
+    - Implement cache invalidation strategies
+    - Add offline detection and handling
+    - Create cache status monitoring
+    - _Requirements: 7.4, 7.5_
 
 - [ ] 9. Checkpoint - Mobile foundation complete
   - Ensure all tests pass, ask the user if questions arise.
@@ -359,26 +384,64 @@
 - [ ] 28. Checkpoint - Export/import complete
   - Ensure all tests pass, ask the user if questions arise.
 
-## Phase 9: Integration and Polish
+## Phase 9: Multi-Device Sync (Optional)
 
-- [ ] 29. Wire up navigation and app shell
-  - [ ] 29.1 Implement main navigation structure
+- [ ]* 29. Implement multi-device sync service
+  - [ ]* 29.1 Create SyncService
+    - Implement automatic data sync on app open
+    - Handle sync conflicts (server wins strategy)
+    - Implement background sync when app becomes active
+    - Queue mutations when offline for later sync
+    - _Requirements: 8.1, 8.2, 8.5_
+  - [ ]* 29.2 Write property test for cross-device consistency
+    - **Property 28: Cross-device data consistency**
+    - **Validates: Requirements 8.1, 8.3**
+  - [ ]* 29.3 Write property test for offline cache behavior
+    - **Property 29: Offline cache preserves data**
+    - **Validates: Requirements 8.4**
+  - [ ]* 29.4 Handle video asset availability across devices
+    - Check each asset ID availability via expo-media-library
+    - Detect when videos don't exist on current device
+    - Set video_available=false for unavailable assets
+    - Show re-link prompts for unavailable videos
+    - _Requirements: 8.6_
+
+- [ ]* 30. Build sync status UI
+  - [ ]* 30.1 Create sync status indicators
+    - Online/offline status indicator
+    - Sync progress indicator
+    - Last sync timestamp display
+    - _Requirements: 8.4, 8.5_
+  - [ ]* 30.2 Create video re-link flow
+    - Detect videos unavailable on current device
+    - Show re-link prompt with expo-media-library picker
+    - Update recap with new asset ID via API
+    - _Requirements: 8.6_
+
+- [ ]* 31. Checkpoint - Multi-device sync complete
+  - Ensure all tests pass, ask the user if questions arise.
+
+## Phase 10: Integration and Polish
+
+- [ ] 32. Wire up navigation and app shell
+  - [ ] 32.1 Implement main navigation structure
     - Auth flow (Clerk sign-in screen → main app)
     - Drawer navigation with dance style switcher
     - Tab navigation (Library, Recaps by Style, Tags, Settings)
     - _Requirements: 1.1, 2.4_
-  - [ ] 29.2 Implement Clerk auth callback handling
+  - [ ] 32.2 Implement Clerk auth callback handling
     - ClerkProvider handles OAuth redirect automatically
     - Navigate to appropriate screen after auth
     - Sync user to backend on first sign-in
     - _Requirements: 1.2_
 
-- [ ] 30. Integration testing
-  - [ ]* 30.1 Write integration tests for full user flows
+- [ ] 33. Integration testing
+  - [ ]* 33.1 Write integration tests for full user flows
     - Auth → create style → create recap → add tags → add notes
     - Export from device A → import on device B → verify re-link prompts
-    - Offline create → sync → verify data in Turso cloud
+    - Multi-device sync → verify data consistency across devices (optional)
+    - Video re-linking → verify asset ID updates via API
     - _Requirements: All_
 
-- [ ] 31. Final Checkpoint - All tests passing
+- [ ] 34. Final Checkpoint - All tests passing
   - Ensure all tests pass, ask the user if questions arise.

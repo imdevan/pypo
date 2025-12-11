@@ -9,11 +9,11 @@ Dance Partner is a mobile application designed to help dancers organize, annotat
 - **Platform Priority:** iOS-first for MVP; web functionality maintained for development purposes without initial web deployment
 - **Video Storage:** Reference via `expo-media-library` asset IDs; no video copying
 - **Authentication:** Google sign-in via Clerk for MVP (`@clerk/clerk-expo` for mobile, FastAPI validates Clerk JWTs)
-- **Offline Strategy:** Turso embedded replicas for local SQLite with automatic cloud sync (offline-first capable)
-- **Database Topology:** Single shared Turso database with user_id filtering for row-level data isolation
-- **Schema Management:** Python models (SQLAlchemy/SQLModel) in existing FastAPI backend are source of truth; schema propagates to mobile via Turso sync
-- **Backend Role:** Extend existing FastAPI backend (`app/backend/`) to serve global data (tags, dance styles) and handle Clerk JWT validation; user data syncs directly via Turso
-- **Development vs Production:** FastAPI uses PostgreSQL (existing setup); mobile uses Turso embedded SQLite syncing to Turso cloud
+- **Online Strategy:** Online-first architecture with heavy local caching for performance; requires network connectivity for data operations
+- **Database Topology:** FastAPI backend with PostgreSQL/SQLite as primary data store; mobile app uses local cache with API synchronization
+- **Schema Management:** Python models (SQLAlchemy/SQLModel) in existing FastAPI backend are source of truth; mobile receives data via REST API
+- **Backend Role:** Extend existing FastAPI backend (`app/backend/`) to serve all data (user recaps, notes, tags, dance styles) via REST API with Clerk JWT validation
+- **Development vs Production:** FastAPI uses PostgreSQL (existing setup); mobile communicates exclusively through FastAPI REST endpoints
 - **Multi-Device Support:** Store device ID with exports to enable cross-device library import
 - **User Sharing:** Single-user only for MVP; sharing features deferred
 - **Voice Notes:** Deferred post-MVP
@@ -31,7 +31,7 @@ Dance Partner is a mobile application designed to help dancers organize, annotat
 - **User Tag**: A tag created by and visible only to the creating user
 - **Asset ID**: A stable reference to a video in the iOS Photos library via `expo-media-library` that survives app restarts
 - **Re-link Prompt**: A user interface element that allows users to reconnect a recap to a moved or deleted video file
-- **Turso Embedded Replica**: A local SQLite database that automatically syncs with Turso cloud
+- **Local Cache**: A client-side data cache that stores frequently accessed data from the API to improve performance and reduce network requests
 - **Device ID**: A unique identifier for each device, used to track the source of exported library data for multi-device scenarios
 
 ## Requirements
@@ -114,7 +114,7 @@ Dance Partner is a mobile application designed to help dancers organize, annotat
 
 ### Requirement 7: Data Export and Import
 
-**User Story:** As a dancer, I want to export and import my library data, so that I can transfer my organization across devices.
+**User Story:** As a dancer, I want to export and import my library data, so that I can transfer my organization across devices or create backups.
 
 #### Acceptance Criteria
 
@@ -130,6 +130,19 @@ Dance Partner is a mobile application designed to help dancers organize, annotat
 10. WHEN exporting videos THEN Dance Partner SHALL display progress indication and allow cancellation for large exports
 11. WHEN a user views available imports THEN Dance Partner SHALL display a list of exports from the user's other devices (identified by device ID and device name)
 
+### Requirement 8: Multi-Device Synchronization (Optional)
+
+**User Story:** As a dancer, I want my library data to be automatically synchronized across all my devices, so that I can access my recaps and notes from any device without manual export/import.
+
+#### Acceptance Criteria
+
+1. WHEN a user signs in on a new device THEN Dance Partner SHALL automatically sync all user data from the backend
+2. WHEN a user creates or modifies data on one device THEN Dance Partner SHALL sync the changes to the backend immediately when online
+3. WHEN a user opens the app on another device THEN Dance Partner SHALL display the most recent data from the backend
+4. WHEN a user's device is offline THEN Dance Partner SHALL display cached data and show an offline indicator
+5. WHEN a user's device comes back online THEN Dance Partner SHALL automatically sync any pending changes to the backend
+6. WHEN a recap references a video file that doesn't exist on the current device THEN Dance Partner SHALL flag the recap as requiring re-linking and show a re-link prompt
+
 ## Testing Strategy
 
 The following testing approaches SHALL be implemented during development:
@@ -140,12 +153,14 @@ The following testing approaches SHALL be implemented during development:
 - Recap CRUD operations
 - Tag association logic
 - Note CRUD operations (plain text)
+- API request/response validation
 - JSON serialization/deserialization round-trip
 
 ### Integration Testing
 - Clerk authentication integration
-- Turso database sync operations
+- FastAPI REST endpoint integration
 - expo-media-library asset ID persistence
 - Thumbnail generation and caching
 - Export/import data integrity with device ID tracking
-- Global tags/dance styles API fetch and cache
+- React Query cache management and background refresh
+- Multi-device data synchronization (optional)

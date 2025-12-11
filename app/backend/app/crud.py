@@ -8,8 +8,14 @@ from app.models import Item, ItemCreate, ItemUpdate, User, UserCreate, UserUpdat
 
 
 def create_user(*, session: Session, user_create: UserCreate) -> User:
+    # Generate UUID as string explicitly
+    user_id = str(uuid.uuid4())
+    
     db_obj = User.model_validate(
-        user_create, update={"hashed_password": get_password_hash(user_create.password)}
+        user_create, update={
+            "hashed_password": get_password_hash(user_create.password),
+            "id": user_id
+        }
     )
     session.add(db_obj)
     session.commit()
@@ -46,7 +52,7 @@ def authenticate(*, session: Session, email: str, password: str) -> User | None:
     return db_user
 
 
-def create_item(*, session: Session, item_in: ItemCreate, owner_id: uuid.UUID) -> Item:
+def create_item(*, session: Session, item_in: ItemCreate, owner_id: str) -> Item:
     # Extract tag_ids from item_in
     tag_ids = item_in.tag_ids if item_in.tag_ids else []
     
@@ -119,7 +125,7 @@ def update_tag(*, session: Session, db_tag: Tag, tag_in: TagUpdate) -> Tag:
     return db_tag
 
 
-def get_tag(*, session: Session, tag_id: uuid.UUID) -> Tag | None:
+def get_tag(*, session: Session, tag_id: str) -> Tag | None:
     return session.get(Tag, tag_id)
 
 
@@ -133,7 +139,7 @@ def get_tags(*, session: Session, skip: int = 0, limit: int = 100) -> list[Tag]:
     return list(session.exec(statement).all())
 
 
-def delete_tag(*, session: Session, tag_id: uuid.UUID) -> bool:
+def delete_tag(*, session: Session, tag_id: str) -> bool:
     tag = session.get(Tag, tag_id)
     if not tag:
         return False
@@ -142,7 +148,7 @@ def delete_tag(*, session: Session, tag_id: uuid.UUID) -> bool:
     return True
 
 
-def get_items_by_tag(*, session: Session, tag_id: uuid.UUID, skip: int = 0, limit: int = 100) -> list[Item]:
+def get_items_by_tag(*, session: Session, tag_id: str, skip: int = 0, limit: int = 100) -> list[Item]:
     statement = (
         select(Item)
         .join(ItemTag)

@@ -1,6 +1,6 @@
 import React, { FC } from "react"
 import { View, Pressable, Image } from "react-native"
-import type { ImageStyle } from "react-native"
+import type { ImageStyle, ViewStyle } from "react-native"
 import type { ItemPublic } from "@/client/types.gen"
 import { Text } from "@/components/lib/Text"
 import { useAppTheme } from "@/theme/context"
@@ -25,7 +25,7 @@ export const ItemCard: FC<ItemCardProps> = ({ item, onPress }) => {
       {item.tags && item.tags.length > 0 && (
         <View style={themed($tagsContainer)}>
           {item.tags.map((tag) => (
-            <TagChip tag={tag} />
+            <TagChip key={tag.id} tag={tag} />
           ))}
         </View>
       )}

@@ -56,7 +56,7 @@ export const zItemCreate = z.object({
         z.null()
     ])),
     tag_ids: z.optional(z.union([
-        z.array(z.uuid()),
+        z.array(z.string()),
         z.null()
     ]))
 });
@@ -74,7 +74,7 @@ export const zTagPublic = z.object({
         z.string().max(7),
         z.null()
     ])),
-    id: z.uuid(),
+    id: z.string(),
     created_at: z.iso.datetime(),
     updated_at: z.iso.datetime()
 });
@@ -92,8 +92,8 @@ export const zItemPublic = z.object({
         z.string(),
         z.null()
     ]),
-    id: z.uuid(),
-    owner_id: z.uuid(),
+    id: z.string(),
+    owner_id: z.string(),
     created_at: z.iso.datetime(),
     updated_at: z.iso.datetime(),
     tags: z.optional(z.union([
@@ -119,7 +119,7 @@ export const zItemUpdate = z.object({
         z.null()
     ])),
     tag_ids: z.optional(z.union([
-        z.array(z.uuid()),
+        z.array(z.string()),
         z.null()
     ]))
 });
@@ -239,7 +239,7 @@ export const zUserPublic = z.object({
         z.string().max(255),
         z.null()
     ])),
-    id: z.uuid(),
+    id: z.string(),
     created_at: z.iso.datetime(),
     updated_at: z.iso.datetime()
 });
@@ -440,7 +440,7 @@ export const zUsersRegisterUserResponse = zUserPublic;
 export const zUsersDeleteUserData = z.object({
     body: z.optional(z.never()),
     path: z.object({
-        user_id: z.uuid()
+        user_id: z.string()
     }),
     query: z.optional(z.never())
 });
@@ -453,7 +453,7 @@ export const zUsersDeleteUserResponse = zMessage;
 export const zUsersReadUserByIdData = z.object({
     body: z.optional(z.never()),
     path: z.object({
-        user_id: z.uuid()
+        user_id: z.string()
     }),
     query: z.optional(z.never())
 });
@@ -466,7 +466,7 @@ export const zUsersReadUserByIdResponse = zUserPublic;
 export const zUsersUpdateUserData = z.object({
     body: zUserUpdate,
     path: z.object({
-        user_id: z.uuid()
+        user_id: z.string()
     }),
     query: z.optional(z.never())
 });
@@ -529,7 +529,7 @@ export const zItemsCreateItemResponse = zItemPublic;
 export const zItemsDeleteItemData = z.object({
     body: z.optional(z.never()),
     path: z.object({
-        id: z.uuid()
+        id: z.string()
     }),
     query: z.optional(z.never())
 });
@@ -542,7 +542,7 @@ export const zItemsDeleteItemResponse = zMessage;
 export const zItemsReadItemData = z.object({
     body: z.optional(z.never()),
     path: z.object({
-        id: z.uuid()
+        id: z.string()
     }),
     query: z.optional(z.never())
 });
@@ -555,7 +555,7 @@ export const zItemsReadItemResponse = zItemPublic;
 export const zItemsUpdateItemData = z.object({
     body: zItemUpdate,
     path: z.object({
-        id: z.uuid()
+        id: z.string()
     }),
     query: z.optional(z.never())
 });
@@ -593,7 +593,7 @@ export const zTagsCreateNewTagResponse = zTagPublic;
 export const zTagsDeleteExistingTagData = z.object({
     body: z.optional(z.never()),
     path: z.object({
-        tag_id: z.uuid()
+        tag_id: z.string()
     }),
     query: z.optional(z.never())
 });
@@ -606,7 +606,7 @@ export const zTagsDeleteExistingTagResponse = zMessage;
 export const zTagsReadTagData = z.object({
     body: z.optional(z.never()),
     path: z.object({
-        tag_id: z.uuid()
+        tag_id: z.string()
     }),
     query: z.optional(z.never())
 });
@@ -619,7 +619,7 @@ export const zTagsReadTagResponse = zTagPublic;
 export const zTagsUpdateExistingTagData = z.object({
     body: zTagUpdate,
     path: z.object({
-        tag_id: z.uuid()
+        tag_id: z.string()
     }),
     query: z.optional(z.never())
 });
@@ -632,7 +632,7 @@ export const zTagsUpdateExistingTagResponse = zTagPublic;
 export const zTagsReadItemsByTagData = z.object({
     body: z.optional(z.never()),
     path: z.object({
-        tag_id: z.uuid()
+        tag_id: z.string()
     }),
     query: z.optional(z.object({
         skip: z.optional(z.int()).default(0),

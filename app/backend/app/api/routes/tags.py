@@ -32,7 +32,7 @@ def read_tags(
 
 
 @router.get("/{tag_id}", response_model=TagPublic)
-def read_tag(session: SessionDep, tag_id: uuid.UUID) -> Any:
+def read_tag(session: SessionDep, tag_id: str) -> Any:
     """
     Get tag by ID.
     """
@@ -65,7 +65,7 @@ def update_existing_tag(
     *,
     session: SessionDep,
     current_user: CurrentUser,
-    tag_id: uuid.UUID,
+    tag_id: str,
     tag_in: TagUpdate,
 ) -> Any:
     """
@@ -89,7 +89,7 @@ def update_existing_tag(
 
 @router.delete("/{tag_id}")
 def delete_existing_tag(
-    session: SessionDep, current_user: CurrentUser, tag_id: uuid.UUID
+    session: SessionDep, current_user: CurrentUser, tag_id: str
 ) -> Message:
     """
     Delete a tag.
@@ -107,7 +107,7 @@ def delete_existing_tag(
 
 @router.get("/{tag_id}/items", response_model=ItemsPublic)
 def read_items_by_tag(
-    session: SessionDep, tag_id: uuid.UUID, skip: int = 0, limit: int = 100
+    session: SessionDep, tag_id: str, skip: int = 0, limit: int = 100
 ) -> Any:
     """
     Get all items tagged with a specific tag.

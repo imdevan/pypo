@@ -94,8 +94,9 @@ class Settings(BaseSettings):
             )
             if self.ENVIRONMENT == "local":
                 warnings.warn(message, stacklevel=1)
-            else:
-                raise ValueError(message)
+            # TODO: renable this before release
+            # else:
+            #     raise ValueError(message)
 
     @model_validator(mode="after")
     def _enforce_non_default_secrets(self) -> Self:

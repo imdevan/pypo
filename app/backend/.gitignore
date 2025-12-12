@@ -8,3 +8,8 @@ htmlcov
 .venv
 
 *.db
+
+.env.production
+
+# Old migrations
+migration_archive

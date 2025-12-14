@@ -50,6 +50,8 @@ class Settings(BaseSettings):
     PROJECT_NAME: str
     SENTRY_DSN: HttpUrl | None = None
     SQLITE_DB_PATH: str = "app.db"
+    TURSO_DATABASE_URL: str | None = None
+    TURSO_AUTH_TOKEN: str | None = None
 
     @computed_field  # type: ignore[prop-decorator]
     @property

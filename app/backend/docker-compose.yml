@@ -4,6 +4,11 @@ services:
     image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
     build:
       context: ./
+      args:
+        # Only install build tools (Rust, CMake, etc.) if using Turso
+        # Set BUILD_TURSO_DEPS=1 in your environment before building if using Turso
+        # Example: BUILD_TURSO_DEPS=1 docker-compose build
+        BUILD_TURSO_DEPS: ${BUILD_TURSO_DEPS:-0}
     networks:
       - traefik-public
       - default
@@ -23,8 +28,7 @@ services:
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
       - SQLITE_DB_PATH=${SQLITE_DB_PATH:-app.db}
-      - TURSO_DATABASE_URL=${TURSO_DATABASE_URL}
-      - TURSO_AUTH_TOKEN=${TURSO_AUTH_TOKEN}
+      # TURSO_DATABASE_URL and TURSO_AUTH_TOKEN come from .env.production via env_file
       - SENTRY_DSN=${SENTRY_DSN}
       - SEED_DB=${SEED_DB:-false}
     volumes:
@@ -54,8 +58,7 @@ services:
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - EMAILS_FROM_EMAIL=${EMAILS_FROM_EMAIL}
       - SQLITE_DB_PATH=${SQLITE_DB_PATH:-app.db}
-      - TURSO_DATABASE_URL=${TURSO_DATABASE_URL}
-      - TURSO_AUTH_TOKEN=${TURSO_AUTH_TOKEN}
+      # TURSO_DATABASE_URL and TURSO_AUTH_TOKEN come from .env.production via env_file
       - SENTRY_DSN=${SENTRY_DSN}
 
     healthcheck:
@@ -66,6 +69,11 @@ services:
 
     build:
       context: ./
+      args:
+        # Only install build tools (Rust, CMake, etc.) if using Turso
+        # Set BUILD_TURSO_DEPS=1 in your environment before building if using Turso
+        # Example: BUILD_TURSO_DEPS=1 docker-compose build
+        BUILD_TURSO_DEPS: ${BUILD_TURSO_DEPS:-0}
     volumes:
       - sqlite-data:/app
     labels:

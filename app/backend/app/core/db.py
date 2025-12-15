@@ -26,10 +26,6 @@ def get_engine_config():
     turso_url = settings.TURSO_DATABASE_URL
     turso_token = settings.TURSO_AUTH_TOKEN
     
-    # Debug: see what values are being detected (force flush to ensure output)
-    import sys
-    print(f"DEBUG: TURSO_DATABASE_URL={repr(turso_url)}, TURSO_AUTH_TOKEN={repr(turso_token)}", file=sys.stderr, flush=True)
-    
     # Check if both are set and non-empty (after stripping whitespace)
     # Handle None, empty string, and whitespace-only strings
     has_turso_url = (
@@ -43,11 +39,8 @@ def get_engine_config():
         and turso_token.strip() != ""
     )
     
-    print(f"DEBUG: has_turso_url={has_turso_url}, has_turso_token={has_turso_token}", file=sys.stderr, flush=True)
-    
     if has_turso_url and has_turso_token:
         # Use Turso Remote
-        print("Turso config found")
         # Check if sqlalchemy-libsql is installed
         try:
             import sqlalchemy_libsql  # noqa: F401
@@ -80,8 +73,6 @@ def get_engine_config():
             },
         }
     else:
-        print("Turso NOT config found")
-
         # Use local SQLite
         return {
             "url": str(settings.SQLALCHEMY_DATABASE_URI),

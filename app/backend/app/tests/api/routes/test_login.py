@@ -8,7 +8,7 @@ from app.core.security import verify_password
 from app.crud import create_user
 from app.models import UserCreate
 from app.tests.utils.user import user_authentication_headers
-from app.tests.utils.utils import random_email, random_lower_string
+from app.tests.utils.utils import random_email, random_lower_string, random_password
 from app.utils import generate_password_reset_token
 
 
@@ -74,8 +74,8 @@ def test_recovery_password_user_not_exits(
 
 def test_reset_password(client: TestClient, db: Session) -> None:
     email = random_email()
-    password = random_lower_string()
-    new_password = random_lower_string()
+    password = random_password()
+    new_password = random_password()
 
     user_create = UserCreate(
         email=email,

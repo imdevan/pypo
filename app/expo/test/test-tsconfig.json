@@ -2,7 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "noImplicitAny": false,
-    "noUnusedLocals": false
+    "noUnusedLocals": false,
+    "types": ["jest", "@testing-library/react-native"]
   },
   "include": ["**/*.test.ts", "**/*.test.tsx"]
 }

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "docker compose watch",
     "build": "echo 'Backend build completed'",
-    "test": "pytest",
+    "test": "uv run pytest",
     "lint": "echo 'Backend lint completed'",
     "format": "echo 'Backend format completed'",
     "clean": "echo 'Backend clean completed'"

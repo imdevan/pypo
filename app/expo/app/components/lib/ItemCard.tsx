@@ -1,6 +1,6 @@
-import React, { FC } from "react"
+import { FC } from "react"
 import { View, Pressable, Image } from "react-native"
-import type { ImageStyle, ViewStyle } from "react-native"
+import type { ImageStyle } from "react-native"
 
 import type { ItemPublic } from "@/client/types.gen"
 import { Text } from "@/components/lib/Text"
@@ -57,12 +57,4 @@ const $tagsContainer = {
   marginTop: 8,
   marginBottom: 8,
   gap: 6,
-}
-
-const $itemContainer: ViewStyle = {
-  // padding: 16,
-  // marginBottom: 12,
-  // borderRadius: 8,
-  // borderColor: "#f5f5f5",
-  // borderWidth: 1,
 }

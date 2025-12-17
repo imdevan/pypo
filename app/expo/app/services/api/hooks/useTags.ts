@@ -7,7 +7,7 @@ import {
   tagsUpdateExistingTagMutation,
   tagsDeleteExistingTagMutation,
 } from "@/client/@tanstack/react-query.gen"
-import { TagCreate, TagPublic, TagUpdate } from "@/client/types.gen"
+import type { TagPublic } from "@/client/types.gen"
 import { useAuth } from "@/context/AuthContext"
 
 // Get all tags query

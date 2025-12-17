@@ -147,7 +147,7 @@ export function useNavigationPersistence(storage: Storage, persistenceKey: strin
 
   const restoreState = async () => {
     try {
-      const initialUrl = await Linking.getInitialURL()
+      await Linking.getInitialURL()
 
       // Always try to restore navigation state for better UX
       // The linking configuration will handle deep links if they exist

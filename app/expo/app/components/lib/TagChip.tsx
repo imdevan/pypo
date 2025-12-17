@@ -28,7 +28,7 @@ export const TagChip: FC<TagChipProps> = ({ tag }) => {
   // light | high | p200
   const textColor = useMemo(() => {
     return theme.isDark ? neutral800 : neutral200
-  }, [tag.color, theme.isDark])
+  }, [theme.isDark, neutral200, neutral800])
 
   // Theme is light; lumi is high = p800
   //
@@ -71,7 +71,7 @@ const $tagChip: ThemedStyle<ViewStyle> = ({ colors }) => ({
   paddingVertical: 4,
 })
 
-const $tagText: ThemedStyle<TextStyle> = ({ colors }) => ({
+const $tagText: ThemedStyle<TextStyle> = () => ({
   // fontSize: 12,
   // color: "#666",
   // textShadowColor: colors.palette.neutral100,

@@ -1,4 +1,3 @@
-import React from "react"
 import type { ViewStyle, TextStyle } from "react-native"
 import { Pressable, View } from "react-native"
 import { useNavigation, CommonActions, NavigationProp } from "@react-navigation/native"
@@ -127,7 +126,7 @@ export function AppDrawer() {
 
         <View style={themed($navigationSection)}>
           <Text text="Navigation" style={themed($sectionTitle)} />
-          {navigationItems.map((item, index) => (
+          {navigationItems.map((item) => (
             <Pressable
               key={item.screen}
               onPress={() => handleNavigation(item.screen)}
@@ -165,7 +164,7 @@ const $drawerContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   justifyContent: "space-between",
 })
 
-const $contentSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $contentSection: ThemedStyle<ViewStyle> = () => ({
   flex: 1,
 })
 
@@ -180,9 +179,9 @@ const $userName: ThemedStyle<TextStyle> = ({ colors, spacing, typography }) => (
   marginTop: spacing.sm,
 })
 
-const $userNamePressable: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({})
+const $userNamePressable: ThemedStyle<ViewStyle> = () => ({})
 
-const $userNameContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $userNameContainer: ThemedStyle<ViewStyle> = () => ({
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "space-between",
@@ -218,22 +217,13 @@ const $navItem: ThemedStyle<TextStyle> = ({ colors, spacing, typography }) => ({
   flex: 1,
 })
 
-const $navItemPressable: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
+const $navItemPressable: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.sm,
   borderRadius: spacing.xs,
   padding: spacing.sm,
 })
 
-const $navItemContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $navItemContainer: ThemedStyle<ViewStyle> = () => ({
   flexDirection: "row",
   alignItems: "center",
-})
-
-const $logoutButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  backgroundColor: colors.error,
-  marginTop: spacing.lg,
-})
-
-const $logoutButtonText: ThemedStyle<TextStyle> = ({ colors }) => ({
-  color: colors.background,
 })

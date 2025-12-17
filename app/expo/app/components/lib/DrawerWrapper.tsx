@@ -1,4 +1,4 @@
-import { FC, ReactNode, useRef, useCallback } from "react"
+import { FC, ReactNode, useRef } from "react"
 import { Image, ImageStyle, View, ViewStyle } from "react-native"
 import { type ContentStyle } from "@shopify/flash-list"
 import { Drawer } from "react-native-drawer-layout"
@@ -8,9 +8,8 @@ import { useDrawer } from "@/context/DrawerContext"
 import { isRTL } from "@/i18n"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
-import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 
-import { ScreenWithHeader } from "./lib/ScreenWithHeader"
+import { ScreenWithHeader } from "./ScreenWithHeader"
 
 const logo = require("@assets/images/logo.png")
 

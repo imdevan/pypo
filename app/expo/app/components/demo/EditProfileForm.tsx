@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { ViewStyle, Alert, View } from "react-native"
 
 import type { UserPublic } from "@/client/types.gen"
@@ -152,7 +152,7 @@ const $headerSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.xl,
 })
 
-const $title: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+const $title: ThemedStyle<any> = ({ colors, typography }) => ({
   fontSize: 24,
   fontFamily: typography.primary.bold,
   color: colors.text,

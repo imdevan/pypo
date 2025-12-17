@@ -1,5 +1,6 @@
 import { FC, useMemo } from "react"
 import { TextStyle, View, ViewStyle } from "react-native"
+
 import type { TagPublic } from "@/client/types.gen"
 import { Text } from "@/components/lib/Text"
 import { useAppTheme } from "@/theme/context"
@@ -12,12 +13,12 @@ interface TagChipProps {
 
 export const TagChip: FC<TagChipProps> = ({ tag }) => {
   const { themed, theme } = useAppTheme()
-  console.log('theme:', theme);
+  console.log("theme:", theme)
 
-  const lumi = luminance(tag.color);
-  const { neutral200, neutral800 } = theme.colors.palette;
+  const lumi = luminance(tag.color)
+  const { neutral200, neutral800 } = theme.colors.palette
 
-  console.log('lumi:', lumi);
+  console.log("lumi:", lumi)
 
   // Theme is dark; lumi is high = p200
   // Theme | lumi | color
@@ -36,10 +37,10 @@ export const TagChip: FC<TagChipProps> = ({ tag }) => {
   // console.log('theme.colors.palette.neutral200:', theme.colors.palette.neutral200);
   // console.log('theme.colors.palette.neutral800:', theme.colors.palette.neutral800);
 
-  console.log('textColor:', textColor);
+  console.log("textColor:", textColor)
   if (lumi > 0.5) {
-    console.log('tag.name:', tag.name);
-    console.log('lumi:', lumi);
+    console.log("tag.name:", tag.name)
+    console.log("lumi:", lumi)
   }
 
   return (

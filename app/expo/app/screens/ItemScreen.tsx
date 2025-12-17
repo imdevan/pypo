@@ -1,20 +1,18 @@
 import React, { FC } from "react"
 import { View, ViewStyle, TextStyle } from "react-native"
+import Alert from "@blazejkustra/react-native-alert"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 
-import Alert from '@blazejkustra/react-native-alert';
-
 import { Button } from "@/components/lib/Button"
+import { MotiView } from "@/components/lib/MotiView"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
-import { MotiView } from "@/components/lib/MotiView"
-import { useItem, useDeleteItem } from "@/services/api/hooks"
+import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
 import { extractErrorMessage } from "@/services/api/errorHandling"
+import { useItem, useDeleteItem } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
-
-import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
 
 type ItemScreenProps = NativeStackScreenProps<ItemsStackParamList, "item">
 
@@ -27,30 +25,26 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
   const item = itemData
 
   const handleDelete = async () => {
-    Alert.alert(
-      "Delete Item",
-      "Are you sure you want to delete this item?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
+    Alert.alert("Delete Item", "Are you sure you want to delete this item?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await deleteItemMutation.mutateAsync({
+              path: { id: itemId },
+            })
+            navigation.goBack()
+          } catch (error) {
+            Alert.alert("Error", extractErrorMessage(error))
+          }
         },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await deleteItemMutation.mutateAsync({
-                path: { id: itemId },
-              })
-              navigation.goBack()
-            } catch (error) {
-              Alert.alert("Error", extractErrorMessage(error))
-            }
-          },
-        },
-      ],
-    )
+      },
+    ])
   }
 
   return (
@@ -80,7 +74,7 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
           style={themed($content)}
         >
           <Text text={item.title} preset="heading" style={themed($title)} />
-          
+
           {item.description && (
             <Text text={item.description} preset="default" style={themed($description)} />
           )}
@@ -111,7 +105,11 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
           <View style={themed($section)}>
             <Text text="Details" preset="subheading" style={themed($sectionTitle)} />
             <Text text={`ID: ${item.id}`} preset="formHelper" style={themed($styles.mutedText)} />
-            <Text text={`Owner: ${item.owner_id}`} preset="formHelper" style={themed($styles.mutedText)} />
+            <Text
+              text={`Owner: ${item.owner_id}`}
+              preset="formHelper"
+              style={themed($styles.mutedText)}
+            />
           </View>
 
           <Button

@@ -11,8 +11,8 @@ import { useAuth } from "@/context/AuthContext"
 import type { AppStackScreenProps } from "@/navigators/AppNavigator"
 import { useLogin } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
-import type { ThemedStyle } from "@/theme/types"
 import { $styles } from "@/theme/styles"
+import type { ThemedStyle } from "@/theme/types"
 
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 
@@ -109,7 +109,6 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
       contentContainerStyle={themed([$styles.container, $loginContainer])}
       safeAreaEdges={["top", "bottom"]}
     >
-
       <Text testID="login-heading" tx="loginScreen:logIn" preset="heading" style={themed($logIn)} />
       <Text tx="loginScreen:enterDetails" preset="subheading" style={themed($enterDetails)} />
       {attemptsCount > 2 && (

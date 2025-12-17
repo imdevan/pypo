@@ -1,11 +1,19 @@
 import React, { useState } from "react"
 import { View, ViewStyle, StyleProp } from "react-native"
-import ReanimatedColorPicker, { Panel1, Preview, HueSlider, OpacitySlider, Swatches } from "reanimated-color-picker"
+import ReanimatedColorPicker, {
+  Panel1,
+  Preview,
+  HueSlider,
+  OpacitySlider,
+  Swatches,
+} from "reanimated-color-picker"
+
+import { useAppTheme } from "@/theme/context"
+import { spacing } from "@/theme/spacing"
+import type { ThemedStyle } from "@/theme/types"
+
 import { Button } from "./Button"
 import { Text } from "./Text"
-import { useAppTheme } from "@/theme/context"
-import type { ThemedStyle } from "@/theme/types"
-import { spacing } from "@/theme/spacing"
 
 interface ColorPickerProps {
   value: string
@@ -40,14 +48,9 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
   return (
     <View style={[themed($container), style]}>
       {label && <Text text={label} preset="formLabel" style={themed($label)} />}
-      
+
       <View style={themed($colorPreviewContainer)}>
-        <View
-          style={[
-            themed($colorPreview),
-            { backgroundColor: value }
-          ]}
-        />
+        <View style={[themed($colorPreview), { backgroundColor: value }]} />
         <Button
           text="Choose Color"
           preset="default"
@@ -65,7 +68,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({
           >
             <Preview />
             <Panel1 />
-            <HueSlider style={themed($hueSlider)}/>
+            <HueSlider style={themed($hueSlider)} />
             {showOpacitySlider && <OpacitySlider />}
             <Swatches />
           </ReanimatedColorPicker>
@@ -133,11 +136,10 @@ const $pickerContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   elevation: 5,
 })
 
-
 const $hueSlider: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-    marginBottom: spacing.md,
-  })
-  
+  marginBottom: spacing.md,
+})
+
 const $picker: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.md,
 })

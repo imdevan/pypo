@@ -1,8 +1,8 @@
-import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 import { CompositeScreenProps } from "@react-navigation/native"
+import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 
-import { ItemsScreen } from "@/screens/ItemsScreen"
 import { ItemScreen } from "@/screens/ItemScreen"
+import { ItemsScreen } from "@/screens/ItemsScreen"
 
 import { DemoTabScreenProps } from "./TabNavigator"
 

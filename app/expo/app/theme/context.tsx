@@ -44,7 +44,7 @@ export const SCREEN_SIZE = {
   md: 768,
   lg: 1024,
   xl: 1280,
-  xxl: 1536
+  xxl: 1536,
 }
 
 export interface ThemeProviderProps {
@@ -113,14 +113,14 @@ export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
       md: width > SCREEN_SIZE.md,
       lg: width > SCREEN_SIZE.lg,
       xl: width > SCREEN_SIZE.xl,
-      xxl: width > SCREEN_SIZE.xxl
+      xxl: width > SCREEN_SIZE.xxl,
     }
 
     return {
       ...baseTheme,
       width,
       height,
-      screen
+      screen,
     }
   }, [themeContext, width, height])
 

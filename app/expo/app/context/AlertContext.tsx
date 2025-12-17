@@ -1,10 +1,10 @@
-/** 
+/**
  * This file is here to deal with the styling needed for react-native-alert
  * todo: replace react-native-alert with custom solution
  * https://github.com/blazejkustra/react-native-alert
- * 
- * From the docs for convience: 
- * 
+ *
+ * From the docs for convience:
+ *
  * --rn-alert-bg – dialog background
  * --rn-alert-fg – primary text color
  * --rn-alert-muted – secondary / muted text
@@ -26,15 +26,11 @@
  * --rn-alert-font-size – base font size
  * --rn-alert-title-size – title font size
  */
-import {
-  createContext,
-  FC,
-  PropsWithChildren,
-  useEffect,
-} from "react"
+import { createContext, FC, PropsWithChildren, useEffect } from "react"
 import { Platform } from "react-native"
 
 import { useAppTheme } from "@/theme/context"
+
 export type AlertContextType = {}
 
 export const AlertContext = createContext<AlertContextType | null>(null)
@@ -42,11 +38,13 @@ export const AlertContext = createContext<AlertContextType | null>(null)
 export interface AlertProviderProps {}
 
 export const AlertProvider: FC<PropsWithChildren<AlertProviderProps>> = ({ children }) => {
-   const {theme: {colors}} = useAppTheme()
+  const {
+    theme: { colors },
+  } = useAppTheme()
 
   useEffect(() => {
     if (Platform.OS === "web") {
-      console.log('called!')
+      console.log("called!")
       const style = document.createElement("style")
       style.textContent = `
         :root {
@@ -69,4 +67,3 @@ export const AlertProvider: FC<PropsWithChildren<AlertProviderProps>> = ({ child
 
   return <>{children}</>
 }
-

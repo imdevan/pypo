@@ -1,10 +1,12 @@
 import React, { FC, useState } from "react"
 import { View, Image, ActivityIndicator } from "react-native"
 import type { ViewStyle, ImageStyle } from "react-native"
-import { TextField } from "./TextField"
-import { Text } from "./Text"
+
 import { useAppTheme } from "@/theme/context"
 import { type ThemedStyle } from "@/theme/types"
+
+import { Text } from "./Text"
+import { TextField } from "./TextField"
 
 interface ImageUrlInputProps {
   value: string

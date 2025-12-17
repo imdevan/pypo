@@ -10,8 +10,8 @@ import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 
-import { AppDrawer } from "../demo/AppDrawer"
 import { ScreenWithHeader } from "./ScreenWithHeader"
+import { AppDrawer } from "../demo/AppDrawer"
 
 const logo = require("@assets/images/logo.png")
 

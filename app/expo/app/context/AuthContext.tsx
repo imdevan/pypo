@@ -37,7 +37,7 @@ export const AuthProvider: FC<PropsWithChildren<AuthProviderProps>> = ({ childre
   // Use TanStack Query hooks
   const loginMutation = useLogin()
   const registerMutation = useRegister()
-  
+
   // Only test token if it exists and looks valid (not empty string)
   const shouldTestToken = authToken && authToken.trim().length > 0
   const testTokenQuery = useTestToken(shouldTestToken ? authToken : undefined)

@@ -3,8 +3,8 @@ import { Platform } from "react-native"
 
 import { Screen, ScreenProps } from "@/components/lib/Screen"
 import { DrawerIconButton } from "@/screens/DemoShowroomScreen/DrawerIconButton"
-import { $styles } from "@/theme/styles"
 import { useAppTheme } from "@/theme/context"
+import { $styles } from "@/theme/styles"
 
 export interface ScreenWithHeaderProps extends Omit<ScreenProps, "children"> {
   /**
@@ -27,7 +27,7 @@ export interface ScreenWithHeaderProps extends Omit<ScreenProps, "children"> {
  */
 export function ScreenWithHeader(props: ScreenWithHeaderProps) {
   const { headerComponent, onDrawerToggle, children, ...screenProps } = props
-  const { themed } = useAppTheme();
+  const { themed } = useAppTheme()
   const isAndroid = Platform.OS === "android"
 
   return (

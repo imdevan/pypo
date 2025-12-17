@@ -39,7 +39,7 @@ export const useCreateTag = () => {
     }),
     onSuccess: (createdTag) => {
       // Invalidate and refetch tags
-    //   queryClient.invalidateQueries({ queryKey: ["tagsReadTags"] })
+      //   queryClient.invalidateQueries({ queryKey: ["tagsReadTags"] })
       queryClient.setQueriesData(
         {
           queryKey: [{ _id: "tagsReadTags" }],
@@ -53,7 +53,6 @@ export const useCreateTag = () => {
           }
         },
       )
-
     },
   })
 }

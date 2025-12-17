@@ -9,8 +9,8 @@ import { Text } from "@/components/lib/Text"
 import { useAuth } from "@/context/AuthContext"
 import { useCurrentUserData } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
-import type { ThemedStyle } from "@/theme/types"
 import { $styles } from "@/theme/styles"
+import type { ThemedStyle } from "@/theme/types"
 
 /**
  * UserProfileScreen displays user information and profile details

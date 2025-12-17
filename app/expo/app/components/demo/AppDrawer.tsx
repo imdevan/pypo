@@ -113,7 +113,10 @@ export function AppDrawer() {
     <View style={themed($drawerContainer)}>
       <View style={themed($contentSection)}>
         <View style={themed($userSection)}>
-          <Pressable onPress={() => handleUserProfileNavigation()} style={themed($userNamePressable)}>
+          <Pressable
+            onPress={() => handleUserProfileNavigation()}
+            style={themed($userNamePressable)}
+          >
             <View style={themed($userNameContainer)}>
               <Text text={authEmail || "Guest User"} style={themed($userName)} />
               <Icon icon="settings" size={16} />
@@ -149,11 +152,7 @@ export function AppDrawer() {
         </View>
       </View>
 
-      <Button
-        preset="outline"
-        text="Logout"
-        onPress={logout}
-      />
+      <Button preset="outline" text="Logout" onPress={logout} />
     </View>
   )
 }

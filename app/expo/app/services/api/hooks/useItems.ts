@@ -32,7 +32,7 @@ export const useItems = () => {
 // Get single item query
 export const useItem = (itemId: string) => {
   const { authToken } = useAuth()
-  
+
   return useQuery({
     ...itemsReadItemOptions({
       path: { id: itemId },

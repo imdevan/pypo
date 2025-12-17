@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { View, ViewStyle, StyleProp } from "react-native"
 import ReanimatedColorPicker, {
   Panel1,
@@ -9,7 +9,6 @@ import ReanimatedColorPicker, {
 } from "reanimated-color-picker"
 
 import { useAppTheme } from "@/theme/context"
-import { spacing } from "@/theme/spacing"
 import type { ThemedStyle } from "@/theme/types"
 
 import { Button } from "./Button"
@@ -106,7 +105,7 @@ const $colorPreviewContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   gap: spacing.sm,
 })
 
-const $colorPreview: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $colorPreview: ThemedStyle<ViewStyle> = () => ({
   width: 40,
   height: 40,
   borderRadius: 8,
@@ -114,7 +113,7 @@ const $colorPreview: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   borderColor: "#ccc",
 })
 
-const $button: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $button: ThemedStyle<ViewStyle> = () => ({
   flex: 1,
 })
 

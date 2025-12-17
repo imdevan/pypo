@@ -13,7 +13,6 @@ import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navig
 import Config from "@/config"
 import { useAuth } from "@/context/AuthContext"
 import { ErrorBoundary } from "@/screens/ErrorScreen/ErrorBoundary"
-import { ItemsScreen } from "@/screens/ItemsScreen"
 import { LoginScreen } from "@/screens/LoginScreen"
 import { WelcomeScreen } from "@/screens/WelcomeScreen"
 import { useAppTheme } from "@/theme/context"
@@ -49,10 +48,16 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
   T
 >
 
+// Documentation: https://reactnavigation.org/docs/stack-navigator/
+const Stack = createNativeStackNavigator<AppStackParamList>()
+
 // Custom component to handle authenticated user routing
 const AuthenticatedNavigator = () => {
   const [isReady, setIsReady] = useState(false)
   const [initialRoute, setInitialRoute] = useState<keyof AppStackParamList>("app")
+  const {
+    theme: { colors },
+  } = useAppTheme()
 
   useEffect(() => {
     const prepareNavigation = async () => {
@@ -81,10 +86,6 @@ const AuthenticatedNavigator = () => {
     return null
   }
 
-  const {
-    theme: { colors },
-  } = useAppTheme()
-
   return (
     <Stack.Navigator
       screenOptions={{
@@ -101,9 +102,6 @@ const AuthenticatedNavigator = () => {
     </Stack.Navigator>
   )
 }
-
-// Documentation: https://reactnavigation.org/docs/stack-navigator/
-const Stack = createNativeStackNavigator<AppStackParamList>()
 
 const AppStack = () => {
   const { isAuthenticated } = useAuth()

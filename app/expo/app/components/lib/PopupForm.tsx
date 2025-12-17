@@ -1,5 +1,5 @@
 // lib
-import React, { useState, ReactNode } from "react"
+import { useState, ReactNode } from "react"
 import { ViewStyle } from "react-native"
 import { View } from "react-native"
 
@@ -127,7 +127,7 @@ const $sectionHeader: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.md,
 })
 
-const $sectionTitle: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+const $sectionTitle: ThemedStyle<any> = ({ colors, typography }) => ({
   fontSize: 18,
   fontFamily: typography.primary.bold,
   marginBottom: spacing.md,
@@ -159,7 +159,7 @@ const $formActions: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.sm,
 })
 
-const $cancelButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+const $cancelButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.palette.neutral400,
   flex: 1,
 })
@@ -168,7 +168,7 @@ const $cancelButtonText: ThemedStyle<any> = ({ colors }) => ({
   color: colors.background,
 })
 
-const $saveButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+const $saveButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.tint,
   flex: 1,
 })

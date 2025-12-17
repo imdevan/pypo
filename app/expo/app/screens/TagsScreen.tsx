@@ -1,7 +1,6 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { ViewStyle, Alert } from "react-native"
-import { View, ScrollView } from "react-native"
-import { ColorFormatsObject } from "reanimated-color-picker"
+import { View } from "react-native"
 
 import { TagPublic, TagCreate, TagUpdate } from "@/client/types.gen"
 import { Button } from "@/components/lib/Button"
@@ -80,7 +79,7 @@ export function TagsScreen() {
           setEditingTag(null)
           setEditForm({ name: "", description: "", color: "#007AFF" })
         },
-        onError: (error) => {
+        onError: (_error) => {
           Alert.alert("Error", "Failed to update tag")
         },
       },
@@ -91,7 +90,7 @@ export function TagsScreen() {
     deleteTagMutation.mutate(
       { path: { tag_id: tag.id } },
       {
-        onError: (error) => {
+        onError: (_error) => {
           Alert.alert("Error", "Failed to delete tag")
         },
       },
@@ -290,7 +289,7 @@ const $headerSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.xl,
 })
 
-const $title: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+const $title: ThemedStyle<any> = ({ colors, typography }) => ({
   fontSize: 24,
   fontFamily: typography.primary.bold,
   color: colors.text,
@@ -325,7 +324,7 @@ const $formActions: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.sm,
 })
 
-const $cancelButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+const $cancelButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.palette.neutral400,
   flex: 1,
 })
@@ -334,7 +333,7 @@ const $cancelButtonText: ThemedStyle<any> = ({ colors }) => ({
   color: colors.background,
 })
 
-const $saveButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+const $saveButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.tint,
   flex: 1,
 })
@@ -352,13 +351,13 @@ const $tagCard: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   borderColor: colors.border,
 })
 
-const $tagContent: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $tagContent: ThemedStyle<ViewStyle> = () => ({
   flexDirection: "row",
   justifyContent: "space-between",
   alignItems: "flex-start",
 })
 
-const $tagInfo: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $tagInfo: ThemedStyle<ViewStyle> = () => ({
   flex: 1,
 })
 
@@ -375,7 +374,7 @@ const $colorIndicator: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginRight: spacing.sm,
 })
 
-const $tagName: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+const $tagName: ThemedStyle<any> = ({ colors, typography }) => ({
   fontSize: 16,
   fontFamily: typography.primary.bold,
   color: colors.text,
@@ -388,7 +387,7 @@ const $tagDescription: ThemedStyle<any> = ({ colors, spacing, typography }) => (
   marginBottom: spacing.xs,
 })
 
-const $tagDate: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+const $tagDate: ThemedStyle<any> = ({ colors, typography }) => ({
   fontSize: 12,
   fontFamily: typography.primary.normal,
   color: colors.textDim,
@@ -421,7 +420,7 @@ const $deleteButtonText: ThemedStyle<any> = ({ colors }) => ({
   fontSize: 12,
 })
 
-const $editForm: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $editForm: ThemedStyle<ViewStyle> = () => ({
   width: "100%",
 })
 
@@ -434,13 +433,13 @@ const $infoCard: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   alignItems: "center",
 })
 
-const $value: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+const $value: ThemedStyle<any> = ({ colors, typography }) => ({
   fontSize: 16,
   fontFamily: typography.primary.normal,
   color: colors.text,
 })
 
-const $errorValue: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
+const $errorValue: ThemedStyle<any> = ({ colors, typography }) => ({
   fontSize: 16,
   fontFamily: typography.primary.medium,
   color: colors.error,

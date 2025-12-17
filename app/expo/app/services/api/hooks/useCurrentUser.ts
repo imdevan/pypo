@@ -6,7 +6,6 @@ import {
   usersUpdateUserMeMutation,
   usersUpdatePasswordMeMutation,
 } from "@/client/@tanstack/react-query.gen"
-import { UserPublic, UserUpdateMe } from "@/client/types.gen"
 import { useAuth } from "@/context/AuthContext"
 
 /**

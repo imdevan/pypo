@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from "react"
+import { FC, useEffect, useMemo, useState } from "react"
 import { Alert, View } from "react-native"
 import type { ViewStyle } from "react-native"
 import { useNavigation } from "@react-navigation/native"
@@ -13,15 +13,13 @@ import { DropDown } from "@/components/lib/DropDown"
 import { EmptyState } from "@/components/lib/EmptyState"
 import { PressableIcon } from "@/components/lib/Icon"
 import { ImageUrlInput } from "@/components/lib/ImageUrlInput"
+import { ItemCard } from "@/components/lib/ItemCard"
 import { MotiView } from "@/components/lib/MotiView"
+import { PopupForm } from "@/components/lib/PopupForm"
 import { Screen } from "@/components/lib/Screen"
-import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
-// import { MasonryList } from "@/components/lib/MasonryList"
-
 import { Text } from "@/components/lib/Text"
 import { TextField } from "@/components/lib/TextField"
-import { PopupForm } from "@/components/lib/PopupForm"
-import { ItemCard } from "@/components/lib/ItemCard"
+import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
 import { extractErrorMessage } from "@/services/api/errorHandling"
 import { useItems, useCreateItem } from "@/services/api/hooks"
 import { useTags } from "@/services/api/hooks/useTags"
@@ -96,7 +94,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   }
 
   // Update debug info when items load
-  React.useEffect(() => {
+  useEffect(() => {
     if (itemsData) {
       setDebugInfo(`Loaded ${items.length} items successfully`)
     } else if (itemsError) {
@@ -107,7 +105,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const renderItem = ({ item, index }: { item: ItemPublic; index: number }) => {
     const modIndex = index % numColumns
     const itemMargin = {
-      marginLeft: modIndex == 0 ? 0 : 24,
+      marginLeft: modIndex === 0 ? 0 : 24,
     }
 
     return (
@@ -262,7 +260,7 @@ const $headerRight = {
   gap: 8,
 }
 
-const $header: ThemedStyle<ViewStyle> = ({ spacing, width }) => ({
+const $header: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row" as const,
   justifyContent: "space-between" as const,
   alignItems: "center" as const,

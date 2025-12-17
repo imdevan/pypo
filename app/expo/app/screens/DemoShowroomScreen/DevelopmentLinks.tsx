@@ -78,7 +78,7 @@ const $devLinkItem: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.md,
 })
 
-const $devLinkDescription: ThemedStyle<TextStyle> = ({ spacing }) => ({
+const $devLinkDescription: ThemedStyle<TextStyle> = () => ({
   fontSize: 12,
   opacity: 0.7,
 })

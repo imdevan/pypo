@@ -1,12 +1,9 @@
-import type { ViewStyle } from "react-native"
-import { createDrawerNavigator, DrawerContentComponentProps } from "@react-navigation/drawer"
 import { NavigatorScreenParams } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
 import { MainDrawerWrapper } from "@/components/lib/MainDrawerWrapper"
 import { TagsScreen } from "@/screens/TagsScreen"
 import { UserProfileScreen } from "@/screens/UserProfileScreen"
-import type { ThemedStyle } from "@/theme/types"
 
 import { TabNavigator, DemoTabParamList } from "./TabNavigator"
 
@@ -15,8 +12,6 @@ export type DrawNavigatorParamList = {
   tags: undefined
   tab: NavigatorScreenParams<DemoTabParamList>
 }
-
-const MyDrawer = createDrawerNavigator<DrawNavigatorParamList>()
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
 const Stack = createNativeStackNavigator<DrawNavigatorParamList>()
@@ -39,9 +34,3 @@ export const DrawerNavigator = () => {
     </MainDrawerWrapper>
   )
 }
-
-// Styles
-const $drawer: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  backgroundColor: colors.background,
-  flex: 1,
-})

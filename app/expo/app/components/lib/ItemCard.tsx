@@ -1,6 +1,6 @@
 import { FC } from "react"
 import { View, Pressable, Image } from "react-native"
-import type { ImageStyle } from "react-native"
+import type { ImageStyle, TextStyle, ViewStyle } from "react-native"
 
 import type { ItemPublic } from "@/client/types.gen"
 import { Text } from "@/components/lib/Text"
@@ -12,9 +12,10 @@ import { TagChip } from "./TagChip"
 interface ItemCardProps {
   item: ItemPublic
   onPress: () => void
+  maxTags?: number
 }
 
-export const ItemCard: FC<ItemCardProps> = ({ item, onPress }) => {
+export const ItemCard: FC<ItemCardProps> = ({ item, onPress, maxTags = 2 }) => {
   const { themed } = useAppTheme()
 
   return (
@@ -24,9 +25,16 @@ export const ItemCard: FC<ItemCardProps> = ({ item, onPress }) => {
       )}
       {item.tags && item.tags.length > 0 && (
         <View style={themed($tagsContainer)}>
-          {item.tags.map((tag) => (
+          {item.tags.slice(0, maxTags).map((tag) => (
             <TagChip key={tag.id} tag={tag} variant="solid" />
           ))}
+          {item.tags.length > maxTags && (
+            <Text
+              text={`+ ${item.tags.length - maxTags} more`}
+              preset="formHelper"
+              style={themed($moreTagsText)}
+            />
+          )}
         </View>
       )}
 
@@ -51,10 +59,16 @@ const $itemImage: ThemedStyle<ImageStyle> = ({ colors, spacing }) => ({
 
 const $itemDescription = { marginTop: 4, marginBottom: 8 }
 
-const $tagsContainer = {
-  flexDirection: "row" as const,
-  flexWrap: "wrap" as const,
+const $tagsContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexDirection: "row",
+  flexWrap: "wrap",
   marginTop: 8,
   marginBottom: 8,
   gap: 6,
-}
+  alignItems: "center",
+})
+
+const $moreTagsText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.textDim,
+  marginLeft: 4,
+})

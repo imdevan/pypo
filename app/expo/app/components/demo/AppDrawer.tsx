@@ -9,6 +9,7 @@ import { useAuth } from "@/context/AuthContext"
 import { useDrawer } from "@/context/DrawerContext"
 import { translate } from "@/i18n/translate"
 import { AppStackParamList } from "@/navigators/AppNavigator"
+import { DrawNavigatorParamList } from "@/navigators/DrawerNavigator"
 import { DemoTabParamList } from "@/navigators/TabNavigator"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
@@ -18,8 +19,8 @@ import type { ThemedStyle } from "@/theme/types"
  *
  * Navigation Structure:
  * - AppNavigator (Stack) → contains "Drawer" screen
- * - DrawerNavigator (Stack) → contains "tab"
- * - TabNavigator (Bottom Tabs) → contains "showroom", "items", "community", "debug"
+ * - DrawerNavigator (Stack) → contains "tab", "development/showroom", etc.
+ * - TabNavigator (Bottom Tabs) → contains "items", "community"
  *
  * To navigate to specific tabs from the drawer, we use CommonActions.navigate
  * to navigate through the nested navigator structure.
@@ -33,11 +34,6 @@ export function AppDrawer() {
   // Navigation items for demo tabs
   const navigationItems = [
     {
-      label: translate("tabNavigator:componentsTab"),
-      screen: "showroom" as const,
-      icon: "components" as const,
-    },
-    {
       label: translate("tabNavigator:itemsTab"),
       screen: "items" as const,
       icon: "podcast" as const,
@@ -46,11 +42,6 @@ export function AppDrawer() {
       label: translate("tabNavigator:communityTab"),
       screen: "community" as const,
       icon: "community" as const,
-    },
-    {
-      label: translate("tabNavigator:debugTab"),
-      screen: "debug" as const,
-      icon: "debug" as const,
     },
   ]
 
@@ -108,6 +99,23 @@ export function AppDrawer() {
     }
   }
 
+  const handleDevelopmentNavigation = (screen: "development/showroom" | "development/debug") => {
+    closeDrawer()
+    try {
+      // Navigate to development screen in DrawerNavigator
+      navigation.dispatch(
+        CommonActions.navigate({
+          name: "app",
+          params: {
+            screen,
+          },
+        }),
+      )
+    } catch (error) {
+      console.error("Navigation error:", error)
+    }
+  }
+
   return (
     <View style={themed($drawerContainer)}>
       <View style={themed($contentSection)}>
@@ -146,6 +154,28 @@ export function AppDrawer() {
             <View style={themed($navItemContainer)}>
               <Icon icon="components" size={20} />
               <Text text="Tags" style={themed($navItem)} />
+            </View>
+          </Pressable>
+        </View>
+
+        <View style={themed($developmentSection)}>
+          <Text text="Development" style={themed($sectionTitle)} />
+          <Pressable
+            onPress={() => handleDevelopmentNavigation("development/showroom")}
+            style={themed($navItemPressable)}
+          >
+            <View style={themed($navItemContainer)}>
+              <Icon name="layers" size={20} />
+              <Text text="Showroom" style={themed($navItem)} />
+            </View>
+          </Pressable>
+          <Pressable
+            onPress={() => handleDevelopmentNavigation("development/debug")}
+            style={themed($navItemPressable)}
+          >
+            <View style={themed($navItemContainer)}>
+              <Icon name="code" size={20} />
+              <Text text="Debug" style={themed($navItem)} />
             </View>
           </Pressable>
         </View>
@@ -199,6 +229,10 @@ const $navigationSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 })
 
 const $managementSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginBottom: spacing.xl,
+})
+
+const $developmentSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.xl,
 })
 

@@ -55,6 +55,14 @@ export const zItemCreate = z.object({
         z.string().max(2048),
         z.null()
     ])),
+    video_url: z.optional(z.union([
+        z.string().max(2048),
+        z.null()
+    ])),
+    video_thumbnail_url: z.optional(z.union([
+        z.string().max(2048),
+        z.null()
+    ])),
     tag_ids: z.optional(z.union([
         z.array(z.string()),
         z.null()
@@ -92,6 +100,14 @@ export const zItemPublic = z.object({
         z.string(),
         z.null()
     ]),
+    video_url: z.union([
+        z.string(),
+        z.null()
+    ]),
+    video_thumbnail_url: z.union([
+        z.string(),
+        z.null()
+    ]),
     id: z.string(),
     owner_id: z.string(),
     created_at: z.iso.datetime(),
@@ -115,6 +131,14 @@ export const zItemUpdate = z.object({
         z.null()
     ])),
     image_url: z.optional(z.union([
+        z.string().max(2048),
+        z.null()
+    ])),
+    video_url: z.optional(z.union([
+        z.string().max(2048),
+        z.null()
+    ])),
+    video_thumbnail_url: z.optional(z.union([
         z.string().max(2048),
         z.null()
     ])),

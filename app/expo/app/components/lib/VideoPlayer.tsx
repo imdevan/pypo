@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useRef, useState } from "react"
 import { Platform, View, ViewStyle } from "react-native"
-import { Video, ResizeMode, AVPlaybackStatus } from "expo-av"
+import { VideoView, useVideoPlayer } from "expo-video"
 
 import { useAppTheme } from "@/theme/context"
 import { type ThemedStyle } from "@/theme/types"
@@ -36,13 +36,22 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
 }) => {
   const { themed } = useAppTheme()
   const videoRef = useRef<HTMLVideoElement | null>(null)
-  const videoPlayerRef = useRef<Video | null>(null)
   const [hasError, setHasError] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [videoSrc, setVideoSrc] = useState<string | null>(null)
   const [needsPermission, setNeedsPermission] = useState(false)
   const [permissionDenied, setPermissionDenied] = useState(false)
+
+  // Create video player for iOS/Android using expo-video
+  // Initialize with empty string, will be updated when videoSrc is set
+  const player = useVideoPlayer(
+    Platform.OS !== "web" ? videoSrc || "" : "",
+    (player) => {
+      player.loop = false
+      player.muted = false
+    },
+  )
 
   // Check if videoUri is a file reference key (starts with "video_") - web only
   const isFileReference = Platform.OS === "web" && videoUri.startsWith("video_")
@@ -190,36 +199,49 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
     }
   }, [videoSrc, onError, onLoad])
 
-  // iOS/Android video playback using expo-av
+  // iOS/Android video playback using expo-video
   useEffect(() => {
     if (Platform.OS !== "web" && videoUri) {
       setIsLoading(true)
       setHasError(false)
       setVideoSrc(videoUri)
-      setIsLoading(false)
     }
   }, [videoUri])
 
-  // Handle video playback status for iOS/Android
-  const handlePlaybackStatusUpdate = useCallback(
-    (status: AVPlaybackStatus) => {
-      if (!status.isLoaded) {
-        if (status.error) {
+  // Update player source when videoSrc changes
+  useEffect(() => {
+    if (Platform.OS !== "web" && player && videoSrc) {
+      player.replace(videoSrc)
+    }
+  }, [player, videoSrc])
+
+  // Handle video player status updates and auto-play
+  useEffect(() => {
+    if (Platform.OS !== "web" && player) {
+      const subscription = player.addListener("statusChange", (status) => {
+        if (status.status === "readyToPlay") {
+          setIsLoading(false)
+          setHasError(false)
+          onLoad?.()
+          // Auto-play if requested
+          if (autoPlay) {
+            player.play()
+          }
+        } else if (status.status === "error") {
           setHasError(true)
           setErrorMessage("Failed to load video. The file may be corrupted or in an unsupported format.")
           setIsLoading(false)
-          onError?.(new Error(status.error))
+          onError?.(new Error("Video playback error"))
+        } else if (status.status === "loading") {
+          setIsLoading(true)
         }
-        return
-      }
+      })
 
-      setIsLoading(false)
-      if (status.didJustFinish) {
-        // Video finished playing
+      return () => {
+        subscription.remove()
       }
-    },
-    [onError],
-  )
+    }
+  }, [player, onError, onLoad, autoPlay])
 
   // Web placeholder - video not supported on web
   if (Platform.OS === "web") {
@@ -237,7 +259,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
     )
   }
 
-  // iOS/Android implementation using expo-av
+  // iOS/Android implementation using expo-video
   if (hasError) {
     return (
       <View style={[themed($errorContainer), style]}>
@@ -254,26 +276,14 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
           <Text text="Loading video..." preset="formHelper" style={themed($loadingText)} />
         </View>
       )}
-      {videoSrc && (
-        <Video
-          ref={videoPlayerRef}
-          source={{ uri: videoSrc }}
+      {videoSrc && player && (
+        <VideoView
+          player={player}
           style={themed($videoPlayer)}
-          useNativeControls={controls}
-          resizeMode={ResizeMode.CONTAIN}
-          isLooping={false}
-          shouldPlay={autoPlay}
-          onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
-          onLoad={() => {
-            setIsLoading(false)
-            onLoad?.()
-          }}
-          onError={(error) => {
-            setHasError(true)
-            setErrorMessage("Unable to play video. The file may be corrupted or in an unsupported format.")
-            setIsLoading(false)
-            onError?.(error)
-          }}
+          nativeControls={controls}
+          contentFit="contain"
+          allowsFullscreen
+          allowsPictureInPicture
         />
       )}
     </View>

@@ -1,5 +1,5 @@
-import { FC } from "react"
-import { View, ViewStyle, TextStyle } from "react-native"
+import { FC, useState } from "react"
+import { Platform, View, ViewStyle, TextStyle } from "react-native"
 import Alert from "@blazejkustra/react-native-alert"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 
@@ -7,12 +7,15 @@ import { Button } from "@/components/lib/Button"
 import { MotiView } from "@/components/lib/MotiView"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
+import { VideoPlayer } from "@/components/lib/VideoPlayer"
 import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
 import { extractErrorMessage } from "@/services/api/errorHandling"
-import { useItem, useDeleteItem } from "@/services/api/hooks"
+import { useItem, useDeleteItem, useUpdateItem } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
+import { validateVideoFile } from "@/utils/video/validation"
+import * as ImagePicker from "expo-image-picker"
 
 type ItemScreenProps = NativeStackScreenProps<ItemsStackParamList, "item">
 
@@ -22,7 +25,96 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
 
   const { data: itemData, isLoading } = useItem(itemId)
   const deleteItemMutation = useDeleteItem()
+  const updateItemMutation = useUpdateItem()
   const item = itemData
+
+  // Video display state
+  const [videoError, setVideoError] = useState<string | null>(null)
+  const [isRelinkingVideo, setIsRelinkingVideo] = useState(false)
+
+  // Access video_url from item (will be available once backend adds it)
+  // Using type assertion for now since API types don't include it yet
+  const videoUrl = (item as any)?.video_url || null
+
+  const handleVideoError = (error: Error) => {
+    setVideoError(error.message)
+  }
+
+  const handleRelinkVideo = async () => {
+    setIsRelinkingVideo(true)
+
+    try {
+      let newVideoUrl: string | null = null
+
+      if (Platform.OS === "web") {
+        // Web is not supported - show message
+        Alert.alert("Not Available", "Video linking is not available on web. Please use the iOS app.")
+        setIsRelinkingVideo(false)
+        return
+      } else {
+        // iOS/Android - use image picker for photo library
+        // Request permissions
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+        
+        if (status !== "granted") {
+          Alert.alert(
+            "Permission Required",
+            "Please grant permission to access your photo library to select videos."
+          )
+          setIsRelinkingVideo(false)
+          return
+        }
+
+        // Launch image picker for videos
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+          allowsEditing: false,
+          quality: 1,
+        })
+
+        if (result.canceled) {
+          setIsRelinkingVideo(false)
+          return
+        }
+
+        const asset = result.assets[0]
+        
+        if (!asset) {
+          setIsRelinkingVideo(false)
+          return
+        }
+
+        // Validate the video
+        const validationResult = await validateVideoFile({
+          uri: asset.uri,
+          type: asset.mimeType || undefined,
+        })
+
+        if (!validationResult.isValid) {
+          Alert.alert("Invalid File", validationResult.errorMessage || "Please select a valid video file.")
+          setIsRelinkingVideo(false)
+          return
+        }
+
+        newVideoUrl = asset.uri
+      }
+
+      // Update the item with the new video URI
+      await updateItemMutation.mutateAsync({
+        path: { id: itemId },
+        body: {
+          video_url: newVideoUrl || undefined,
+        } as any, // video_url is in backend but types may not be regenerated yet
+      })
+
+      Alert.alert("Success", "Video file has been re-linked successfully.")
+      setVideoError(null)
+    } catch (error) {
+      Alert.alert("Error", extractErrorMessage(error))
+    } finally {
+      setIsRelinkingVideo(false)
+    }
+  }
 
   const handleDelete = async () => {
     Alert.alert("Delete Item", "Are you sure you want to delete this item?", [
@@ -77,6 +169,35 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
 
           {item.description && (
             <Text text={item.description} preset="default" style={themed($description)} />
+          )}
+
+          {/* Video Display Section */}
+          {videoUrl && (
+            <View style={themed($section)}>
+              <Text text="Video" preset="subheading" style={themed($sectionTitle)} />
+              {videoError ? (
+                <View style={themed($videoErrorContainer)}>
+                  <Text
+                    text="⚠️ Video file not found or cannot be played"
+                    preset="formHelper"
+                    style={themed($videoErrorText)}
+                  />
+                  <Button
+                    text="Re-link Video"
+                    onPress={handleRelinkVideo}
+                    style={themed($relinkButton)}
+                    preset="outline"
+                  />
+                </View>
+              ) : (
+                <VideoPlayer
+                  videoUri={videoUrl}
+                  onError={handleVideoError}
+                  onLoad={() => setVideoError(null)}
+                  onRelinkVideo={handleRelinkVideo}
+                />
+              )}
+            </View>
           )}
 
           {item.tags && item.tags.length > 0 && (
@@ -168,4 +289,20 @@ const $tagText: ThemedStyle<TextStyle> = ({ colors }) => ({
 
 const $deleteButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.lg,
+})
+
+const $videoErrorContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  padding: spacing.md,
+  alignItems: "center",
+  gap: spacing.sm,
+})
+
+const $videoErrorText: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  color: colors.error,
+  textAlign: "center",
+  marginBottom: spacing.xs,
+})
+
+const $relinkButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginTop: spacing.xs,
 })

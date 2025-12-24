@@ -51,15 +51,16 @@ const config = {
       screens: {
         tab: {
           screens: {
-            showroom: {
-              path: "showroom/:queryIndex?/:itemIndex?",
-            },
-            debug: "debug",
             items: "items",
+            addItem: "add-item",
             community: "community",
           },
         },
         userprofile: "profile",
+        "development/showroom": {
+          path: "development/showroom/:queryIndex?/:itemIndex?",
+        },
+        "development/debug": "development/debug",
       },
     },
   },

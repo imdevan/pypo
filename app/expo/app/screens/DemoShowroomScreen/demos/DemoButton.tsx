@@ -79,7 +79,7 @@ export const DemoButton: Demo = {
       <Button
         preset="filled"
         RightAccessory={(props) => (
-          <Icon containerStyle={props.style} style={$iconStyle} icon="ladybug" />
+          <Icon containerStyle={props.style} style={$iconStyle} name="star" />
         )}
       >
         {translate("demoButton:useCase.passingContent.rightAccessory")}
@@ -89,7 +89,7 @@ export const DemoButton: Demo = {
       <Button
         preset="filled"
         LeftAccessory={(props) => (
-          <Icon containerStyle={props.style} style={$iconStyle} icon="ladybug" />
+          <Icon containerStyle={props.style} style={$iconStyle} name="star" />
         )}
       >
         {translate("demoButton:useCase.passingContent.leftAccessory")}
@@ -114,10 +114,10 @@ export const DemoButton: Demo = {
       <Button
         preset="reversed"
         RightAccessory={(props) => (
-          <Icon containerStyle={props.style} style={$iconStyle} icon="ladybug" />
+          <Icon containerStyle={props.style} style={$iconStyle} name="star" />
         )}
         LeftAccessory={(props) => (
-          <Icon containerStyle={props.style} style={$iconStyle} icon="ladybug" />
+          <Icon containerStyle={props.style} style={$iconStyle} name="star" />
         )}
       >
         {translate("demoButton:useCase.passingContent.multiLine")}
@@ -156,7 +156,7 @@ export const DemoButton: Demo = {
               $iconStyle,
               props.pressableState.pressed && themed($customButtonPressedRightAccessoryStyle),
             ]}
-            icon="ladybug"
+            name="star"
           />
         )}
       >

@@ -4,7 +4,6 @@ import { View } from "react-native"
 
 import { TagPublic, TagCreate, TagUpdate } from "@/client/types.gen"
 import { Button } from "@/components/lib/Button"
-import { ColorPicker } from "@/components/lib/ColorPicker"
 import { PopupForm } from "@/components/lib/PopupForm"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
@@ -29,12 +28,10 @@ export function TagsScreen() {
   const [newTag, setNewTag] = useState<TagCreate>({
     name: "",
     description: "",
-    color: "#007AFF",
   })
   const [editForm, setEditForm] = useState<TagUpdate>({
     name: "",
     description: "",
-    color: "#007AFF",
   })
   const [createTagError, setCreateTagError] = useState<string | null>(null)
 
@@ -51,7 +48,7 @@ export function TagsScreen() {
         { body: newTag },
         {
           onSuccess: () => {
-            setNewTag({ name: "", description: "", color: "#007AFF" })
+            setNewTag({ name: "", description: "" })
             setCreateTagError(null)
             resolve()
           },
@@ -77,7 +74,7 @@ export function TagsScreen() {
       {
         onSuccess: () => {
           setEditingTag(null)
-          setEditForm({ name: "", description: "", color: "#007AFF" })
+          setEditForm({ name: "", description: "" })
         },
         onError: (_error) => {
           Alert.alert("Error", "Failed to update tag")
@@ -124,17 +121,16 @@ export function TagsScreen() {
     setEditForm({
       name: tag.name,
       description: tag.description || "",
-      color: tag.color || "#007AFF",
     })
   }
 
   const cancelEditing = () => {
     setEditingTag(null)
-    setEditForm({ name: "", description: "", color: "#007AFF" })
+    setEditForm({ name: "", description: "" })
   }
 
   const resetNewTag = () => {
-    setNewTag({ name: "", description: "", color: "#007AFF" })
+    setNewTag({ name: "", description: "" })
     setCreateTagError(null)
   }
 
@@ -171,15 +167,6 @@ export function TagsScreen() {
           style={themed($input)}
           multiline
         />
-        <ColorPicker
-          label="Color"
-          value={newTag.color || "#007AFF"}
-          onColorChange={(color) => {
-            console.log("color change", color)
-            setNewTag({ ...newTag, color: color.slice(0, -2) })
-          }}
-          style={themed($input)}
-        />
       </PopupForm>
 
       {/* Tags List Section */}
@@ -212,12 +199,6 @@ export function TagsScreen() {
                     style={themed($input)}
                     multiline
                   />
-                  <ColorPicker
-                    label="Color"
-                    value={editForm.color || "#007AFF"}
-                    onColorChange={(color) => setEditForm({ ...editForm, color })}
-                    style={themed($input)}
-                  />
                   <View style={themed($formActions)}>
                     <Button
                       text="Cancel"
@@ -239,12 +220,6 @@ export function TagsScreen() {
                 <View style={themed($tagContent)}>
                   <View style={themed($tagInfo)}>
                     <View style={themed($tagHeader)}>
-                      <View
-                        style={[
-                          themed($colorIndicator),
-                          { backgroundColor: tag.color || "#007AFF" },
-                        ]}
-                      />
                       <Text text={tag.name} style={themed($tagName)} />
                     </View>
                     {!!tag.description && (
@@ -365,13 +340,6 @@ const $tagHeader: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row",
   alignItems: "center",
   marginBottom: spacing.xs,
-})
-
-const $colorIndicator: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  width: 16,
-  height: 16,
-  borderRadius: 8,
-  marginRight: spacing.sm,
 })
 
 const $tagName: ThemedStyle<any> = ({ colors, typography }) => ({

@@ -25,7 +25,7 @@ export const ItemCard: FC<ItemCardProps> = ({ item, onPress }) => {
       {item.tags && item.tags.length > 0 && (
         <View style={themed($tagsContainer)}>
           {item.tags.map((tag) => (
-            <TagChip key={tag.id} tag={tag} />
+            <TagChip key={tag.id} tag={tag} variant="solid" />
           ))}
         </View>
       )}

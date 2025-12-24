@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react"
+import { FC, useCallback, useEffect, useMemo, useState } from "react"
 import { Alert, View } from "react-native"
 import type { ViewStyle } from "react-native"
 import { useNavigation } from "@react-navigation/native"
@@ -49,42 +49,63 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     }
   }, [itemsData, itemsError, items.length])
 
-  const renderItem = ({ item, index }: { item: ItemPublic; index: number }) => {
-    const modIndex = index % numColumns
-    const itemMargin = {
-      marginLeft: modIndex === 0 ? 0 : 24,
-    }
+  // Memoize navigation handler
+  const handleItemPress = useCallback(
+    (itemId: string) => {
+      navigation.navigate("item", { itemId })
+    },
+    [navigation],
+  )
 
-    return (
-      <MotiView
-        key={item.id}
-        from={{
-          opacity: 0,
-          scale: 0.9,
-          translateY: 20,
-        }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-          translateY: 0,
-        }}
-        transition={{
-          type: "spring",
-          damping: 15,
-          stiffness: 150,
-          delay: index * 100, // Stagger animation by 100ms per item
-        }}
-        exit={{
-          opacity: 0,
-          scale: 0.9,
-          translateY: -20,
-        }}
-        style={themed(itemMargin)}
-      >
-        <ItemCard item={item} onPress={() => navigation.navigate("item", { itemId: item.id })} />
-      </MotiView>
-    )
-  }
+  // Memoize item separator component
+  const ItemSeparator = useMemo(
+    () => () => <View style={{ height: theme.spacing.xxl, width: theme.spacing.xxl }} />,
+    [theme.spacing.xxl],
+  )
+
+  // Memoize renderItem function
+  const renderItem = useCallback(
+    ({ item, index }: { item: ItemPublic; index: number }) => {
+      const modIndex = index % numColumns
+      const itemMargin = {
+        marginLeft: modIndex === 0 ? 0 : 24,
+      }
+
+      return (
+        <MotiView
+          key={item.id}
+          from={{
+            opacity: 0,
+            scale: 0.9,
+            translateY: 20,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            translateY: 0,
+          }}
+          transition={{
+            type: "spring",
+            damping: 15,
+            stiffness: 150,
+            delay: Math.min(index * 20, 200), // Reduced delay: max 200ms instead of 100ms per item
+          }}
+          exit={{
+            opacity: 0,
+            scale: 0.9,
+            translateY: -20,
+          }}
+          style={themed(itemMargin)}
+        >
+          <ItemCard item={item} onPress={() => handleItemPress(item.id)} />
+        </MotiView>
+      )
+    },
+    [numColumns, themed, handleItemPress],
+  )
+
+  // Memoize key extractor
+  const keyExtractor = useCallback((item: ItemPublic) => item.id, [])
 
   return (
     <Screen preset="auto" contentContainerStyle={themed($styles.container)}>
@@ -128,10 +149,10 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             masonry
             optimizeItemArrangement={false}
             data={items}
-            ItemSeparatorComponent={() => (
-              <View style={{ height: theme.spacing.xxl, width: theme.spacing.xxl }} />
-            )} // gap between items
-            renderItem={({ item, index }) => renderItem({ item, index })}
+            keyExtractor={keyExtractor}
+            ItemSeparatorComponent={ItemSeparator}
+            renderItem={renderItem}
+            estimatedItemSize={200}
             ListEmptyComponent={
               <MotiView
                 from={{ opacity: 0, scale: 0.9 }}

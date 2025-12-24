@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { ViewStyle } from "react-native"
 import { View } from "react-native"
 
@@ -20,6 +20,15 @@ export function UserProfileScreen() {
   const { themed } = useAppTheme()
   const { data: userData, isLoading, error } = useCurrentUserData()
   const [isEditing, setIsEditing] = useState(false)
+
+  // Memoize date formatting to avoid recreating on every render
+  const formattedDates = useMemo(() => {
+    if (!userData) return { created: "", updated: "" }
+    return {
+      created: new Date(userData.created_at).toLocaleDateString(),
+      updated: new Date(userData.updated_at).toLocaleDateString(),
+    }
+  }, [userData?.created_at, userData?.updated_at])
 
   // Show edit form when in editing mode
   if (isEditing && userData) {
@@ -73,18 +82,12 @@ export function UserProfileScreen() {
 
             <View style={themed($infoCard)}>
               <Text text="Member Since" style={themed($label)} />
-              <Text
-                text={new Date(userData.created_at).toLocaleDateString()}
-                style={themed($value)}
-              />
+              <Text text={formattedDates.created} style={themed($value)} />
             </View>
 
             <View style={themed($infoCard)}>
               <Text text="Last Updated" style={themed($label)} />
-              <Text
-                text={new Date(userData.updated_at).toLocaleDateString()}
-                style={themed($value)}
-              />
+              <Text text={formattedDates.updated} style={themed($value)} />
             </View>
 
             {userData.is_superuser && (

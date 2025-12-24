@@ -120,7 +120,7 @@ export const DemoTextField: Demo = {
         labelTxOptions={{ prop: "label" }}
         helperTx="demoTextField:useCase.passingContent.rightAccessory.helper"
         helperTxOptions={{ prop: "helper" }}
-        RightAccessory={(props) => <Icon icon="ladybug" containerStyle={props.style} size={21} />}
+        RightAccessory={(props) => <Icon name="star" containerStyle={props.style} size={21} />}
       />
 
       <DemoDivider size={24} />
@@ -131,7 +131,7 @@ export const DemoTextField: Demo = {
         helperTx="demoTextField:useCase.passingContent.leftAccessory.helper"
         helperTxOptions={{ prop: "helper" }}
         value="Eiusmod exercitation mollit elit magna occaecat eiusmod Lorem minim veniam."
-        LeftAccessory={(props) => <Icon icon="ladybug" containerStyle={props.style} size={21} />}
+        LeftAccessory={(props) => <Icon name="star" containerStyle={props.style} size={21} />}
       />
 
       <DemoDivider size={24} />
@@ -143,7 +143,7 @@ export const DemoTextField: Demo = {
         helperTxOptions={{ prop: "helper" }}
         value="Eiusmod exercitation mollit elit magna occaecat eiusmod Lorem minim veniam. Laborum Lorem velit velit minim irure ad in ut adipisicing consectetur."
         multiline
-        RightAccessory={(props) => <Icon icon="ladybug" containerStyle={props.style} size={21} />}
+        RightAccessory={(props) => <Icon name="star" containerStyle={props.style} size={21} />}
       />
     </DemoUseCase>,
 
@@ -211,7 +211,7 @@ export const DemoTextField: Demo = {
         style={themed($customInputWithAbsoluteAccessoriesStyle)}
         LeftAccessory={() => (
           <Icon
-            icon="ladybug"
+            name="star"
             containerStyle={themed($customLeftAccessoryStyle)}
             color="white"
             size={41}
@@ -219,7 +219,7 @@ export const DemoTextField: Demo = {
         )}
         RightAccessory={() => (
           <Icon
-            icon="ladybug"
+            name="star"
             containerStyle={themed($customRightAccessoryStyle)}
             color="white"
             size={41}

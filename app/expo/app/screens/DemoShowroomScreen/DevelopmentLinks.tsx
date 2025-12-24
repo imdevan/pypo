@@ -1,7 +1,7 @@
 import { FC } from "react"
 import { TextStyle, View, ViewStyle } from "react-native"
 
-import { IconTypes } from "@/components/lib/Icon"
+import { Icon } from "@/components/lib/Icon"
 import { ListItem } from "@/components/lib/ListItem"
 import { Text } from "@/components/lib/Text"
 import { isRTL } from "@/i18n"
@@ -16,25 +16,25 @@ export const DevelopmentLinks: FC = () => {
     title: string
     description: string
     url: string
-    icon: IconTypes
+    iconName: string
   }> = [
     {
       title: "API Documentation",
       description: "Interactive documentation with Swagger UI",
       url: "http://localhost:8000/docs",
-      icon: "view",
+      iconName: "eye",
     },
     {
       title: "Backend API",
       description: "JSON based web API based on OpenAPI",
       url: "http://localhost:8000",
-      icon: "components",
+      iconName: "layers",
     },
     {
       title: "Traefik UI",
       description: "Proxy route management interface",
       url: "http://localhost:8090",
-      icon: "debug",
+      iconName: "code",
     },
   ]
 
@@ -51,8 +51,8 @@ export const DevelopmentLinks: FC = () => {
           <ListItem
             height={40}
             text={link.title}
-            leftIcon={link.icon}
-            rightIcon={isRTL ? "caretLeft" : "caretRight"}
+            LeftComponent={<Icon name={link.iconName as any} size={24} />}
+            RightComponent={<Icon name={isRTL ? "chevron-left" : "chevron-right"} size={24} />}
             onPress={() => openLinkInBrowser(link.url)}
           />
           <Text text={link.description} style={themed($devLinkDescription)} />

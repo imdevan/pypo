@@ -90,15 +90,26 @@ export const DemoListItem: Demo = {
       name="demoListItem:useCase.icons.name"
       description="demoListItem:useCase.icons.description"
     >
-      <ListItem topSeparator leftIcon="ladybug">
+      <ListItem
+        topSeparator
+        LeftComponent={<Icon name="star" size={24} />}
+      >
         {translate("demoListItem:useCase.icons.leftIcon")}
       </ListItem>
 
-      <ListItem topSeparator rightIcon="ladybug">
+      <ListItem
+        topSeparator
+        RightComponent={<Icon name="star" size={24} />}
+      >
         {translate("demoListItem:useCase.icons.rightIcon")}
       </ListItem>
 
-      <ListItem topSeparator bottomSeparator rightIcon="ladybug" leftIcon="ladybug">
+      <ListItem
+        topSeparator
+        bottomSeparator
+        RightComponent={<Icon name="star" size={24} />}
+        LeftComponent={<Icon name="star" size={24} />}
+      >
         {translate("demoListItem:useCase.icons.leftRightIcons")}
       </ListItem>
     </DemoUseCase>,
@@ -112,7 +123,7 @@ export const DemoListItem: Demo = {
         LeftComponent={
           <View style={themed([$styles.row, $customLeft, { marginEnd: theme.spacing.md }])}>
             {Array.from({ length: 9 }, (x, i) => i).map((i) => (
-              <Icon key={i} icon="ladybug" color={theme.colors.palette.neutral100} size={20} />
+              <Icon key={i} name="star" color={theme.colors.palette.neutral100} size={20} />
             ))}
           </View>
         }
@@ -126,7 +137,7 @@ export const DemoListItem: Demo = {
         RightComponent={
           <View style={themed([$styles.row, $customLeft, { marginStart: theme.spacing.md }])}>
             {Array.from({ length: 9 }, (x, i) => i).map((i) => (
-              <Icon key={i} icon="ladybug" color={theme.colors.palette.neutral100} size={20} />
+              <Icon key={i} name="star" color={theme.colors.palette.neutral100} size={20} />
             ))}
           </View>
         }
@@ -166,7 +177,7 @@ export const DemoListItem: Demo = {
           renderItem={({ item, index }) => (
             <ListItem
               text={item}
-              rightIcon="caretRight"
+              RightComponent={<Icon name="chevron-right" size={24} />}
               TextProps={{ numberOfLines: 1 }}
               topSeparator={index !== 0}
             />
@@ -204,10 +215,8 @@ export const DemoListItem: Demo = {
         textStyle={{ color: theme.colors.palette.neutral100 }}
         style={themed($customTouchableStyle)}
         containerStyle={themed($customContainerStyle)}
-        rightIcon="ladybug"
-        leftIcon="ladybug"
-        rightIconColor={theme.colors.palette.neutral100}
-        leftIconColor={theme.colors.palette.neutral100}
+        RightComponent={<Icon name="star" size={24} color={theme.colors.palette.neutral100} />}
+        LeftComponent={<Icon name="star" size={24} color={theme.colors.palette.neutral100} />}
       >
         {translate("demoListItem:useCase.styling.tintedIcons")}
       </ListItem>

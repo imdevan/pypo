@@ -44,20 +44,20 @@ export const DemoHeader: Demo = {
     >
       <Header
         titleTx="demoHeader:useCase.actionIcons.leftIconTitle"
-        leftIcon="ladybug"
+        LeftActionComponent={<Icon name="star" size={24} />}
         safeAreaEdges={[]}
       />
       <DemoDivider size={24} />
       <Header
         titleTx="demoHeader:useCase.actionIcons.rightIconTitle"
-        rightIcon="ladybug"
+        RightActionComponent={<Icon name="star" size={24} />}
         safeAreaEdges={[]}
       />
       <DemoDivider size={24} />
       <Header
         titleTx="demoHeader:useCase.actionIcons.bothIconsTitle"
-        leftIcon="ladybug"
-        rightIcon="ladybug"
+        LeftActionComponent={<Icon name="star" size={24} />}
+        RightActionComponent={<Icon name="star" size={24} />}
         safeAreaEdges={[]}
       />
     </DemoUseCase>,
@@ -90,7 +90,7 @@ export const DemoHeader: Demo = {
         LeftActionComponent={
           <View style={themed([$styles.row, $customLeftAction])}>
             {Array.from({ length: 20 }, (x, i) => i).map((i) => (
-              <Icon key={i} icon="ladybug" color={theme.colors.palette.neutral100} size={20} />
+              <Icon key={i} name="star" color={theme.colors.palette.neutral100} size={20} />
             ))}
           </View>
         }
@@ -104,7 +104,7 @@ export const DemoHeader: Demo = {
     >
       <Header
         titleTx="demoHeader:useCase.titleModes.centeredTitle"
-        leftIcon="ladybug"
+        LeftActionComponent={<Icon name="star" size={24} />}
         rightText="Hooray"
         safeAreaEdges={[]}
       />
@@ -112,7 +112,7 @@ export const DemoHeader: Demo = {
       <Header
         titleTx="demoHeader:useCase.titleModes.flexTitle"
         titleMode="flex"
-        leftIcon="ladybug"
+        LeftActionComponent={<Icon name="star" size={24} />}
         rightText="Hooray"
         safeAreaEdges={[]}
       />
@@ -140,8 +140,7 @@ export const DemoHeader: Demo = {
         titleTx="demoHeader:useCase.styling.tintedIconsTitle"
         titleStyle={themed($customWhiteTitle)}
         backgroundColor={theme.colors.error}
-        leftIcon="ladybug"
-        leftIconColor={theme.colors.palette.neutral100}
+        LeftActionComponent={<Icon name="star" size={24} color={theme.colors.palette.neutral100} />}
         safeAreaEdges={[]}
       />
     </DemoUseCase>,

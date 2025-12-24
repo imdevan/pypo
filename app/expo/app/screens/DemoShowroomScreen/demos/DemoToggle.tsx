@@ -141,7 +141,7 @@ export const DemoToggle: Demo = {
       <ControlledCheckbox
         value
         status="error"
-        icon="ladybug"
+        iconName="star"
         labelTx="demoToggle:useCase.passingContent.useCase.customCheckBox.label"
       />
       <DemoDivider size={24} />
@@ -253,7 +253,7 @@ export const DemoToggle: Demo = {
 
       <ControlledCheckbox
         value
-        icon="ladybug"
+        iconName="star"
         containerStyle={$centeredOneThirdCol}
         inputOuterStyle={{
           width: 50,

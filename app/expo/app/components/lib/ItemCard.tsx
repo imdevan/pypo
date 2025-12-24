@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, memo } from "react"
 import { View, Pressable, Image } from "react-native"
 import type { ImageStyle, TextStyle, ViewStyle } from "react-native"
 
@@ -16,7 +16,7 @@ interface ItemCardProps {
   maxTags?: number
 }
 
-export const ItemCard: FC<ItemCardProps> = ({ item, onPress, maxTags = 2 }) => {
+export const ItemCard: FC<ItemCardProps> = memo(({ item, onPress, maxTags = 2 }) => {
   const { themed } = useAppTheme()
 
   // Access video_url from item (will be available once backend adds it)
@@ -59,7 +59,18 @@ export const ItemCard: FC<ItemCardProps> = ({ item, onPress, maxTags = 2 }) => {
       )}
     </Pressable>
   )
-}
+}, (prevProps, nextProps) => {
+  // Custom comparison function for memo
+  return (
+    prevProps.item.id === nextProps.item.id &&
+    prevProps.item.title === nextProps.item.title &&
+    prevProps.item.description === nextProps.item.description &&
+    prevProps.item.image_url === nextProps.item.image_url &&
+    (prevProps.item as any)?.video_url === (nextProps.item as any)?.video_url &&
+    prevProps.item.tags?.length === nextProps.item.tags?.length &&
+    prevProps.maxTags === nextProps.maxTags
+  )
+})
 
 const $itemContent = { flex: 1 }
 

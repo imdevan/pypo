@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useCallback, useState } from "react"
 import { Platform, View, ViewStyle, TextStyle } from "react-native"
 import Alert from "@blazejkustra/react-native-alert"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
@@ -36,11 +36,15 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
   // Using type assertion for now since API types don't include it yet
   const videoUrl = (item as any)?.video_url || null
 
-  const handleVideoError = (error: Error) => {
+  const handleVideoError = useCallback((error: Error) => {
     setVideoError(error.message)
-  }
+  }, [])
 
-  const handleRelinkVideo = async () => {
+  const handleVideoLoad = useCallback(() => {
+    setVideoError(null)
+  }, [])
+
+  const handleRelinkVideo = useCallback(async () => {
     setIsRelinkingVideo(true)
 
     try {
@@ -48,7 +52,7 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
 
       if (Platform.OS === "web") {
         // Web is not supported - show message
-        Alert.alert("Not Available", "Video linking is not available on web. Please use the iOS app.")
+        Alert.alert("Not Available", "Video relinking is not available on web. Please use the iOS app.")
         setIsRelinkingVideo(false)
         return
       } else {
@@ -114,9 +118,9 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
     } finally {
       setIsRelinkingVideo(false)
     }
-  }
+  }, [itemId, updateItemMutation])
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     Alert.alert("Delete Item", "Are you sure you want to delete this item?", [
       {
         text: "Cancel",
@@ -137,7 +141,11 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
         },
       },
     ])
-  }
+  }, [itemId, navigation, deleteItemMutation])
+
+  const handleGoBack = useCallback(() => {
+    navigation.goBack()
+  }, [navigation])
 
   return (
     <Screen preset="auto" contentContainerStyle={themed($styles.container)}>
@@ -145,7 +153,7 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
         <Button
           text="← Back"
           preset="default"
-          onPress={() => navigation.goBack()}
+          onPress={handleGoBack}
           style={themed($backButton)}
         />
       </View>
@@ -193,7 +201,7 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
                 <VideoPlayer
                   videoUri={videoUrl}
                   onError={handleVideoError}
-                  onLoad={() => setVideoError(null)}
+                  onLoad={handleVideoLoad}
                   onRelinkVideo={handleRelinkVideo}
                 />
               )}

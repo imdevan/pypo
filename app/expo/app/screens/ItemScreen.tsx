@@ -84,18 +84,8 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
               <Text text="Tags" preset="subheading" style={themed($sectionTitle)} />
               <View style={themed($tagsContainer)}>
                 {item.tags.map((tag) => (
-                  <View
-                    key={tag.id}
-                    style={[
-                      themed($tagChip),
-                      tag.color && { backgroundColor: tag.color + "20", borderColor: tag.color },
-                    ]}
-                  >
-                    <Text
-                      text={tag.name}
-                      preset="default"
-                      style={[themed($tagText), tag.color && { color: tag.color }]}
-                    />
+                  <View key={tag.id} style={themed($tagChip)}>
+                    <Text text={tag.name} preset="default" style={themed($tagText)} />
                   </View>
                 ))}
               </View>

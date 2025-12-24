@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "docker compose watch",
     "build": "echo 'Backend build completed'",
+    "reset:db": "bash scripts/reset-db.sh",
+    "migrate": "scripts/generate-migration.sh && scripts/push-migration.sh",
     "test": "uv run pytest",
     "lint": "echo 'Backend lint completed'",
     "format": "echo 'Backend format completed'",

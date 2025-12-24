@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Icon } from "@/components/lib/Icon"
 import { translate } from "@/i18n/translate"
 import { ItemsStackNavigator } from "@/navigators/ItemsStackNavigator"
+import { AddItemScreen } from "@/screens/AddItemScreen"
 import { DemoCommunityScreen } from "@/screens/DemoCommunityScreen"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
@@ -15,6 +16,7 @@ import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 export type DemoTabParamList = {
   community: undefined
   items: undefined
+  addItem: undefined
 }
 
 /**
@@ -64,6 +66,18 @@ export function TabNavigator() {
           tabBarLabel: translate("tabNavigator:itemsTab"),
           tabBarIcon: ({ focused }) => (
             <Icon name="list" color={focused ? colors.tint : colors.tintInactive} size={30} />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="addItem"
+        component={AddItemScreen}
+        options={{
+          tabBarShowLabel: false,
+          tabBarLabel: "Add Item",
+          tabBarIcon: ({ focused }) => (
+            <Icon name="plus" color={focused ? colors.tint : colors.tintInactive} size={30} />
           ),
         }}
       />

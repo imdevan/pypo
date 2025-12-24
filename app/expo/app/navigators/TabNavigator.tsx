@@ -7,8 +7,6 @@ import { Icon } from "@/components/lib/Icon"
 import { translate } from "@/i18n/translate"
 import { ItemsStackNavigator } from "@/navigators/ItemsStackNavigator"
 import { DemoCommunityScreen } from "@/screens/DemoCommunityScreen"
-import { DemoDebugScreen } from "@/screens/DemoDebugScreen"
-import { DemoShowroomScreen } from "@/screens/DemoShowroomScreen/DemoShowroomScreen"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
 
@@ -16,8 +14,6 @@ import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 
 export type DemoTabParamList = {
   community: undefined
-  showroom: { queryIndex?: string; itemIndex?: string }
-  debug: undefined
   items: undefined
 }
 
@@ -60,18 +56,6 @@ export function TabNavigator() {
       }}
     >
       <Tab.Screen
-        name="showroom"
-        component={DemoShowroomScreen}
-        options={{
-          tabBarShowLabel: false,
-          tabBarLabel: translate("tabNavigator:componentsTab"),
-          tabBarIcon: ({ focused }) => (
-            <Icon name="layers" color={focused ? colors.tint : colors.tintInactive} size={30} />
-          ),
-        }}
-      />
-
-      <Tab.Screen
         name="items"
         component={ItemsStackNavigator}
         options={{
@@ -92,18 +76,6 @@ export function TabNavigator() {
           tabBarLabel: translate("tabNavigator:communityTab"),
           tabBarIcon: ({ focused }) => (
             <Icon name="users" color={focused ? colors.tint : colors.tintInactive} size={30} />
-          ),
-        }}
-      />
-
-      <Tab.Screen
-        name="debug"
-        component={DemoDebugScreen}
-        options={{
-          tabBarShowLabel: false,
-          tabBarLabel: translate("tabNavigator:debugTab"),
-          tabBarIcon: ({ focused }) => (
-            <Icon icon="debug" color={focused ? colors.tint : colors.tintInactive} size={30} />
           ),
         }}
       />

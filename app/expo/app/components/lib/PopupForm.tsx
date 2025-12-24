@@ -84,32 +84,31 @@ export function PopupForm({
         )}
       </View>
 
-      {isOpen ||
-        (!(typeof open === "undefined") && open === true && (
-          <View style={themed($formCard)}>
-            {error && (
-              <View style={themed($errorContainer)}>
-                <Text text={error} style={themed($errorText)} />
-              </View>
-            )}
-            {children}
-            <View style={themed($formActions)}>
-              <Button
-                text="Cancel"
-                onPress={handleCancel}
-                style={themed($cancelButton)}
-                textStyle={themed($cancelButtonText)}
-              />
-              <Button
-                text="Save"
-                onPress={handleSuccess}
-                style={themed($saveButton)}
-                textStyle={themed($saveButtonText)}
-                disabled={saveDisabled}
-              />
+      {(isOpen || (typeof open !== "undefined" && open === true)) && (
+        <View style={themed($formCard)}>
+          {error && (
+            <View style={themed($errorContainer)}>
+              <Text text={error} style={themed($errorText)} />
             </View>
+          )}
+          {children}
+          <View style={themed($formActions)}>
+            <Button
+              text="Cancel"
+              onPress={handleCancel}
+              style={themed($cancelButton)}
+              textStyle={themed($cancelButtonText)}
+            />
+            <Button
+              text="Save"
+              onPress={handleSuccess}
+              style={themed($saveButton)}
+              textStyle={themed($saveButtonText)}
+              disabled={saveDisabled}
+            />
           </View>
-        ))}
+        </View>
+      )}
     </View>
   )
 }

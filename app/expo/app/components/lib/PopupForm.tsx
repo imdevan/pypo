@@ -127,7 +127,7 @@ const $sectionHeader: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.md,
 })
 
-const $sectionTitle: ThemedStyle<any> = ({ colors, typography }) => ({
+const $sectionTitle: ThemedStyle<any> = ({ colors, spacing, typography }) => ({
   fontSize: 18,
   fontFamily: typography.primary.bold,
   marginBottom: spacing.md,

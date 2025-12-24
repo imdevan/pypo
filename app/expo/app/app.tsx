@@ -52,6 +52,7 @@ const config = {
         tab: {
           screens: {
             items: "items",
+            addItem: "add-item",
             community: "community",
           },
         },

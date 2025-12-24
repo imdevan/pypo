@@ -148,6 +148,7 @@ class ItemBase(SQLModel):
     description: str | None = Field(default=None, max_length=255)
     image_url: str | None = Field(default=None, max_length=2048)
     video_url: str | None = Field(default=None, max_length=2048)
+    video_thumbnail_url: str | None = Field(default=None, max_length=2048)
 
 
 # Properties to receive on item creation
@@ -182,6 +183,7 @@ class ItemPublic(ItemBase):
     tags: list[TagPublic] | None = None
     image_url: str | None
     video_url: str | None
+    video_thumbnail_url: str | None
 
 
 class ItemsPublic(SQLModel):

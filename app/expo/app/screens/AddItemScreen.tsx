@@ -3,6 +3,7 @@ import { Alert, View } from "react-native"
 import type { ViewStyle } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { Button } from "@/components/lib/Button"
 import { DropDown } from "@/components/lib/DropDown"
@@ -19,11 +20,12 @@ import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
 
-interface AddItemScreenProps {}
+interface AddItemScreenProps { }
 
 export const AddItemScreen: FC<AddItemScreenProps> = () => {
   const { themed } = useAppTheme()
   const navigation = useNavigation<NativeStackNavigationProp<ItemsStackParamList>>()
+  const insets = useSafeAreaInsets()
 
   const [newItemTitle, setNewItemTitle] = useState("")
   const [newItemDescription, setNewItemDescription] = useState("")
@@ -75,12 +77,12 @@ export const AddItemScreen: FC<AddItemScreenProps> = () => {
   }
 
   return (
-    <Screen preset="auto" contentContainerStyle={themed($styles.container)}>
+    <Screen preset="scroll" contentContainerStyle={themed($contentContainer)}>
       <View style={themed($header)}>
         <Text text="Create New Item" preset="heading" />
       </View>
 
-      <View style={themed($formSection)}>
+      <View style={[themed($formSection), { paddingBottom: insets.bottom + 120 }]}>
         <TextField
           label="Title"
           value={newItemTitle}
@@ -142,6 +144,12 @@ export const AddItemScreen: FC<AddItemScreenProps> = () => {
     </Screen>
   )
 }
+
+const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing, width, screen }) => ({
+  width: screen.lg ? 800 : screen.md ? width - spacing.lg : width - spacing.md,
+  margin: "auto",
+  flexGrow: 1,
+})
 
 const $header: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.xl,

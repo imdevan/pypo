@@ -62,7 +62,10 @@ export const VideoUploadInput: FC<VideoUploadInputProps> = ({
       }
 
       // Launch image picker for videos
+      // Note: MediaTypeOptions is deprecated but still works
+      // The new MediaType API may not be available in all versions
       const result = await ImagePicker.launchImageLibraryAsync({
+        // @ts-expect-error - MediaTypeOptions is deprecated but MediaType may not be available
         mediaTypes: ImagePicker.MediaTypeOptions.Videos,
         allowsEditing: false,
         quality: 1,

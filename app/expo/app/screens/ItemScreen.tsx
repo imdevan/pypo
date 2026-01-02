@@ -15,6 +15,7 @@ import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
 import { validateVideoFile } from "@/utils/video/validation"
+import { generateVideoThumbnail } from "@/utils/video/thumbnail"
 import * as ImagePicker from "expo-image-picker"
 
 type ItemScreenProps = NativeStackScreenProps<ItemsStackParamList, "item">
@@ -32,9 +33,9 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
   const [videoError, setVideoError] = useState<string | null>(null)
   const [isRelinkingVideo, setIsRelinkingVideo] = useState(false)
 
-  // Access video_url from item (will be available once backend adds it)
-  // Using type assertion for now since API types don't include it yet
-  const videoUrl = (item as any)?.video_url || null
+  // Access video_url and video_thumbnail_url from item
+  const videoUrl = item?.video_url || null
+  const videoThumbnailUrl = item?.video_thumbnail_url || null
 
   const handleVideoError = useCallback((error: Error) => {
     setVideoError(error.message)
@@ -70,7 +71,10 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
         }
 
         // Launch image picker for videos
+        // Note: MediaTypeOptions is deprecated but still works
+        // The new MediaType API may not be available in all versions
         const result = await ImagePicker.launchImageLibraryAsync({
+          // @ts-expect-error - MediaTypeOptions is deprecated but MediaType may not be available
           mediaTypes: ImagePicker.MediaTypeOptions.Videos,
           allowsEditing: false,
           quality: 1,
@@ -103,12 +107,19 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
         newVideoUrl = asset.uri
       }
 
-      // Update the item with the new video URI
+      // Generate thumbnail for the new video (mobile only)
+      let newThumbnailUrl: string | null = null
+      if (newVideoUrl && Platform.OS !== "web") {
+        newThumbnailUrl = await generateVideoThumbnail(newVideoUrl, 1.0)
+      }
+
+      // Update the item with the new video URI and thumbnail
       await updateItemMutation.mutateAsync({
         path: { id: itemId },
         body: {
           video_url: newVideoUrl || undefined,
-        } as any, // video_url is in backend but types may not be regenerated yet
+          video_thumbnail_url: newThumbnailUrl || undefined,
+        } as any, // video_url and video_thumbnail_url are in backend but types may not be regenerated yet
       })
 
       Alert.alert("Success", "Video file has been re-linked successfully.")
@@ -200,6 +211,7 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
               ) : (
                 <VideoPlayer
                   videoUri={videoUrl}
+                  thumbnailUri={videoThumbnailUrl}
                   onError={handleVideoError}
                   onLoad={handleVideoLoad}
                   onRelinkVideo={handleRelinkVideo}

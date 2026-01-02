@@ -19,9 +19,9 @@ interface ItemCardProps {
 export const ItemCard: FC<ItemCardProps> = memo(({ item, onPress, maxTags = 2 }) => {
   const { themed } = useAppTheme()
 
-  // Access video_url from item (will be available once backend adds it)
-  // Using type assertion for now since API types don't include it yet
-  const videoUrl = (item as any)?.video_url || null
+  // Access video_url and video_thumbnail_url from item
+  const videoUrl = item.video_url || null
+  const videoThumbnailUrl = item.video_thumbnail_url || null
 
   return (
     <Pressable style={themed($itemContent)} onPress={onPress}>
@@ -30,8 +30,9 @@ export const ItemCard: FC<ItemCardProps> = memo(({ item, onPress, maxTags = 2 })
         <View style={themed($itemVideoContainer)}>
           <VideoThumbnail
             videoUri={videoUrl}
+            thumbnailUri={videoThumbnailUrl}
             onPress={onPress}
-            showPlayButton={true}
+            showPlayButton={false}
             style={themed($itemVideoThumbnail)}
           />
         </View>
@@ -66,7 +67,8 @@ export const ItemCard: FC<ItemCardProps> = memo(({ item, onPress, maxTags = 2 })
     prevProps.item.title === nextProps.item.title &&
     prevProps.item.description === nextProps.item.description &&
     prevProps.item.image_url === nextProps.item.image_url &&
-    (prevProps.item as any)?.video_url === (nextProps.item as any)?.video_url &&
+    prevProps.item.video_url === nextProps.item.video_url &&
+    prevProps.item.video_thumbnail_url === nextProps.item.video_thumbnail_url &&
     prevProps.item.tags?.length === nextProps.item.tags?.length &&
     prevProps.maxTags === nextProps.maxTags
   )

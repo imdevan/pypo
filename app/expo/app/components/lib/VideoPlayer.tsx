@@ -42,6 +42,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
   const [videoSrc, setVideoSrc] = useState<string | null>(null)
   const [needsPermission, setNeedsPermission] = useState(false)
   const [permissionDenied, setPermissionDenied] = useState(false)
+  const [aspectRatio, setAspectRatio] = useState<number | null>(null)
 
   // Create video player for iOS/Android using expo-video
   // Initialize with empty string, will be updated when videoSrc is set
@@ -212,16 +213,56 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
   useEffect(() => {
     if (Platform.OS !== "web" && player && videoSrc) {
       player.replace(videoSrc)
+      // Reset aspect ratio when video source changes
+      setAspectRatio(null)
     }
   }, [player, videoSrc])
 
-  // Handle video player status updates and auto-play
+  // Handle video player status updates and auto-play, and get video dimensions
   useEffect(() => {
     if (Platform.OS !== "web" && player) {
       const subscription = player.addListener("statusChange", (status) => {
         if (status.status === "readyToPlay") {
           setIsLoading(false)
           setHasError(false)
+          
+          // Get video dimensions to calculate aspect ratio
+          // Try multiple ways to get dimensions as API may vary
+          try {
+            let width: number | undefined
+            let height: number | undefined
+            
+            // Try direct properties first
+            if (player.width && player.height) {
+              width = player.width
+              height = player.height
+            }
+            // Try accessing through status if available
+            else if ((status as any).naturalSize) {
+              width = (status as any).naturalSize.width
+              height = (status as any).naturalSize.height
+            }
+            // Try accessing through player properties
+            else if ((player as any).naturalSize) {
+              width = (player as any).naturalSize.width
+              height = (player as any).naturalSize.height
+            }
+            
+            if (width && height && width > 0 && height > 0) {
+              const calculatedAspectRatio = width / height
+              console.log("Video dimensions:", { width, height, aspectRatio: calculatedAspectRatio })
+              setAspectRatio(calculatedAspectRatio)
+            } else {
+              // Fallback to 16:9 if dimensions not available
+              console.warn("Could not get video dimensions, using 16:9 fallback")
+              setAspectRatio(16 / 9)
+            }
+          } catch (error) {
+            console.error("Error getting video dimensions:", error)
+            // Fallback to 16:9 if we can't get dimensions
+            setAspectRatio(16 / 9)
+          }
+          
           onLoad?.()
           // Auto-play if requested
           if (autoPlay) {
@@ -270,21 +311,29 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
   }
 
   return (
-    <View style={[themed($container), style]}>
-      {isLoading && (
-        <View style={themed($loadingContainer)}>
-          <Text text="Loading video..." preset="formHelper" style={themed($loadingText)} />
-        </View>
-      )}
+    <View 
+      style={[
+        themed($container), 
+        style,
+        aspectRatio ? { aspectRatio } : { aspectRatio: 16 / 9 }, // Apply aspect ratio to container
+      ]}
+    >
       {videoSrc && player && (
-        <VideoView
-          player={player}
-          style={themed($videoPlayer)}
-          nativeControls={controls}
-          contentFit="contain"
-          allowsFullscreen
-          allowsPictureInPicture
-        />
+        <View style={{ width: "100%", height: "100%", backgroundColor: "black" }}>
+          <VideoView
+            player={player}
+            style={themed($videoPlayer)}
+            nativeControls={controls}
+            contentFit="contain"
+            allowsFullscreen
+            allowsPictureInPicture
+          />
+          {isLoading && (
+            <View style={themed($loadingContainer)}>
+              <Text text="Loading video..." preset="formHelper" style={themed($loadingText)} />
+            </View>
+          )}
+        </View>
       )}
     </View>
   )
@@ -292,7 +341,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
 
 const $container: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   width: "100%",
-  backgroundColor: colors.palette.neutral100,
+  backgroundColor: "black", // Use black background to avoid brightness issues
   borderRadius: 8,
   overflow: "hidden",
   marginVertical: spacing.sm,
@@ -320,8 +369,15 @@ const $errorText: ThemedStyle<ViewStyle> = ({ colors }) => ({
 })
 
 const $loadingContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  padding: spacing.md,
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  justifyContent: "center",
   alignItems: "center",
+  backgroundColor: "rgba(0, 0, 0, 0.7)", // Semi-transparent black overlay
+  padding: spacing.md,
 })
 
 const $loadingText: ThemedStyle<ViewStyle> = () => ({
@@ -362,7 +418,8 @@ const $placeholderText: ThemedStyle<ViewStyle> = ({ colors }) => ({
 
 const $videoPlayer: ThemedStyle<ViewStyle> = () => ({
   width: "100%",
-  height: 300,
+  height: "100%", // Fill the container which has the aspect ratio
   borderRadius: 8,
+  backgroundColor: "black", // Ensure black background
 })
 

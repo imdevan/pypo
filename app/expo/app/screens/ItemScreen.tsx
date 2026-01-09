@@ -257,6 +257,11 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
     </Screen>
   )
 }
+// Enable why-did-you-render tracking for ItemsScreen
+if (__DEV__ && process.env.__WDYR__) {
+  ItemScreen.whyDidYouRender = true
+}
+
 
 const $header: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.md,

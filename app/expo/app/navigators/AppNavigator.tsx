@@ -48,8 +48,11 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
   T
 >
 
+// Navigator factories - one per flow to prevent identity instability
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
-const Stack = createNativeStackNavigator<AppStackParamList>()
+const RootStack = createNativeStackNavigator<AppStackParamList>()
+const AuthStack = createNativeStackNavigator<AppStackParamList>()
+const AppStack = createNativeStackNavigator<AppStackParamList>()
 
 // Custom component to handle authenticated user routing
 const AuthenticatedNavigator = () => {
@@ -87,7 +90,7 @@ const AuthenticatedNavigator = () => {
   }
 
   return (
-    <Stack.Navigator
+    <AppStack.Navigator
       screenOptions={{
         headerShown: false,
         navigationBarColor: colors.background,
@@ -97,13 +100,13 @@ const AuthenticatedNavigator = () => {
       }}
       initialRouteName={initialRoute}
     >
-      <Stack.Screen name="Welcome" component={WelcomeScreen} />
-      <Stack.Screen name="app" component={DrawerNavigator} />
-    </Stack.Navigator>
+      <AppStack.Screen name="Welcome" component={WelcomeScreen} />
+      <AppStack.Screen name="app" component={DrawerNavigator} />
+    </AppStack.Navigator>
   )
 }
 
-const AppStack = () => {
+const AppStackComponent = () => {
   const { isAuthenticated } = useAuth()
 
   const {
@@ -115,7 +118,7 @@ const AppStack = () => {
   }
 
   return (
-    <Stack.Navigator
+    <AuthStack.Navigator
       screenOptions={{
         headerShown: false,
         navigationBarColor: colors.background,
@@ -125,8 +128,8 @@ const AppStack = () => {
       }}
       initialRouteName="Login"
     >
-      <Stack.Screen name="Login" component={LoginScreen} />
-    </Stack.Navigator>
+      <AuthStack.Screen name="Login" component={LoginScreen} />
+    </AuthStack.Navigator>
   )
 }
 
@@ -141,7 +144,7 @@ export const AppNavigator = (props: NavigationProps) => {
   return (
     <NavigationContainer ref={navigationRef} theme={navigationTheme} {...props}>
       <ErrorBoundary catchErrors={Config.catchErrors}>
-        <AppStack />
+        <AppStackComponent />
       </ErrorBoundary>
     </NavigationContainer>
   )

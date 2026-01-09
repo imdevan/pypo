@@ -109,3 +109,8 @@ const $moreTagsText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.textDim,
   marginLeft: 4,
 })
+
+// Enable why-did-you-render tracking for ItemCard
+if (__DEV__ && process.env.__WDYR__) {
+  ItemCard.whyDidYouRender = true
+}

@@ -207,3 +207,8 @@ const $testButton = { marginTop: 8 }
 const $emptyState: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xxl,
 })
+
+// Enable why-did-you-render tracking for ItemsScreen
+if (__DEV__ && process.env.__WDYR__) {
+  ItemsScreen.whyDidYouRender = true
+}

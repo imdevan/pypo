@@ -39,7 +39,9 @@
       ]
     },
     "infoPlist": {
-      "ITSAppUsesNonExemptEncryption": false
+      "ITSAppUsesNonExemptEncryption": false,
+      "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to select and upload videos.",
+      "NSPhotoLibraryAddUsageDescription": "This app needs access to save videos to your photo library."
     }
   },
   "web": {

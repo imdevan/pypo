@@ -90,17 +90,11 @@ export const DemoListItem: Demo = {
       name="demoListItem:useCase.icons.name"
       description="demoListItem:useCase.icons.description"
     >
-      <ListItem
-        topSeparator
-        LeftComponent={<Icon name="star" size={24} />}
-      >
+      <ListItem topSeparator LeftComponent={<Icon name="star" size={24} />}>
         {translate("demoListItem:useCase.icons.leftIcon")}
       </ListItem>
 
-      <ListItem
-        topSeparator
-        RightComponent={<Icon name="star" size={24} />}
-      >
+      <ListItem topSeparator RightComponent={<Icon name="star" size={24} />}>
         {translate("demoListItem:useCase.icons.rightIcon")}
       </ListItem>
 

@@ -57,6 +57,14 @@ export type ItemCreate = {
      */
     image_url?: string | null;
     /**
+     * Video Url
+     */
+    video_url?: string | null;
+    /**
+     * Video Thumbnail Url
+     */
+    video_thumbnail_url?: string | null;
+    /**
      * Tag Ids
      */
     tag_ids?: Array<string> | null;
@@ -78,6 +86,14 @@ export type ItemPublic = {
      * Image Url
      */
     image_url: string | null;
+    /**
+     * Video Url
+     */
+    video_url: string | null;
+    /**
+     * Video Thumbnail Url
+     */
+    video_thumbnail_url: string | null;
     /**
      * Id
      */
@@ -116,6 +132,14 @@ export type ItemUpdate = {
      * Image Url
      */
     image_url?: string | null;
+    /**
+     * Video Url
+     */
+    video_url?: string | null;
+    /**
+     * Video Thumbnail Url
+     */
+    video_thumbnail_url?: string | null;
     /**
      * Tag Ids
      */

@@ -25,8 +25,7 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
   const [attemptsCount, setAttemptsCount] = useState(0)
   const [serverError, setServerError] = useState("")
   const { authEmail, setAuthEmail, login, register, isLoading } = useAuth()
-  const { error: loginError } = useLogin()
-  console.log("🚀 ~ LoginScreen ~ loginError:", loginError)
+  const { error: _loginError } = useLogin()
 
   const {
     themed,

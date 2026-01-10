@@ -107,3 +107,6 @@ openapi.json
 .expo
 dist/
 web-build/
+
+# Logs
+*.log

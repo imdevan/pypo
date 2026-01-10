@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { ViewStyle } from "react-native"
 import { View } from "react-native"
 
@@ -11,6 +11,7 @@ import { useCurrentUserData } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
+import { useMountLog } from "@/utils/useMountLog"
 
 /**
  * UserProfileScreen displays user information and profile details
@@ -18,8 +19,21 @@ import type { ThemedStyle } from "@/theme/types"
 export function UserProfileScreen() {
   const { logout } = useAuth()
   const { themed } = useAppTheme()
+
+  // Screen mount verification - temporary debug logs
+  useMountLog("UserProfile")
+
   const { data: userData, isLoading, error } = useCurrentUserData()
   const [isEditing, setIsEditing] = useState(false)
+
+  // Memoize date formatting to avoid recreating on every render
+  const formattedDates = useMemo(() => {
+    if (!userData) return { created: "", updated: "" }
+    return {
+      created: new Date(userData.created_at).toLocaleDateString(),
+      updated: new Date(userData.updated_at).toLocaleDateString(),
+    }
+  }, [userData])
 
   // Show edit form when in editing mode
   if (isEditing && userData) {
@@ -73,18 +87,12 @@ export function UserProfileScreen() {
 
             <View style={themed($infoCard)}>
               <Text text="Member Since" style={themed($label)} />
-              <Text
-                text={new Date(userData.created_at).toLocaleDateString()}
-                style={themed($value)}
-              />
+              <Text text={formattedDates.created} style={themed($value)} />
             </View>
 
             <View style={themed($infoCard)}>
               <Text text="Last Updated" style={themed($label)} />
-              <Text
-                text={new Date(userData.updated_at).toLocaleDateString()}
-                style={themed($value)}
-              />
+              <Text text={formattedDates.updated} style={themed($value)} />
             </View>
 
             {userData.is_superuser && (

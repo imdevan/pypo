@@ -18,7 +18,7 @@ if (__DEV__) {
 }
 import "./utils/gestureHandler"
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useFonts } from "expo-font"
 import * as Linking from "expo-linking"
 import { QueryClientProvider } from "@tanstack/react-query"
@@ -49,14 +49,14 @@ const config = {
     Welcome: "welcome",
     app: {
       screens: {
-        tab: {
+        "tab": {
           screens: {
             items: "items",
             addItem: "add-item",
             community: "community",
           },
         },
-        userprofile: "profile",
+        "userprofile": "profile",
         "development/showroom": {
           path: "development/showroom/:queryIndex?/:itemIndex?",
         },
@@ -81,6 +81,19 @@ export function App() {
   const [areFontsLoaded, fontLoadError] = useFonts(customFontsToLoad)
   const [isI18nInitialized, setIsI18nInitialized] = useState(false)
 
+  // Memoize linking config to prevent NavigationContainer prop identity changes
+  // Must be called before any early returns to follow Rules of Hooks
+  // prefix and config are module-level constants, so they're stable
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const linking = useMemo(
+    () => ({
+      prefixes: [prefix],
+      config,
+    }),
+    // Empty deps: prefix and config are module-level constants, stable across renders
+    [],
+  )
+
   useEffect(() => {
     initI18n()
       .then(() => setIsI18nInitialized(true))
@@ -95,11 +108,6 @@ export function App() {
   // You can replace with your own loading component if you wish.
   if (!isNavigationStateRestored || !isI18nInitialized || (!areFontsLoaded && !fontLoadError)) {
     return null
-  }
-
-  const linking = {
-    prefixes: [prefix],
-    config,
   }
 
   // otherwise, we're ready to render the app

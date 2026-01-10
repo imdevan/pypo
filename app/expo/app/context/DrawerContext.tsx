@@ -3,9 +3,10 @@ import {
   FC,
   PropsWithChildren,
   useContext,
+  useMemo,
+  useRef,
   useState,
   useCallback,
-  useRef,
 } from "react"
 import { DrawerActions } from "@react-navigation/native"
 import type { NavigationContainerRef, ParamListBase } from "@react-navigation/native"
@@ -94,15 +95,19 @@ export const DrawerProvider: FC<PropsWithChildren<DrawerProviderProps>> = ({ chi
     navigationRef.current = ref
   }, [])
 
-  const value: DrawerContextType = {
-    drawers,
-    isOpen,
-    openDrawer,
-    closeDrawer,
-    toggleDrawer,
-    navigateFromDrawer,
-    setNavigationRef,
-  }
+  // Memoize the context value to prevent unnecessary re-renders of all consumers
+  const value: DrawerContextType = useMemo(
+    () => ({
+      drawers,
+      isOpen,
+      openDrawer,
+      closeDrawer,
+      toggleDrawer,
+      navigateFromDrawer,
+      setNavigationRef,
+    }),
+    [drawers, isOpen, openDrawer, closeDrawer, toggleDrawer, navigateFromDrawer, setNavigationRef],
+  )
 
   return <DrawerContext.Provider value={value}>{children}</DrawerContext.Provider>
 }
@@ -117,15 +122,30 @@ export const useDrawer: UseDrawerType = (drawerId = "app") => {
   const context = useContext(DrawerContext)
   if (!context) throw new Error("useDrawer must be used within a DrawerProvider")
 
-  return {
-    isOpen: context.isOpen(drawerId),
-    openDrawer: () => context.openDrawer(drawerId),
-    closeDrawer: () => context.closeDrawer(drawerId),
-    toggleDrawer: () => context.toggleDrawer(drawerId),
-    navigateFromDrawer: (screen: string, params?: any) =>
-      context.navigateFromDrawer(drawerId, screen, params),
-    setNavigationRef: context.setNavigationRef,
-  }
+  // Get the current isOpen state directly from drawers to avoid function reference issues
+  // Read directly from context.drawers to get the actual state value
+  const isOpenState = context.drawers[drawerId]?.isOpen || false
+
+  // Use refs to store the latest function references without causing re-renders
+  const contextRef = useRef(context)
+  contextRef.current = context
+
+  // Memoize the return value to prevent creating new objects on every render
+  // Only recreate when isOpenState changes (actual drawer state change)
+  // Use refs for functions so they're always current but don't trigger re-renders
+  return useMemo(
+    () => ({
+      isOpen: isOpenState,
+      openDrawer: () => contextRef.current.openDrawer(drawerId),
+      closeDrawer: () => contextRef.current.closeDrawer(drawerId),
+      toggleDrawer: () => contextRef.current.toggleDrawer(drawerId),
+      navigateFromDrawer: (screen: string, params?: any) =>
+        contextRef.current.navigateFromDrawer(drawerId, screen, params),
+      setNavigationRef: contextRef.current.setNavigationRef,
+    }),
+    // Only depend on isOpenState and drawerId - functions accessed via ref so always current
+    [isOpenState, drawerId],
+  )
 }
 
 /**

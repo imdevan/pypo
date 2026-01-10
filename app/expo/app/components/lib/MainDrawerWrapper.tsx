@@ -3,6 +3,7 @@ import { Drawer } from "react-native-drawer-layout"
 
 import { useDrawer } from "@/context/DrawerContext"
 import { isRTL } from "@/i18n"
+import { useMountLog } from "@/utils/useMountLog"
 
 import { ScreenWithHeader } from "./ScreenWithHeader"
 import { AppDrawer } from "../demo/AppDrawer"
@@ -22,6 +23,8 @@ export interface DrawerWrapperProps {
  * This is the main drawer wrapper that is used to wrap the app drawer content
  */
 export const MainDrawerWrapper: FC<DrawerWrapperProps> = ({ children }) => {
+  useMountLog("MainDrawerWrapper", { logRenders: true })
+
   const { isOpen, openDrawer, closeDrawer, toggleDrawer } = useDrawer("app")
 
   return (

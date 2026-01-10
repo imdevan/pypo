@@ -10,7 +10,6 @@ import {
   requestVideoFilePermission,
 } from "@/utils/video/fileStorage"
 
-import { Button } from "./Button"
 import { Text } from "./Text"
 
 interface VideoPlayerProps {
@@ -26,13 +25,13 @@ interface VideoPlayerProps {
 
 export const VideoPlayer: FC<VideoPlayerProps> = ({
   videoUri,
-  thumbnailUri,
+  thumbnailUri: _thumbnailUri,
   style,
   autoPlay = false,
   controls = true,
   onError,
   onLoad,
-  onRelinkVideo,
+  onRelinkVideo: _onRelinkVideo,
 }) => {
   const { themed } = useAppTheme()
   const videoRef = useRef<HTMLVideoElement | null>(null)
@@ -40,19 +39,16 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [videoSrc, setVideoSrc] = useState<string | null>(null)
-  const [needsPermission, setNeedsPermission] = useState(false)
-  const [permissionDenied, setPermissionDenied] = useState(false)
+  const [_needsPermission, setNeedsPermission] = useState(false)
+  const [_permissionDenied, setPermissionDenied] = useState(false)
   const [aspectRatio, setAspectRatio] = useState<number | null>(null)
 
   // Create video player for iOS/Android using expo-video
   // Initialize with empty string, will be updated when videoSrc is set
-  const player = useVideoPlayer(
-    Platform.OS !== "web" ? videoSrc || "" : "",
-    (player) => {
-      player.loop = false
-      player.muted = false
-    },
-  )
+  const player = useVideoPlayer(Platform.OS !== "web" ? videoSrc || "" : "", (player) => {
+    player.loop = false
+    player.muted = false
+  })
 
   // Check if videoUri is a file reference key (starts with "video_") - web only
   const isFileReference = Platform.OS === "web" && videoUri.startsWith("video_")
@@ -76,7 +72,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
             setPermissionDenied(false)
             setIsLoading(false)
             setErrorMessage(
-              "Permission to access the video file is required. Click the button below to grant access."
+              "Permission to access the video file is required. Click the button below to grant access.",
             )
             return null
           } else if (permissionState === "denied") {
@@ -85,7 +81,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
             setPermissionDenied(true)
             setIsLoading(false)
             setErrorMessage(
-              "Permission to access the video file was denied. Please re-select the video file to grant access again."
+              "Permission to access the video file was denied. Please re-select the video file to grant access again.",
             )
             return null
           } else {
@@ -117,7 +113,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
   }, [videoUri, isFileReference])
 
   // Handle permission request button click
-  const handleRequestPermission = useCallback(async () => {
+  const _handleRequestPermission = useCallback(async () => {
     if (!isFileReference) return
 
     setIsLoading(true)
@@ -137,7 +133,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
         setPermissionDenied(true)
         setNeedsPermission(false)
         setErrorMessage(
-          "Permission was denied. Please re-select the video file to grant access again."
+          "Permission was denied. Please re-select the video file to grant access again.",
         )
         setIsLoading(false)
       }
@@ -147,7 +143,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
         setPermissionDenied(true)
         setNeedsPermission(false)
         setErrorMessage(
-          "Permission was denied. Please re-select the video file to grant access again."
+          "Permission was denied. Please re-select the video file to grant access again.",
         )
       } else {
         setErrorMessage(error.message || "Failed to request permission")
@@ -172,7 +168,9 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
       const handleError = () => {
         const error = new Error("Failed to load video")
         setHasError(true)
-        setErrorMessage("Unable to play video. The file may be corrupted or in an unsupported format.")
+        setErrorMessage(
+          "Unable to play video. The file may be corrupted or in an unsupported format.",
+        )
         setIsLoading(false)
         onError?.(error)
       }
@@ -225,13 +223,13 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
         if (status.status === "readyToPlay") {
           setIsLoading(false)
           setHasError(false)
-          
+
           // Get video dimensions to calculate aspect ratio
           // Try multiple ways to get dimensions as API may vary
           try {
             let width: number | undefined
             let height: number | undefined
-            
+
             // Try direct properties first
             if (player.width && player.height) {
               width = player.width
@@ -247,10 +245,14 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
               width = (player as any).naturalSize.width
               height = (player as any).naturalSize.height
             }
-            
+
             if (width && height && width > 0 && height > 0) {
               const calculatedAspectRatio = width / height
-              console.log("Video dimensions:", { width, height, aspectRatio: calculatedAspectRatio })
+              console.log("Video dimensions:", {
+                width,
+                height,
+                aspectRatio: calculatedAspectRatio,
+              })
               setAspectRatio(calculatedAspectRatio)
             } else {
               // Fallback to 16:9 if dimensions not available
@@ -262,7 +264,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
             // Fallback to 16:9 if we can't get dimensions
             setAspectRatio(16 / 9)
           }
-          
+
           onLoad?.()
           // Auto-play if requested
           if (autoPlay) {
@@ -270,7 +272,9 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
           }
         } else if (status.status === "error") {
           setHasError(true)
-          setErrorMessage("Failed to load video. The file may be corrupted or in an unsupported format.")
+          setErrorMessage(
+            "Failed to load video. The file may be corrupted or in an unsupported format.",
+          )
           setIsLoading(false)
           onError?.(new Error("Video playback error"))
         } else if (status.status === "loading") {
@@ -305,21 +309,25 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
     return (
       <View style={[themed($errorContainer), style]}>
         <Text text="⚠️ Video Error" preset="subheading" style={themed($errorTitle)} />
-        <Text text={errorMessage || "Failed to load video"} preset="formHelper" style={themed($errorText)} />
+        <Text
+          text={errorMessage || "Failed to load video"}
+          preset="formHelper"
+          style={themed($errorText)}
+        />
       </View>
     )
   }
 
   return (
-    <View 
+    <View
       style={[
-        themed($container), 
+        themed($container),
         style,
         aspectRatio ? { aspectRatio } : { aspectRatio: 16 / 9 }, // Apply aspect ratio to container
       ]}
     >
       {videoSrc && player && (
-        <View style={{ width: "100%", height: "100%", backgroundColor: "black" }}>
+        <View style={themed($videoContainer)}>
           <VideoView
             player={player}
             style={themed($videoPlayer)}
@@ -339,7 +347,13 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
   )
 }
 
-const $container: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+const $videoContainer: ThemedStyle<ViewStyle> = () => ({
+  width: "100%",
+  height: "100%",
+  backgroundColor: "black",
+})
+
+const $container: ThemedStyle<ViewStyle> = ({ _colors, spacing }) => ({
   width: "100%",
   backgroundColor: "black", // Use black background to avoid brightness issues
   borderRadius: 8,
@@ -384,15 +398,6 @@ const $loadingText: ThemedStyle<ViewStyle> = () => ({
   textAlign: "center",
 })
 
-const $helperText: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  padding: spacing.md,
-  textAlign: "center",
-})
-
-const $permissionButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginTop: spacing.md,
-})
-
 const $placeholderContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   width: "100%",
   backgroundColor: colors.palette.neutral100,
@@ -422,4 +427,3 @@ const $videoPlayer: ThemedStyle<ViewStyle> = () => ({
   borderRadius: 8,
   backgroundColor: "black", // Ensure black background
 })
-

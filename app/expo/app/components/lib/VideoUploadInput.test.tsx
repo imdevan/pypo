@@ -1,7 +1,7 @@
 /// <reference types="jest" />
-import { NavigationContainer } from "@react-navigation/native"
 import { Platform } from "react-native"
-import { render, fireEvent, waitFor } from "@testing-library/react-native"
+import { NavigationContainer } from "@react-navigation/native"
+import { render, fireEvent } from "@testing-library/react-native"
 
 import { VideoUploadInput } from "./VideoUploadInput"
 import { ThemeProvider } from "../../theme/context"
@@ -170,18 +170,14 @@ describe("VideoUploadInput", () => {
       const { getByText } = render(
         <ThemeProvider>
           <NavigationContainer>
-            <VideoUploadInput
-              {...defaultProps}
-              onChange={onChange}
-              onFileSelect={onFileSelect}
-            />
-        </NavigationContainer>
-      </ThemeProvider>,
+            <VideoUploadInput {...defaultProps} onChange={onChange} onFileSelect={onFileSelect} />
+          </NavigationContainer>
+        </ThemeProvider>,
       )
 
       // Create a mock file input change event
       // Note: This is a simplified test - actual file input testing requires more setup
-      const file = new File(["test"], "test.mp4", { type: "video/mp4" })
+      const _file = new File(["test"], "test.mp4", { type: "video/mp4" })
 
       // Simulate file selection through the component's internal handler
       // In a real scenario, this would be triggered by the file input
@@ -203,8 +199,8 @@ describe("VideoUploadInput", () => {
         <ThemeProvider>
           <NavigationContainer>
             <VideoUploadInput {...defaultProps} />
-        </NavigationContainer>
-      </ThemeProvider>,
+          </NavigationContainer>
+        </ThemeProvider>,
       )
 
       expect(getByText(/Video upload is only available on web/)).toBeDefined()
@@ -213,4 +209,3 @@ describe("VideoUploadInput", () => {
     })
   })
 })
-

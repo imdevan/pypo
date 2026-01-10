@@ -43,14 +43,7 @@ export const DemoIcon: Demo = {
       layout="row"
       itemStyle={$styles.flexWrap}
     >
-      {[
-        "star", "heart", "home", "user", "settings", "search", "bell", "mail",
-        "calendar", "clock", "camera", "image", "file", "folder", "download",
-        "upload", "share", "edit", "trash", "plus", "minus", "check", "x",
-        "chevron-left", "chevron-right", "chevron-up", "chevron-down", "arrow-left",
-        "arrow-right", "arrow-up", "arrow-down", "menu", "more-horizontal",
-        "more-vertical", "grid", "list", "layers", "zap", "sun", "moon"
-      ].map((icon) => (
+      {DEMO_ICONS.map((icon) => (
         <View key={icon} style={themed($iconTile)}>
           <Icon name={icon as any} color={theme.colors.tint} size={35} />
 
@@ -118,3 +111,46 @@ export const DemoIcon: Demo = {
     </DemoUseCase>,
   ],
 }
+
+const DEMO_ICONS = [
+  "star",
+  "heart",
+  "home",
+  "user",
+  "settings",
+  "search",
+  "bell",
+  "mail",
+  "calendar",
+  "clock",
+  "camera",
+  "image",
+  "file",
+  "folder",
+  "download",
+  "upload",
+  "share",
+  "edit",
+  "trash",
+  "plus",
+  "minus",
+  "check",
+  "x",
+  "chevron-left",
+  "chevron-right",
+  "chevron-up",
+  "chevron-down",
+  "arrow-left",
+  "arrow-right",
+  "arrow-up",
+  "arrow-down",
+  "menu",
+  "more-horizontal",
+  "more-vertical",
+  "grid",
+  "list",
+  "layers",
+  "zap",
+  "sun",
+  "moon",
+]

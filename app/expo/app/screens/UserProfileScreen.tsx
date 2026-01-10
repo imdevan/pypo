@@ -33,7 +33,7 @@ export function UserProfileScreen() {
       created: new Date(userData.created_at).toLocaleDateString(),
       updated: new Date(userData.updated_at).toLocaleDateString(),
     }
-  }, [userData?.created_at, userData?.updated_at])
+  }, [userData])
 
   // Show edit form when in editing mode
   if (isEditing && userData) {

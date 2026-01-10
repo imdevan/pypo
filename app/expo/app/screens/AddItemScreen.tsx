@@ -1,9 +1,8 @@
 import { FC, useEffect, useState } from "react"
-import { Alert, View } from "react-native"
+import { Alert, Platform, View } from "react-native"
 import type { ViewStyle } from "react-native"
-import { useNavigation } from "@react-navigation/native"
-import { CompositeNavigationProp } from "@react-navigation/native"
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs"
+import { useNavigation } from "@react-navigation/native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { Button } from "@/components/lib/Button"
@@ -18,13 +17,11 @@ import { extractErrorMessage } from "@/services/api/errorHandling"
 import { useCreateItem } from "@/services/api/hooks"
 import { useTags } from "@/services/api/hooks/useTags"
 import { useAppTheme } from "@/theme/context"
-import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
 import { useMountLog } from "@/utils/useMountLog"
-import { Platform } from "react-native"
 import { generateVideoThumbnail, cleanupThumbnail } from "@/utils/video/thumbnail"
 
-interface AddItemScreenProps { }
+interface AddItemScreenProps {}
 
 export const AddItemScreen: FC<AddItemScreenProps> = () => {
   const { themed } = useAppTheme()
@@ -95,6 +92,8 @@ export const AddItemScreen: FC<AddItemScreenProps> = () => {
     return () => {
       isMounted = false
     }
+    // newItemVideoThumbnailUrl is set inside the effect but we only want to run when videoUrl changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newItemVideoUrl])
 
   // Extract tags from the response and format for dropdown
@@ -119,7 +118,10 @@ export const AddItemScreen: FC<AddItemScreenProps> = () => {
         video_thumbnail_url: newItemVideoThumbnailUrl || undefined,
         tag_ids: selectedTagIds.length > 0 ? selectedTagIds : undefined,
       }
-      console.log("Creating item with data:", { ...itemData, video_thumbnail_url: itemData.video_thumbnail_url ? "present" : "missing" })
+      console.log("Creating item with data:", {
+        ...itemData,
+        video_thumbnail_url: itemData.video_thumbnail_url ? "present" : "missing",
+      })
       await createItemMutation.mutateAsync({
         body: itemData as any, // video_thumbnail_url may not be in types yet
       })
@@ -183,11 +185,7 @@ export const AddItemScreen: FC<AddItemScreenProps> = () => {
           containerStyle={themed($inputField)}
         />
         {isGeneratingThumbnail && (
-          <Text
-            text="Generating thumbnail..."
-            preset="formHelper"
-            style={themed($helperText)}
-          />
+          <Text text="Generating thumbnail..." preset="formHelper" style={themed($helperText)} />
         )}
         <DropDown
           label="Tags (optional)"

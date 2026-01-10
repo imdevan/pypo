@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useMemo, useState } from "react"
-import { Alert, View } from "react-native"
+import { View } from "react-native"
 import type { ViewStyle } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
@@ -27,7 +27,6 @@ interface ItemsScreenProps {}
 export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const { theme, themed } = useAppTheme()
   const navigation = useNavigation<NativeStackNavigationProp<ItemsStackParamList>>()
-
   const [debugInfo, setDebugInfo] = useState("")
 
   // Screen mount verification - temporary debug logs
@@ -42,7 +41,6 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     () => (theme.screen.lg ? 4 : theme.screen.md ? 3 : theme.screen.sm ? 2 : 1),
     [theme.screen],
   )
-
 
   // Update debug info when items load
   useEffect(() => {
@@ -62,10 +60,11 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   )
 
   // Memoize item separator component
-  const ItemSeparator = useMemo(
-    () => () => <View style={{ height: theme.spacing.xxl, width: theme.spacing.xxl }} />,
-    [theme.spacing.xxl],
-  )
+  const ItemSeparator = useMemo(() => {
+    const Separator = () => <View style={{ height: theme.spacing.xxl, width: theme.spacing.xxl }} />
+    Separator.displayName = "ItemSeparator"
+    return Separator
+  }, [theme.spacing.xxl])
 
   // Memoize renderItem function
   const renderItem = useCallback(

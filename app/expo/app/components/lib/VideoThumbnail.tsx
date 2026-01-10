@@ -48,22 +48,22 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({
       const checkFileExists = async () => {
         setImageLoading(true)
         setImageError(false)
-        
+
         try {
           const FileSystem = await import("expo-file-system/legacy")
           const fileInfo = await FileSystem.getInfoAsync(thumbnailUri)
-          
+
           if (fileInfo.exists) {
             setFileExists(true)
             // File exists, Image will load it
           } else {
             console.warn("Thumbnail file does not exist, attempting to regenerate:", thumbnailUri)
             setFileExists(false)
-            
+
             // Regenerate thumbnail from video if file doesn't exist
             if (!regeneratingRef.current && videoUri) {
               regeneratingRef.current = true
-              
+
               try {
                 const newThumbnailUri = await generateVideoThumbnail(videoUri, 1.0)
                 if (newThumbnailUri) {
@@ -153,7 +153,11 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({
           {!imageLoading && !imageError && shouldShowImage && showPlayButton && (
             <View style={themed($playButtonOverlay)}>
               <View style={themed($playButton)}>
-                <Icon name="play" size={32} color={themed(({ colors }) => colors.background).color} />
+                <Icon
+                  name="play"
+                  size={32}
+                  color={themed(({ colors }) => colors.background).color}
+                />
               </View>
             </View>
           )}
@@ -194,7 +198,7 @@ const $playButtonOverlay: ThemedStyle<ViewStyle> = () => ({
   backgroundColor: "rgba(0, 0, 0, 0.3)",
 })
 
-const $playButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+const $playButton: ThemedStyle<ViewStyle> = ({ colors, _spacing }) => ({
   width: 64,
   height: 64,
   borderRadius: 32,
@@ -259,4 +263,3 @@ const $placeholderText: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   marginTop: spacing.xs,
   textAlign: "center",
 })
-

@@ -46,7 +46,6 @@ export const TabNavigator = memo(function TabNavigator() {
   const { bottom } = useSafeAreaInsets()
   const {
     themed,
-    theme,
     theme: { colors },
   } = useAppTheme()
 
@@ -61,9 +60,9 @@ export const TabNavigator = memo(function TabNavigator() {
       tabBarLabelStyle: themed($tabBarLabel),
       tabBarItemStyle: themed($tabBarItem),
     }),
-    // Dependencies: track theme object and bottom inset that affect the styles
-    // theme object identity changes when theme values change, which is what we want
-    [themed, theme, bottom],
+    // Dependencies: track themed function, bottom inset, and colors.text that affect the styles
+    // themed function identity is stable, but we track colors.text which changes with theme
+    [themed, bottom, colors.text],
   )
 
   // Memoize screen options to prevent remounts

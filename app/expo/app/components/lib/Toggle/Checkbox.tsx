@@ -35,7 +35,9 @@ interface CheckboxInputProps extends BaseToggleInputProps<CheckboxToggleProps> {
 export function Checkbox(props: CheckboxToggleProps) {
   const { icon, iconName, ...rest } = props
   const checkboxInput = useCallback(
-    (toggleProps: CheckboxInputProps) => <CheckboxInput {...toggleProps} icon={icon} iconName={iconName} />,
+    (toggleProps: CheckboxInputProps) => (
+      <CheckboxInput {...toggleProps} icon={icon} iconName={iconName} />
+    ),
     [icon, iconName],
   )
   return <Toggle accessibilityRole="checkbox" {...rest} ToggleInput={checkboxInput} />

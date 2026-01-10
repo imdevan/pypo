@@ -1,7 +1,10 @@
+import { ComponentType, memo, useMemo } from "react"
 import { NavigatorScreenParams } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
 import { MainDrawerWrapper } from "@/components/lib/MainDrawerWrapper"
+import { DemoDebugScreen } from "@/screens/DemoDebugScreen"
+import { DemoShowroomScreen } from "@/screens/DemoShowroomScreen/DemoShowroomScreen"
 import { TagsScreen } from "@/screens/TagsScreen"
 import { UserProfileScreen } from "@/screens/UserProfileScreen"
 import { DemoShowroomScreen } from "@/screens/DemoShowroomScreen/DemoShowroomScreen"
@@ -10,9 +13,9 @@ import { DemoDebugScreen } from "@/screens/DemoDebugScreen"
 import { TabNavigator, DemoTabParamList } from "./TabNavigator"
 
 export type DrawNavigatorParamList = {
-  userprofile: undefined
-  tags: undefined
-  tab: NavigatorScreenParams<DemoTabParamList>
+  "userprofile": undefined
+  "tags": undefined
+  "tab": NavigatorScreenParams<DemoTabParamList>
   "development/showroom": { queryIndex?: string; itemIndex?: string }
   "development/debug": undefined
 }
@@ -20,23 +23,45 @@ export type DrawNavigatorParamList = {
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
 const Stack = createNativeStackNavigator<DrawNavigatorParamList>()
 
-// Create the main content component that contains the stack navigator
-const StackContent = () => {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="tab">
-      <Stack.Screen name="userprofile" component={UserProfileScreen} />
-      <Stack.Screen name="tags" component={TagsScreen} />
-      <Stack.Screen name="tab" component={TabNavigator} />
-      <Stack.Screen name="development/showroom" component={DemoShowroomScreen} />
-      <Stack.Screen name="development/debug" component={DemoDebugScreen} />
-    </Stack.Navigator>
-  )
+// Wrapper component to add drawer functionality to screens
+// This ensures the stack navigator is always a direct child of a navigator
+// Memoized to prevent recreating the wrapper component on every render
+const withDrawer = <P extends object>(Component: ComponentType<P>) => {
+  const WrappedComponent = memo((props: P) => (
+    <MainDrawerWrapper>
+      <Component {...props} />
+    </MainDrawerWrapper>
+  ))
+  WrappedComponent.displayName = `withDrawer(${Component.displayName || Component.name || "Component"})`
+  return WrappedComponent
 }
 
+// Wrapped screen components with drawer functionality
+// Created at module level to ensure stable component references
+const UserProfileScreenWithDrawer = withDrawer(UserProfileScreen)
+const TagsScreenWithDrawer = withDrawer(TagsScreen)
+const DemoShowroomScreenWithDrawer = withDrawer(DemoShowroomScreen)
+const DemoDebugScreenWithDrawer = withDrawer(DemoDebugScreen)
+const TabNavigatorWithDrawer = withDrawer(TabNavigator)
+
+// Stack navigator is now a direct child - no non-navigator wrapper
+// Drawer functionality is provided via screen-level wrappers
 export const DrawerNavigator = () => {
+  // Memoize screenOptions to prevent navigator remounts
+  const screenOptions = useMemo(
+    () => ({
+      headerShown: false,
+    }),
+    [],
+  )
+
   return (
-    <MainDrawerWrapper>
-      <StackContent />
-    </MainDrawerWrapper>
+    <Stack.Navigator screenOptions={screenOptions} initialRouteName="tab">
+      <Stack.Screen name="userprofile" component={UserProfileScreenWithDrawer} />
+      <Stack.Screen name="tags" component={TagsScreenWithDrawer} />
+      <Stack.Screen name="tab" component={TabNavigatorWithDrawer} />
+      <Stack.Screen name="development/showroom" component={DemoShowroomScreenWithDrawer} />
+      <Stack.Screen name="development/debug" component={DemoDebugScreenWithDrawer} />
+    </Stack.Navigator>
   )
 }

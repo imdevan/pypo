@@ -2,15 +2,14 @@
 
 🐍 Python + 🏃🏻‍♂️ Expo
 
-tl;dr: 
-This project started out as the official [FastAPI project template](https://github.com/fastapi/full-stack-fastapi-template) + [Infinite Red's ignite Expo boilerplate](https://github.com/infinitered/ignite/) plus my own choices for building a cross language React Native app. 
+tl;dr:
+This project started out as the official [FastAPI project template](https://github.com/fastapi/full-stack-fastapi-template) + [Infinite Red's ignite Expo boilerplate](https://github.com/infinitered/ignite/) plus my own choices for building a cross language React Native app.
 
 ## What is in this project?
 
 Basically I took Fast API Template and replaced the included frontend with Infinite Red's expo boilerplate.
 
 I added the OpenAPI Typescript client such that all data (user data, and item data) are loaded via hook using the OpenAPI generated hooks. And the OpenAPI generated React Query client.
-
 
 # Pypo - Turborepo
 
@@ -37,21 +36,24 @@ pypo/
 ## Getting Started
 
 1. Install dependencies:
+
    ```bash
    bun install
    ```
 
 2. Install Python dependencies for the backend:
+
    ```bash
    cd app/backend
    uv sync
    ```
 
 3. Start development servers:
+
    ```bash
    # Start both backend and expo
    bun run dev
-   
+
    # Or start individually
    bun run dev --filter=backend
    bun run dev --filter=expo
@@ -60,6 +62,7 @@ pypo/
 ## Available Scripts
 
 ### Root Level (Turborepo)
+
 - `bun run build` - Build all applications
 - `bun run dev` - Start development servers for all applications
 - `bun run test` - Run tests for all applications
@@ -68,12 +71,14 @@ pypo/
 - `bun run format` - Format code with Prettier
 
 ### Backend (`app/backend/`)
+
 - `bun run dev` - Start FastAPI development server
 - `bun run test` - Run pytest tests
 - `bun run lint` - Run ruff linter
 - `bun run format` - Format code with ruff
 
 ### Expo (`app/expo/`)
+
 - `bun run dev` - Start Expo development server
 - `bun run android` - Run on Android
 - `bun run ios` - Run on iOS
@@ -84,7 +89,9 @@ pypo/
 ## Development
 
 ### Backend Development
+
 The backend is a FastAPI application located in `app/backend/`. It uses:
+
 - FastAPI for the web framework
 - SQLModel for ORM
 - Alembic for database migrations
@@ -92,7 +99,9 @@ The backend is a FastAPI application located in `app/backend/`. It uses:
 - Ruff for linting and formatting
 
 ### Expo Development
+
 The Expo app is located in `app/expo/` and includes:
+
 - React Native with Expo
 - TypeScript
 - React Navigation

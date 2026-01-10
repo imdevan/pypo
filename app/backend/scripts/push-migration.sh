@@ -1,4 +1,4 @@
 #!/bin/sh -e
 set -x
 
-alembic upgrade head
+uv run alembic upgrade head

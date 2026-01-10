@@ -21,17 +21,25 @@ import { DrawerNavigator, DrawNavigatorParamList } from "./DrawerNavigator"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 
 /**
- * This type allows TypeScript to know what routes are defined in this navigator
- * as well as what properties (if any) they might take when navigating to them.
- *
- * For more information, see this documentation:
- *   https://reactnavigation.org/docs/params/
- *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
- *   https://reactnavigation.org/docs/typescript/#organizing-types
+ * Root navigator param list - contains both auth and app flows as screens
+ */
+export type RootStackParamList = {
+  AuthFlow: undefined
+  AppFlow: undefined
+}
+
+/**
+ * Auth stack param list - screens for unauthenticated users
+ */
+export type AuthStackParamList = {
+  Login: undefined
+}
+
+/**
+ * App stack param list - screens for authenticated users
  */
 export type AppStackParamList = {
   Welcome: undefined
-  Login: undefined
   app: NavigatorScreenParams<DrawNavigatorParamList>
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
@@ -48,14 +56,41 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
   T
 >
 
+export type RootStackScreenProps<T extends keyof RootStackParamList> = NativeStackScreenProps<
+  RootStackParamList,
+  T
+>
+
 // Navigator factories - one per flow to prevent identity instability
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
-const RootStack = createNativeStackNavigator<AppStackParamList>()
-const AuthStack = createNativeStackNavigator<AppStackParamList>()
+const RootStack = createNativeStackNavigator<RootStackParamList>()
+const AuthStack = createNativeStackNavigator<AuthStackParamList>()
 const AppStack = createNativeStackNavigator<AppStackParamList>()
 
-// Custom component to handle authenticated user routing
-const AuthenticatedNavigator = () => {
+// Auth flow - screens for unauthenticated users
+const AuthFlow = () => {
+  const {
+    theme: { colors },
+  } = useAppTheme()
+
+  return (
+    <AuthStack.Navigator
+      screenOptions={{
+        headerShown: false,
+        navigationBarColor: colors.background,
+        contentStyle: {
+          backgroundColor: colors.background,
+        },
+      }}
+      initialRouteName="Login"
+    >
+      <AuthStack.Screen name="Login" component={LoginScreen} />
+    </AuthStack.Navigator>
+  )
+}
+
+// App flow - screens for authenticated users
+const AppFlow = () => {
   const [isReady, setIsReady] = useState(false)
   const [initialRoute, setInitialRoute] = useState<keyof AppStackParamList>("app")
   const {
@@ -106,19 +141,15 @@ const AuthenticatedNavigator = () => {
   )
 }
 
-const AppStackComponent = () => {
+// Root navigator - always exists, conditionally shows AuthFlow or AppFlow
+const RootNavigator = () => {
   const { isAuthenticated } = useAuth()
-
   const {
     theme: { colors },
   } = useAppTheme()
 
-  if (isAuthenticated) {
-    return <AuthenticatedNavigator />
-  }
-
   return (
-    <AuthStack.Navigator
+    <RootStack.Navigator
       screenOptions={{
         headerShown: false,
         navigationBarColor: colors.background,
@@ -126,25 +157,38 @@ const AppStackComponent = () => {
           backgroundColor: colors.background,
         },
       }}
-      initialRouteName="Login"
+      initialRouteName={isAuthenticated ? "AppFlow" : "AuthFlow"}
     >
-      <AuthStack.Screen name="Login" component={LoginScreen} />
-    </AuthStack.Navigator>
+      <RootStack.Screen name="AuthFlow" component={AuthFlow} />
+      <RootStack.Screen name="AppFlow" component={AppFlow} />
+    </RootStack.Navigator>
   )
 }
 
 export interface NavigationProps
-  extends Partial<ComponentProps<typeof NavigationContainer<AppStackParamList>>> {}
+  extends Partial<ComponentProps<typeof NavigationContainer<RootStackParamList>>> {}
 
 export const AppNavigator = (props: NavigationProps) => {
   const { navigationTheme } = useAppTheme()
+  const { isAuthenticated } = useAuth()
 
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
+
+  // Navigate to the appropriate flow when auth state changes
+  useEffect(() => {
+    if (!navigationRef.isReady()) return
+
+    if (isAuthenticated) {
+      navigationRef.navigate("AppFlow")
+    } else {
+      navigationRef.navigate("AuthFlow")
+    }
+  }, [isAuthenticated])
 
   return (
     <NavigationContainer ref={navigationRef} theme={navigationTheme} {...props}>
       <ErrorBoundary catchErrors={Config.catchErrors}>
-        <AppStackComponent />
+        <RootNavigator />
       </ErrorBoundary>
     </NavigationContainer>
   )

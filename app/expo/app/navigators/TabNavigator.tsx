@@ -1,3 +1,4 @@
+import { memo, useMemo } from "react"
 import { TextStyle, ViewStyle } from "react-native"
 import { BottomTabScreenProps, createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { CompositeScreenProps } from "@react-navigation/native"
@@ -10,6 +11,7 @@ import { AddItemScreen } from "@/screens/AddItemScreen"
 import { DemoCommunityScreen } from "@/screens/DemoCommunityScreen"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
+import { useMountLog } from "@/utils/useMountLog"
 
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 
@@ -38,64 +40,75 @@ const Tab = createBottomTabNavigator<DemoTabParamList>()
  * More info: https://reactnavigation.org/docs/bottom-tab-navigator/
  * @returns {JSX.Element} The rendered `TabNavigator`.
  */
-export function TabNavigator() {
+export const TabNavigator = memo(function TabNavigator() {
+  useMountLog("TabNavigator", { logRenders: true })
+
   const { bottom } = useSafeAreaInsets()
   const {
     themed,
+    theme,
     theme: { colors },
   } = useAppTheme()
 
+  // Memoize screenOptions to prevent navigator remounts
+  const screenOptions = useMemo(
+    () => ({
+      headerShown: false,
+      tabBarHideOnKeyboard: true,
+      tabBarStyle: themed([$tabBar, { height: bottom + 70 }]),
+      tabBarActiveTintColor: colors.text,
+      tabBarInactiveTintColor: colors.text,
+      tabBarLabelStyle: themed($tabBarLabel),
+      tabBarItemStyle: themed($tabBarItem),
+    }),
+    // Dependencies: track theme object and bottom inset that affect the styles
+    // theme object identity changes when theme values change, which is what we want
+    [themed, theme, bottom],
+  )
+
+  // Memoize screen options to prevent remounts
+  const itemsTabOptions = useMemo(
+    () => ({
+      tabBarAccessibilityLabel: translate("tabNavigator:podcastListTab"),
+      tabBarShowLabel: false,
+      tabBarLabel: translate("tabNavigator:itemsTab"),
+      tabBarIcon: ({ focused }: { focused: boolean }) => (
+        <Icon name="list" color={focused ? colors.tint : colors.tintInactive} size={30} />
+      ),
+    }),
+    [colors.tint, colors.tintInactive],
+  )
+
+  const addItemTabOptions = useMemo(
+    () => ({
+      tabBarShowLabel: false,
+      tabBarLabel: "Add Item",
+      tabBarIcon: ({ focused }: { focused: boolean }) => (
+        <Icon name="plus" color={focused ? colors.tint : colors.tintInactive} size={30} />
+      ),
+    }),
+    [colors.tint, colors.tintInactive],
+  )
+
+  const communityTabOptions = useMemo(
+    () => ({
+      tabBarShowLabel: false,
+      tabBarLabel: translate("tabNavigator:communityTab"),
+      tabBarIcon: ({ focused }: { focused: boolean }) => (
+        <Icon name="users" color={focused ? colors.tint : colors.tintInactive} size={30} />
+      ),
+    }),
+    [colors.tint, colors.tintInactive],
+  )
+
   return (
-    <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarHideOnKeyboard: true,
-        tabBarStyle: themed([$tabBar, { height: bottom + 70 }]),
-        tabBarActiveTintColor: colors.text,
-        tabBarInactiveTintColor: colors.text,
-        tabBarLabelStyle: themed($tabBarLabel),
-        tabBarItemStyle: themed($tabBarItem),
-      }}
-    >
-      <Tab.Screen
-        name="items"
-        component={ItemsStackNavigator}
-        options={{
-          tabBarAccessibilityLabel: translate("tabNavigator:podcastListTab"),
-          tabBarShowLabel: false,
-          tabBarLabel: translate("tabNavigator:itemsTab"),
-          tabBarIcon: ({ focused }) => (
-            <Icon name="list" color={focused ? colors.tint : colors.tintInactive} size={30} />
-          ),
-        }}
-      />
-
-      <Tab.Screen
-        name="addItem"
-        component={AddItemScreen}
-        options={{
-          tabBarShowLabel: false,
-          tabBarLabel: "Add Item",
-          tabBarIcon: ({ focused }) => (
-            <Icon name="plus" color={focused ? colors.tint : colors.tintInactive} size={30} />
-          ),
-        }}
-      />
-
-      <Tab.Screen
-        name="community"
-        component={DemoCommunityScreen}
-        options={{
-          tabBarShowLabel: false,
-          tabBarLabel: translate("tabNavigator:communityTab"),
-          tabBarIcon: ({ focused }) => (
-            <Icon name="users" color={focused ? colors.tint : colors.tintInactive} size={30} />
-          ),
-        }}
-      />
+    <Tab.Navigator screenOptions={screenOptions}>
+      <Tab.Screen name="items" component={ItemsStackNavigator} options={itemsTabOptions} />
+      <Tab.Screen name="addItem" component={AddItemScreen} options={addItemTabOptions} />
+      <Tab.Screen name="community" component={DemoCommunityScreen} options={communityTabOptions} />
     </Tab.Navigator>
   )
-}
+})
 
 const $tabBar: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.background,

@@ -20,7 +20,7 @@ import { useItems } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
-import { useScreenMountLog } from "@/utils/useScreenMountLog"
+import { useMountLog } from "@/utils/useMountLog"
 
 interface ItemsScreenProps {}
 
@@ -31,7 +31,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const [debugInfo, setDebugInfo] = useState("")
 
   // Screen mount verification - temporary debug logs
-  useScreenMountLog("Items")
+  useMountLog("Items")
 
   // TanStack Query hooks
   const { data: itemsData, isLoading: loading, error: itemsError, refetch } = useItems()

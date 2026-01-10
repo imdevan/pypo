@@ -25,7 +25,7 @@ export const VideoUploadInput: FC<VideoUploadInputProps> = ({
   onChange,
   onFileSelect,
   label,
-  placeholder = "Select a video file",
+  placeholder: _placeholder = "Select a video file",
   containerStyle,
   disabled = false,
   error: externalError,
@@ -35,7 +35,6 @@ export const VideoUploadInput: FC<VideoUploadInputProps> = ({
   const [isValidating, setIsValidating] = useState(false)
 
   const error = externalError || validationError
-
 
   const handleClear = useCallback(() => {
     onChange(null)
@@ -51,11 +50,11 @@ export const VideoUploadInput: FC<VideoUploadInputProps> = ({
     try {
       // Request permissions for photo library access
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
-      
+
       if (status !== "granted") {
         Alert.alert(
           "Permission Required",
-          "Please grant permission to access your photo library to select videos."
+          "Please grant permission to access your photo library to select videos.",
         )
         setIsValidating(false)
         return
@@ -77,7 +76,7 @@ export const VideoUploadInput: FC<VideoUploadInputProps> = ({
       }
 
       const asset = result.assets[0]
-      
+
       if (!asset) {
         setIsValidating(false)
         return
@@ -187,21 +186,6 @@ const $label: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.xs,
 })
 
-const $infoContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginBottom: spacing.sm,
-  padding: spacing.sm,
-})
-
-const $infoText: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  color: colors.textDim,
-  textAlign: "center",
-})
-
-const $warningText: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  color: colors.error,
-  textAlign: "center",
-})
-
 const $buttonContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row",
   gap: spacing.sm,
@@ -240,4 +224,3 @@ const $errorText: ThemedStyle<ViewStyle> = ({ colors }) => ({
 const $helperText: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop: spacing.xs,
 })
-

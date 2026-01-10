@@ -49,14 +49,14 @@ const config = {
     Welcome: "welcome",
     app: {
       screens: {
-        tab: {
+        "tab": {
           screens: {
             items: "items",
             addItem: "add-item",
             community: "community",
           },
         },
-        userprofile: "profile",
+        "userprofile": "profile",
         "development/showroom": {
           path: "development/showroom/:queryIndex?/:itemIndex?",
         },
@@ -83,13 +83,15 @@ export function App() {
 
   // Memoize linking config to prevent NavigationContainer prop identity changes
   // Must be called before any early returns to follow Rules of Hooks
+  // prefix and config are module-level constants, so they're stable
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const linking = useMemo(
     () => ({
       prefixes: [prefix],
       config,
     }),
-    // prefix and config are stable, but memoize to ensure identity stability
-    [prefix],
+    // Empty deps: prefix and config are module-level constants, stable across renders
+    [],
   )
 
   useEffect(() => {

@@ -14,15 +14,22 @@ interface FileSystemFileHandle {
   name: string
   getFile(): Promise<File>
   createWritable(options?: { keepExistingData?: boolean }): Promise<FileSystemWritableFileStream>
-  queryPermission(options?: { mode?: FileSystemPermissionMode }): Promise<FileSystemPermissionStatus>
-  requestPermission(options?: { mode?: FileSystemPermissionMode }): Promise<FileSystemPermissionStatus>
+  queryPermission(options?: {
+    mode?: FileSystemPermissionMode
+  }): Promise<FileSystemPermissionStatus>
+  requestPermission(options?: {
+    mode?: FileSystemPermissionMode
+  }): Promise<FileSystemPermissionStatus>
 }
 
 interface FileSystemDirectoryHandle {
   kind: "directory"
   name: string
   getFileHandle(name: string, options?: { create?: boolean }): Promise<FileSystemFileHandle>
-  getDirectoryHandle(name: string, options?: { create?: boolean }): Promise<FileSystemDirectoryHandle>
+  getDirectoryHandle(
+    name: string,
+    options?: { create?: boolean },
+  ): Promise<FileSystemDirectoryHandle>
 }
 
 interface FilePickerAcceptType {
@@ -39,6 +46,7 @@ interface FilePickerOptions {
 interface Window {
   showOpenFilePicker?(options?: FilePickerOptions): Promise<FileSystemFileHandle[]>
   showSaveFilePicker?(options?: FilePickerOptions): Promise<FileSystemFileHandle>
-  showDirectoryPicker?(options?: { mode?: "read" | "readwrite" }): Promise<FileSystemDirectoryHandle>
+  showDirectoryPicker?(options?: {
+    mode?: "read" | "readwrite"
+  }): Promise<FileSystemDirectoryHandle>
 }
-

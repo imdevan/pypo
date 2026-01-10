@@ -25,7 +25,6 @@ export async function generateVideoThumbnail(
   }
 }
 
-
 /**
  * Generate thumbnail for mobile platforms (iOS/Android) using expo-video-thumbnails
  * Saves thumbnail to persistent app directory
@@ -35,7 +34,7 @@ async function generateThumbnailMobile(
   timePosition: number,
 ): Promise<string | null> {
   try {
-    if (Platform.OS === "web") return null;
+    if (Platform.OS === "web") return null
 
     // Lazy import to avoid loading during EAS build
     const VideoThumbnails = await import("expo-video-thumbnails")
@@ -44,7 +43,7 @@ async function generateThumbnailMobile(
     if (!VideoThumbnails || !VideoThumbnails.getThumbnailAsync) {
       console.error(
         "expo-video-thumbnails native module not found. Please rebuild your development build:",
-        "npx expo prebuild --clean && npx expo run:ios (or run:android)"
+        "npx expo prebuild --clean && npx expo run:ios (or run:android)",
       )
       return null
     }
@@ -59,9 +58,7 @@ async function generateThumbnailMobile(
       return null
     }
 
-
-    console.log('tempUri:', tempUri);
-
+    console.log("tempUri:", tempUri)
 
     // Create persistent directory for thumbnails if it doesn't exist
     const thumbnailsDir = `${FileSystem.documentDirectory}thumbnails/`
@@ -93,12 +90,15 @@ async function generateThumbnailMobile(
     return persistentUri
   } catch (error: any) {
     // Check if it's a native module error
-    if (error?.message?.includes("native module") || error?.message?.includes("ExpoVideoThumbnails")) {
+    if (
+      error?.message?.includes("native module") ||
+      error?.message?.includes("ExpoVideoThumbnails")
+    ) {
       console.error(
         "expo-video-thumbnails native module not found. Please rebuild your development build:",
         "npx expo prebuild --clean && npx expo run:ios (or run:android)",
         "error:",
-        error
+        error,
       )
     } else {
       console.error("Error generating thumbnail on mobile:", error)
@@ -128,4 +128,3 @@ export async function cleanupThumbnail(thumbnailUri: string | null): Promise<voi
     console.warn("Failed to cleanup thumbnail:", error)
   }
 }
-

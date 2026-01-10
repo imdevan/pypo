@@ -1,5 +1,7 @@
 import { FC, useCallback, useState } from "react"
-import { Platform, View, ViewStyle, TextStyle } from "react-native"
+import { Platform, View } from "react-native"
+import type { TextStyle, ViewStyle } from "react-native"
+import * as ImagePicker from "expo-image-picker"
 import Alert from "@blazejkustra/react-native-alert"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 
@@ -15,9 +17,8 @@ import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
 import { useMountLog } from "@/utils/useMountLog"
-import { validateVideoFile } from "@/utils/video/validation"
 import { generateVideoThumbnail } from "@/utils/video/thumbnail"
-import * as ImagePicker from "expo-image-picker"
+import { validateVideoFile } from "@/utils/video/validation"
 
 type ItemScreenProps = NativeStackScreenProps<ItemsStackParamList, "item">
 
@@ -35,7 +36,7 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
 
   // Video display state
   const [videoError, setVideoError] = useState<string | null>(null)
-  const [isRelinkingVideo, setIsRelinkingVideo] = useState(false)
+  const [_isRelinkingVideo, setIsRelinkingVideo] = useState(false)
 
   // Access video_url and video_thumbnail_url from item
   const videoUrl = item?.video_url || null
@@ -57,18 +58,21 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
 
       if (Platform.OS === "web") {
         // Web is not supported - show message
-        Alert.alert("Not Available", "Video relinking is not available on web. Please use the iOS app.")
+        Alert.alert(
+          "Not Available",
+          "Video relinking is not available on web. Please use the iOS app.",
+        )
         setIsRelinkingVideo(false)
         return
       } else {
         // iOS/Android - use image picker for photo library
         // Request permissions
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
-        
+
         if (status !== "granted") {
           Alert.alert(
             "Permission Required",
-            "Please grant permission to access your photo library to select videos."
+            "Please grant permission to access your photo library to select videos.",
           )
           setIsRelinkingVideo(false)
           return
@@ -90,7 +94,7 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
         }
 
         const asset = result.assets[0]
-        
+
         if (!asset) {
           setIsRelinkingVideo(false)
           return
@@ -103,7 +107,10 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
         })
 
         if (!validationResult.isValid) {
-          Alert.alert("Invalid File", validationResult.errorMessage || "Please select a valid video file.")
+          Alert.alert(
+            "Invalid File",
+            validationResult.errorMessage || "Please select a valid video file.",
+          )
           setIsRelinkingVideo(false)
           return
         }
@@ -165,12 +172,7 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
   return (
     <Screen preset="auto" contentContainerStyle={themed($styles.container)}>
       <View style={themed($header)}>
-        <Button
-          text="← Back"
-          preset="default"
-          onPress={handleGoBack}
-          style={themed($backButton)}
-        />
+        <Button text="← Back" preset="default" onPress={handleGoBack} style={themed($backButton)} />
       </View>
 
       {isLoading ? (
@@ -265,7 +267,6 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
 if (__DEV__ && process.env.__WDYR__) {
   ItemScreen.whyDidYouRender = true
 }
-
 
 const $header: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.md,

@@ -49,7 +49,8 @@ export async function validateVideoFile(
     return {
       isValid: false,
       mimeType: null,
-      errorMessage: "Unable to determine video file type. Please ensure the file is a valid video format.",
+      errorMessage:
+        "Unable to determine video file type. Please ensure the file is a valid video format.",
       fileExtension,
     }
   }
@@ -71,4 +72,3 @@ export async function validateVideoFile(
     fileExtension,
   }
 }
-

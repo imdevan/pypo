@@ -1,14 +1,14 @@
 /**
  * TypeScript declarations for why-did-you-render
  */
-import { ComponentType } from "react"
-
 declare module "react" {
-  interface Component<P = {}, S = {}, SS = any> {
-    whyDidYouRender?: boolean | {
-      logOnDifferentValues?: boolean
-      customName?: string
-    }
+  interface Component<_P = {}, _S = {}, _SS = any> {
+    whyDidYouRender?:
+      | boolean
+      | {
+          logOnDifferentValues?: boolean
+          customName?: string
+        }
   }
 }
 
@@ -34,4 +34,3 @@ declare module "@welldone-software/why-did-you-render" {
 
   export default whyDidYouRender
 }
-

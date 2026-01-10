@@ -89,18 +89,18 @@ export async function pickVideoFile(options?: {
     }
 
     const handle = fileHandles[0]
-    
+
     // Verify we have permission to access this file
     let permissionStatus = await handle.queryPermission({ mode: "read" })
     if (permissionStatus.state !== "granted") {
       // Request permission if not granted
       permissionStatus = await handle.requestPermission({ mode: "read" })
     }
-    
+
     if (permissionStatus.state !== "granted") {
       throw new Error("Permission to access the file was denied")
     }
-    
+
     // Generate a unique key based on file name and timestamp
     const timestamp = Date.now()
     const fileName = handle.name.replace(/[^a-zA-Z0-9.-]/g, "_")
@@ -189,7 +189,9 @@ export async function getFileHandle(key: string): Promise<FileSystemFileHandle |
  * @param key - The reference key stored in the database
  * @returns Permission status, or null if handle not found
  */
-export async function checkVideoFilePermission(key: string): Promise<"granted" | "denied" | "prompt" | null> {
+export async function checkVideoFilePermission(
+  key: string,
+): Promise<"granted" | "denied" | "prompt" | null> {
   const handle = await getFileHandle(key)
   if (!handle) return null
 
@@ -214,11 +216,11 @@ export async function requestVideoFilePermission(key: string): Promise<File | nu
 
   try {
     const permissionStatus = await handle.requestPermission({ mode: "read" })
-    
+
     if (permissionStatus.state === "granted") {
       return await handle.getFile()
     }
-    
+
     return null
   } catch (error: any) {
     console.error("Error requesting file permission:", error)
@@ -239,7 +241,7 @@ export async function getVideoFile(key: string): Promise<File | null> {
   try {
     // Check permission status first
     const permissionStatus = await handle.queryPermission({ mode: "read" })
-    
+
     // Only try to get file if permission is granted
     if (permissionStatus.state !== "granted") {
       return null
@@ -308,4 +310,3 @@ export async function videoFileExists(key: string): Promise<boolean> {
   const handle = await getFileHandle(key)
   return handle !== null
 }
-

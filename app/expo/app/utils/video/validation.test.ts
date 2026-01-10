@@ -1,4 +1,4 @@
-import { validateVideoFile, VideoValidationResult } from "./validation"
+import { validateVideoFile } from "./validation"
 
 describe("validateVideoFile", () => {
   describe("Web File objects", () => {
@@ -130,7 +130,8 @@ describe("validateVideoFile", () => {
       expect(result).toEqual({
         isValid: false,
         mimeType: null,
-        errorMessage: "Unable to determine video file type. Please ensure the file is a valid video format.",
+        errorMessage:
+          "Unable to determine video file type. Please ensure the file is a valid video format.",
         fileExtension: "pdf",
       })
     })
@@ -188,4 +189,3 @@ describe("validateVideoFile", () => {
     })
   })
 })
-

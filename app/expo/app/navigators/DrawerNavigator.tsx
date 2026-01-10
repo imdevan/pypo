@@ -3,17 +3,17 @@ import { NavigatorScreenParams } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
 import { MainDrawerWrapper } from "@/components/lib/MainDrawerWrapper"
+import { DemoDebugScreen } from "@/screens/DemoDebugScreen"
+import { DemoShowroomScreen } from "@/screens/DemoShowroomScreen/DemoShowroomScreen"
 import { TagsScreen } from "@/screens/TagsScreen"
 import { UserProfileScreen } from "@/screens/UserProfileScreen"
-import { DemoShowroomScreen } from "@/screens/DemoShowroomScreen/DemoShowroomScreen"
-import { DemoDebugScreen } from "@/screens/DemoDebugScreen"
 
 import { TabNavigator, DemoTabParamList } from "./TabNavigator"
 
 export type DrawNavigatorParamList = {
-  userprofile: undefined
-  tags: undefined
-  tab: NavigatorScreenParams<DemoTabParamList>
+  "userprofile": undefined
+  "tags": undefined
+  "tab": NavigatorScreenParams<DemoTabParamList>
   "development/showroom": { queryIndex?: string; itemIndex?: string }
   "development/debug": undefined
 }

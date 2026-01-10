@@ -16,7 +16,7 @@ interface ItemCardProps {
   maxTags?: number
 }
 
-export const ItemCard: FC<ItemCardProps> = memo(({ item, onPress, maxTags = 2 }) => {
+const ItemCardComponent: FC<ItemCardProps> = ({ item, onPress, maxTags = 2 }) => {
   const { themed } = useAppTheme()
 
   // Access video_url and video_thumbnail_url from item
@@ -60,7 +60,11 @@ export const ItemCard: FC<ItemCardProps> = memo(({ item, onPress, maxTags = 2 })
       )}
     </Pressable>
   )
-}, (prevProps, nextProps) => {
+}
+
+ItemCardComponent.displayName = "ItemCard"
+
+export const ItemCard = memo(ItemCardComponent, (prevProps, nextProps) => {
   // Custom comparison function for memo
   return (
     prevProps.item.id === nextProps.item.id &&
@@ -96,7 +100,7 @@ const $itemVideoThumbnail: ThemedStyle<ViewStyle> = () => ({
 
 const $itemDescription = { marginTop: 4, marginBottom: 8 }
 
-const $tagsContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $tagsContainer: ThemedStyle<ViewStyle> = ({ _spacing }) => ({
   flexDirection: "row",
   flexWrap: "wrap",
   marginTop: 8,

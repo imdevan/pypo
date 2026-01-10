@@ -156,7 +156,7 @@ const RootNavigator = () => {
 }
 
 export interface NavigationProps
-  extends Partial<ComponentProps<typeof NavigationContainer<RootStackParamList>>> { }
+  extends Partial<ComponentProps<typeof NavigationContainer<RootStackParamList>>> {}
 
 export const AppNavigator = (props: NavigationProps) => {
   const { navigationTheme } = useAppTheme()

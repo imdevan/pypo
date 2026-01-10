@@ -14,7 +14,7 @@ import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
 
-interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
+interface LoginScreenProps extends AppStackScreenProps<"Login"> { }
 
 export const LoginScreen: FC<LoginScreenProps> = () => {
   const authPasswordInput = useRef<TextInput>(null)
@@ -26,7 +26,6 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
   const [serverError, setServerError] = useState("")
   const { authEmail, setAuthEmail, login, register, isLoading } = useAuth()
   const { error: loginError } = useLogin()
-  console.log("🚀 ~ LoginScreen ~ loginError:", loginError)
 
   const {
     themed,

@@ -37,10 +37,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
 
   // Extract items from the response
   const items = itemsData?.data || []
-  const numColumns = useMemo(
-    () => (theme.screen.lg ? 4 : theme.screen.md ? 3 : theme.screen.sm ? 2 : 1),
-    [theme.screen],
-  )
+  const numColumns = useMemo(() => (theme.screen.lg ? 4 : theme.screen.md ? 3 : 2), [theme.screen])
 
   // Update debug info when items load
   useEffect(() => {

@@ -11,6 +11,7 @@ import { useCurrentUserData } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
+import { useScreenMountLog } from "@/utils/useScreenMountLog"
 
 /**
  * UserProfileScreen displays user information and profile details
@@ -18,6 +19,10 @@ import type { ThemedStyle } from "@/theme/types"
 export function UserProfileScreen() {
   const { logout } = useAuth()
   const { themed } = useAppTheme()
+
+  // Screen mount verification - temporary debug logs
+  useScreenMountLog("UserProfile")
+
   const { data: userData, isLoading, error } = useCurrentUserData()
   const [isEditing, setIsEditing] = useState(false)
 

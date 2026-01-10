@@ -20,6 +20,7 @@ import { useTags } from "@/services/api/hooks/useTags"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
+import { useScreenMountLog } from "@/utils/useScreenMountLog"
 import { Platform } from "react-native"
 import { generateVideoThumbnail, cleanupThumbnail } from "@/utils/video/thumbnail"
 
@@ -37,6 +38,9 @@ export const AddItemScreen: FC<AddItemScreenProps> = () => {
   const [newItemVideoThumbnailUrl, setNewItemVideoThumbnailUrl] = useState<string | null>(null)
   const [isGeneratingThumbnail, setIsGeneratingThumbnail] = useState(false)
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
+
+  // Screen mount verification - temporary debug logs
+  useScreenMountLog("AddItem")
 
   const { data: tagsData, isLoading: tagsLoading } = useTags()
   const createItemMutation = useCreateItem()

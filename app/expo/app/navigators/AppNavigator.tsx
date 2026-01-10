@@ -4,7 +4,7 @@
  * Generally speaking, it will contain an auth flow (registration, login, forgot password)
  * and a "main" flow which the user will use once logged in.
  */
-import { ComponentProps, useMemo } from "react"
+import { ComponentProps, useMemo, useRef } from "react"
 import { useEffect, useState } from "react"
 import * as Linking from "expo-linking"
 import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native"
@@ -162,6 +162,13 @@ export const AppNavigator = (props: NavigationProps) => {
   const { navigationTheme } = useAppTheme()
   const { isAuthenticated } = useAuth()
 
+  // Lock initialState to first render to prevent navigation state hydration from recreating navigators
+  const initialStateRef = useRef(props.initialState)
+  // Only update on first render if initialState is provided
+  if (props.initialState && !initialStateRef.current) {
+    initialStateRef.current = props.initialState
+  }
+
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
 
   // Navigate to the appropriate flow when auth state changes
@@ -176,7 +183,12 @@ export const AppNavigator = (props: NavigationProps) => {
   }, [isAuthenticated])
 
   return (
-    <NavigationContainer ref={navigationRef} theme={navigationTheme} {...props}>
+    <NavigationContainer
+      ref={navigationRef}
+      theme={navigationTheme}
+      {...props}
+      initialState={initialStateRef.current}
+    >
       <ErrorBoundary catchErrors={Config.catchErrors}>
         <RootNavigator />
       </ErrorBoundary>

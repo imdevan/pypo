@@ -62,7 +62,6 @@ export const LoginScreen: FC<LoginScreenProps> = () => {
     if (validationError) return
 
     const result = await login(authEmail!, authPassword)
-    console.log("🚀 ~ handleLogin ~ result:", result)
 
     if (!result.success) {
       setServerError(result.error || "An error occurred during login")

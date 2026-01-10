@@ -15,7 +15,7 @@ export const useMountLog = (
   const mountCountRef = useRef(0)
   const renderCountRef = useRef(0)
   const mountIdRef = useRef<string | null>(null)
-  const { includeStackTrace = true, logRenders = false } = options || {}
+  const { includeStackTrace = false, logRenders = false } = options || {}
 
   // Track renders (runs on every render)
   useEffect(() => {

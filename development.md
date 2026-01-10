@@ -2,21 +2,19 @@
 
 ## Docker Compose
 
-* Start the local stack with Docker Compose:
+- Start the local stack with Docker Compose:
 
 ```bash
 docker compose watch
 ```
 
-* Now you can open your browser and interact with these URLs:
+- Now you can open your browser and interact with these URLs:
 
 Frontend, built with Docker, with routes handled based on the path: http://localhost:5173
 
 Backend, JSON based web API based on OpenAPI: http://localhost:8000
 
 Automatic interactive documentation with Swagger UI (from the OpenAPI backend): http://localhost:8000/docs
-
-
 
 Traefik UI, to see how the routes are being handled by the proxy: http://localhost:8090
 
@@ -182,8 +180,6 @@ Automatic Interactive Docs (Swagger UI): http://localhost:8000/docs
 
 Automatic Alternative Docs (ReDoc): http://localhost:8000/redoc
 
-
-
 Traefik UI: http://localhost:8090
 
 MailCatcher: http://localhost:1080
@@ -199,8 +195,6 @@ Backend: http://api.localhost.tiangolo.com
 Automatic Interactive Docs (Swagger UI): http://api.localhost.tiangolo.com/docs
 
 Automatic Alternative Docs (ReDoc): http://api.localhost.tiangolo.com/redoc
-
-
 
 Traefik UI: http://localhost.tiangolo.com:8090
 

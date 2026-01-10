@@ -14,6 +14,7 @@ import { useItem, useDeleteItem, useUpdateItem } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
+import { useScreenMountLog } from "@/utils/useScreenMountLog"
 import { validateVideoFile } from "@/utils/video/validation"
 import { generateVideoThumbnail } from "@/utils/video/thumbnail"
 import * as ImagePicker from "expo-image-picker"
@@ -23,6 +24,9 @@ type ItemScreenProps = NativeStackScreenProps<ItemsStackParamList, "item">
 export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
   const { themed } = useAppTheme()
   const { itemId } = route.params
+
+  // Screen mount verification - temporary debug logs
+  useScreenMountLog("Item")
 
   const { data: itemData, isLoading } = useItem(itemId)
   const deleteItemMutation = useDeleteItem()

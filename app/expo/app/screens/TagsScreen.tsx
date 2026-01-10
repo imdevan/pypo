@@ -12,7 +12,7 @@ import { useTags, useCreateTag, useUpdateTag, useDeleteTag } from "@/services/ap
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
-import { useScreenMountLog } from "@/utils/useScreenMountLog"
+import { useMountLog } from "@/utils/useMountLog"
 
 /**
  * TagsScreen displays and manages global tags
@@ -21,7 +21,7 @@ export function TagsScreen() {
   const { themed } = useAppTheme()
 
   // Screen mount verification - temporary debug logs
-  useScreenMountLog("Tags")
+  useMountLog("Tags")
 
   const { data: tagsData, isLoading, error } = useTags()
   console.log("🚀 ~ TagsScreen ~ tagsData:", tagsData)

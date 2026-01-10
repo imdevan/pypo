@@ -4,7 +4,7 @@
  * Generally speaking, it will contain an auth flow (registration, login, forgot password)
  * and a "main" flow which the user will use once logged in.
  */
-import { ComponentProps } from "react"
+import { ComponentProps, useMemo } from "react"
 import { useEffect, useState } from "react"
 import * as Linking from "expo-linking"
 import { NavigationContainer, NavigatorScreenParams } from "@react-navigation/native"
@@ -67,23 +67,30 @@ const RootStack = createNativeStackNavigator<RootStackParamList>()
 const AuthStack = createNativeStackNavigator<AuthStackParamList>()
 const AppStack = createNativeStackNavigator<AppStackParamList>()
 
-// Auth flow - screens for unauthenticated users
-const AuthFlow = () => {
+// Shared screen options hook - memoized to prevent navigator remounts
+const useScreenOptions = () => {
   const {
     theme: { colors },
   } = useAppTheme()
 
+  return useMemo(
+    () => ({
+      headerShown: false,
+      navigationBarColor: colors.background,
+      contentStyle: {
+        backgroundColor: colors.background,
+      },
+    }),
+    [colors.background],
+  )
+}
+
+// Auth flow - screens for unauthenticated users
+const AuthFlow = () => {
+  const screenOptions = useScreenOptions()
+
   return (
-    <AuthStack.Navigator
-      screenOptions={{
-        headerShown: false,
-        navigationBarColor: colors.background,
-        contentStyle: {
-          backgroundColor: colors.background,
-        },
-      }}
-      initialRouteName="Login"
-    >
+    <AuthStack.Navigator screenOptions={screenOptions} initialRouteName="Login">
       <AuthStack.Screen name="Login" component={LoginScreen} />
     </AuthStack.Navigator>
   )
@@ -93,9 +100,7 @@ const AuthFlow = () => {
 const AppFlow = () => {
   const [isReady, setIsReady] = useState(false)
   const [initialRoute, setInitialRoute] = useState<keyof AppStackParamList>("app")
-  const {
-    theme: { colors },
-  } = useAppTheme()
+  const screenOptions = useScreenOptions()
 
   useEffect(() => {
     const prepareNavigation = async () => {
@@ -125,16 +130,7 @@ const AppFlow = () => {
   }
 
   return (
-    <AppStack.Navigator
-      screenOptions={{
-        headerShown: false,
-        navigationBarColor: colors.background,
-        contentStyle: {
-          backgroundColor: colors.background,
-        },
-      }}
-      initialRouteName={initialRoute}
-    >
+    <AppStack.Navigator screenOptions={screenOptions} initialRouteName={initialRoute}>
       <AppStack.Screen name="Welcome" component={WelcomeScreen} />
       <AppStack.Screen name="app" component={DrawerNavigator} />
     </AppStack.Navigator>
@@ -144,21 +140,15 @@ const AppFlow = () => {
 // Root navigator - always exists, conditionally shows AuthFlow or AppFlow
 const RootNavigator = () => {
   const { isAuthenticated } = useAuth()
-  const {
-    theme: { colors },
-  } = useAppTheme()
+  const screenOptions = useScreenOptions()
+
+  const initialRouteName = useMemo(
+    () => (isAuthenticated ? "AppFlow" : "AuthFlow"),
+    [isAuthenticated],
+  )
 
   return (
-    <RootStack.Navigator
-      screenOptions={{
-        headerShown: false,
-        navigationBarColor: colors.background,
-        contentStyle: {
-          backgroundColor: colors.background,
-        },
-      }}
-      initialRouteName={isAuthenticated ? "AppFlow" : "AuthFlow"}
-    >
+    <RootStack.Navigator screenOptions={screenOptions} initialRouteName={initialRouteName}>
       <RootStack.Screen name="AuthFlow" component={AuthFlow} />
       <RootStack.Screen name="AppFlow" component={AppFlow} />
     </RootStack.Navigator>
@@ -166,7 +156,7 @@ const RootNavigator = () => {
 }
 
 export interface NavigationProps
-  extends Partial<ComponentProps<typeof NavigationContainer<RootStackParamList>>> {}
+  extends Partial<ComponentProps<typeof NavigationContainer<RootStackParamList>>> { }
 
 export const AppNavigator = (props: NavigationProps) => {
   const { navigationTheme } = useAppTheme()

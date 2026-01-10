@@ -7,8 +7,6 @@ import { DemoDebugScreen } from "@/screens/DemoDebugScreen"
 import { DemoShowroomScreen } from "@/screens/DemoShowroomScreen/DemoShowroomScreen"
 import { TagsScreen } from "@/screens/TagsScreen"
 import { UserProfileScreen } from "@/screens/UserProfileScreen"
-import { DemoShowroomScreen } from "@/screens/DemoShowroomScreen/DemoShowroomScreen"
-import { DemoDebugScreen } from "@/screens/DemoDebugScreen"
 
 import { TabNavigator, DemoTabParamList } from "./TabNavigator"
 

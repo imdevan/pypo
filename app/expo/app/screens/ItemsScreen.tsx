@@ -126,17 +126,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         </View>
       </DebugView>
 
-      <View style={themed($header)}>
-        <Text text={`Items`} preset="heading" />
-        {items.length > 0 && <Text text={`(${items.length})`} preset="heading" />}
-      </View>
-
       <View style={themed($itemsSection)}>
-        {/* <Text
-          text={`Your Items (${items.length})`}
-          preset="subheading"
-          style={{ marginBottom: 16 }}
-        /> */}
         {loading ? (
           <MotiView
             from={{ opacity: 0 }}
@@ -156,6 +146,12 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             ItemSeparatorComponent={ItemSeparator}
             renderItem={renderItem}
             estimatedItemSize={200}
+            ListHeaderComponent={
+              <View style={themed($header)}>
+                <Text text={`Items`} preset="heading" />
+                {items.length > 0 && <Text text={`(${items.length})`} preset="heading" />}
+              </View>
+            }
             ListEmptyComponent={
               <MotiView
                 from={{ opacity: 0, scale: 0.9 }}

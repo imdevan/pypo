@@ -94,7 +94,6 @@ const $itemVideoContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 })
 
 const $itemVideoThumbnail: ThemedStyle<ViewStyle> = () => ({
-  height: 150,
   borderRadius: 6,
 })
 

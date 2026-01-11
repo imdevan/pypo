@@ -18,6 +18,7 @@ interface VideoPlayerProps {
   style?: ViewStyle
   autoPlay?: boolean
   controls?: boolean
+  contentFit?: "contain" | "cover" | "fill"
   onError?: (error: Error) => void
   onLoad?: () => void
   onRelinkVideo?: () => void
@@ -29,6 +30,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
   style,
   autoPlay = false,
   controls = true,
+  contentFit = "contain",
   onError,
   onLoad,
   onRelinkVideo: _onRelinkVideo,
@@ -332,7 +334,7 @@ export const VideoPlayer: FC<VideoPlayerProps> = ({
             player={player}
             style={themed($videoPlayer)}
             nativeControls={controls}
-            contentFit="contain"
+            contentFit={contentFit}
             allowsFullscreen
             allowsPictureInPicture
           />

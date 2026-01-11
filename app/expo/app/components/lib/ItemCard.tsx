@@ -78,7 +78,9 @@ export const ItemCard = memo(ItemCardComponent, (prevProps, nextProps) => {
   )
 })
 
-const $itemContent = { flex: 1 }
+const $itemContent: ViewStyle = {
+  width: "100%",
+}
 
 const $itemImage: ThemedStyle<ImageStyle> = ({ colors, spacing }) => ({
   width: "100%",

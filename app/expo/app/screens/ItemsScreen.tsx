@@ -18,7 +18,6 @@ import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
 import { extractErrorMessage } from "@/services/api/errorHandling"
 import { useItems } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
-import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
 import { useMountLog } from "@/utils/useMountLog"
 
@@ -58,19 +57,14 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
 
   // Memoize item separator component
   const ItemSeparator = useMemo(() => {
-    const Separator = () => <View style={{ height: theme.spacing.xxl, width: theme.spacing.xxl }} />
+    const Separator = () => <View style={{ height: theme.spacing.md, width: theme.spacing.md }} />
     Separator.displayName = "ItemSeparator"
     return Separator
-  }, [theme.spacing.xxl])
+  }, [theme.spacing.md])
 
   // Memoize renderItem function
   const renderItem = useCallback(
     ({ item, index }: { item: ItemPublic; index: number }) => {
-      const modIndex = index % numColumns
-      const itemMargin = {
-        marginLeft: modIndex === 0 ? 0 : 24,
-      }
-
       return (
         <MotiView
           key={item.id}
@@ -95,20 +89,19 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             scale: 0.9,
             translateY: -20,
           }}
-          style={themed(itemMargin)}
         >
           <ItemCard item={item} onPress={() => handleItemPress(item.id)} />
         </MotiView>
       )
     },
-    [numColumns, themed, handleItemPress],
+    [handleItemPress],
   )
 
   // Memoize key extractor
   const keyExtractor = useCallback((item: ItemPublic) => item.id, [])
 
   return (
-    <Screen preset="auto" contentContainerStyle={themed($styles.container)}>
+    <Screen preset="fixed" contentContainerStyle={themed($screenContainer)}>
       {/* Debug Info */}
       <DebugView>
         <View style={themed($debugSection)}>
@@ -175,6 +168,12 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   )
 }
 
+const $screenContainer: ThemedStyle<ViewStyle> = () => ({
+  width: "100%",
+  flex: 1,
+  paddingHorizontal: 0,
+})
+
 const $header: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row" as const,
   justifyContent: "space-between" as const,
@@ -191,12 +190,14 @@ const $debugSection: ThemedStyle<ViewStyle> = ({ colors }) => ({
   borderRadius: 8,
 })
 
-const $itemsSection = { flex: 1, zIndex: 10, elevation: 1 }
+const $itemsSection: ViewStyle = {
+  flex: 1,
+  width: "100%",
+  zIndex: 10,
+  elevation: 1,
+}
 
-const $itemsList: ThemedStyle<ContentStyle> = ({ spacing }) => ({
-  paddingTop: spacing.sm,
-  paddingBottom: spacing.lg,
-})
+const $itemsList: ThemedStyle<ContentStyle> = () => ({})
 
 const $testButton = { marginTop: 8 }
 

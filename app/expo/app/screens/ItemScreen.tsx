@@ -6,6 +6,7 @@ import Alert from "@blazejkustra/react-native-alert"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 
 import { Button } from "@/components/lib/Button"
+import { EditableText } from "@/components/lib/EditableText"
 import { MotiView } from "@/components/lib/MotiView"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
@@ -164,6 +165,20 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
     ])
   }, [itemId, navigation, deleteItemMutation])
 
+  const handleTitleSave = useCallback(
+    async (newTitle: string) => {
+      if (!item) return
+
+      await updateItemMutation.mutateAsync({
+        path: { id: itemId },
+        body: {
+          title: newTitle,
+        },
+      })
+    },
+    [item, itemId, updateItemMutation],
+  )
+
   return (
     <Screen preset="scroll" contentContainerStyle={themed($scrollContentContainer)}>
       {isLoading ? (
@@ -214,7 +229,14 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
             </View>
           )}
 
-          <Text text={item.title} preset="heading" style={themed($title)} />
+          <EditableText
+            value={item.title}
+            onSave={handleTitleSave}
+            preset="heading"
+            textStyle={themed($title)}
+            inputContainerStyle={themed($titleContainer)}
+            inputStyle={themed($titleInput)}
+          />
 
           {item.description && (
             <Text text={item.description} preset="default" style={themed($description)} />
@@ -281,9 +303,26 @@ const $videoPlayer: ThemedStyle<ViewStyle> = () => ({
   marginVertical: 0,
 })
 
+const $titleContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginBottom: spacing.md,
+  paddingHorizontal: spacing.lg,
+})
+
 const $title: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.md,
   paddingHorizontal: spacing.lg,
+})
+
+const $titleInput: ThemedStyle<TextStyle> = ({ colors, typography, spacing }) => ({
+  fontSize: 36,
+  lineHeight: 44,
+  fontFamily: typography.primary.bold,
+  color: colors.text,
+  padding: spacing.xs,
+  borderWidth: 1,
+  borderColor: colors.border,
+  borderRadius: 4,
+  backgroundColor: colors.background,
 })
 
 const $description: ThemedStyle<ViewStyle> = ({ spacing }) => ({

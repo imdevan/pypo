@@ -39,6 +39,8 @@ export const ItemsStackNavigator = memo(function ItemsStackNavigator() {
         component={ItemScreen}
         options={{
           gestureEnabled: true,
+          fullScreenGestureEnabled: true,
+          gestureDirection: "horizontal",
         }}
       />
     </Stack.Navigator>

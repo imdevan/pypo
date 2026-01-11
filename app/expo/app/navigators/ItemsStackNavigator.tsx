@@ -34,7 +34,13 @@ export const ItemsStackNavigator = memo(function ItemsStackNavigator() {
   return (
     <Stack.Navigator screenOptions={screenOptions} initialRouteName="list">
       <Stack.Screen name="list" component={ItemsScreen} />
-      <Stack.Screen name="item" component={ItemScreen} />
+      <Stack.Screen
+        name="item"
+        component={ItemScreen}
+        options={{
+          gestureEnabled: true,
+        }}
+      />
     </Stack.Navigator>
   )
 })

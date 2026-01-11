@@ -1,3 +1,4 @@
+import Alert from "@blazejkustra/react-native-alert"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import type { AxiosError } from "axios"
 
@@ -10,6 +11,7 @@ import {
 } from "@/client/@tanstack/react-query.gen"
 import { ItemPublic } from "@/client/types.gen"
 import { useAuth } from "@/context/AuthContext"
+import { extractErrorMessage } from "@/services/api/errorHandling"
 
 // Get all items query
 export const useItems = () => {
@@ -104,6 +106,18 @@ export const useUpdateItem = () => {
           }
         },
       )
+
+      // Update all itemsReadItem queries for this specific item
+      queryClient.setQueriesData(
+        {
+          queryKey: [{ _id: "itemsReadItem", path: { id: updatedItem.id } }],
+          exact: false,
+        },
+        updatedItem,
+      )
+    },
+    onError: (error) => {
+      Alert.alert("Error", extractErrorMessage(error))
     },
   })
 }

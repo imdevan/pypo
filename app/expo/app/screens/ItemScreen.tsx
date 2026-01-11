@@ -14,7 +14,6 @@ import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
 import { extractErrorMessage } from "@/services/api/errorHandling"
 import { useItem, useDeleteItem, useUpdateItem } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
-import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
 import { useMountLog } from "@/utils/useMountLog"
 import { generateVideoThumbnail } from "@/utils/video/thumbnail"
@@ -165,16 +164,8 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
     ])
   }, [itemId, navigation, deleteItemMutation])
 
-  const handleGoBack = useCallback(() => {
-    navigation.goBack()
-  }, [navigation])
-
   return (
-    <Screen preset="auto" contentContainerStyle={themed($styles.container)}>
-      <View style={themed($header)}>
-        <Button text="← Back" preset="default" onPress={handleGoBack} style={themed($backButton)} />
-      </View>
-
+    <Screen preset="scroll" contentContainerStyle={themed($scrollContentContainer)}>
       {isLoading ? (
         <MotiView
           from={{ opacity: 0 }}
@@ -190,16 +181,9 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
           transition={{ type: "spring", damping: 15, stiffness: 150 }}
           style={themed($content)}
         >
-          <Text text={item.title} preset="heading" style={themed($title)} />
-
-          {item.description && (
-            <Text text={item.description} preset="default" style={themed($description)} />
-          )}
-
-          {/* Video Display Section */}
+          {/* Video Display Section - First Element, Almost Full Width */}
           {videoUrl && (
-            <View style={themed($section)}>
-              <Text text="Video" preset="subheading" style={themed($sectionTitle)} />
+            <View style={themed($videoSection)}>
               {videoError ? (
                 <View style={themed($videoErrorContainer)}>
                   <Text
@@ -215,15 +199,25 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
                   />
                 </View>
               ) : (
-                <VideoPlayer
-                  videoUri={videoUrl}
-                  thumbnailUri={videoThumbnailUrl}
-                  onError={handleVideoError}
-                  onLoad={handleVideoLoad}
-                  onRelinkVideo={handleRelinkVideo}
-                />
+                <View style={themed($videoPlayerContainer)}>
+                  <VideoPlayer
+                    videoUri={videoUrl}
+                    thumbnailUri={videoThumbnailUrl}
+                    onError={handleVideoError}
+                    onLoad={handleVideoLoad}
+                    onRelinkVideo={handleRelinkVideo}
+                    contentFit="cover"
+                    style={themed($videoPlayer)}
+                  />
+                </View>
               )}
             </View>
+          )}
+
+          <Text text={item.title} preset="heading" style={themed($title)} />
+
+          {item.description && (
+            <Text text={item.description} preset="default" style={themed($description)} />
           )}
 
           {item.tags && item.tags.length > 0 && (
@@ -239,23 +233,15 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
             </View>
           )}
 
-          <View style={themed($section)}>
-            <Text text="Details" preset="subheading" style={themed($sectionTitle)} />
-            <Text text={`ID: ${item.id}`} preset="formHelper" style={themed($styles.mutedText)} />
-            <Text
-              text={`Owner: ${item.owner_id}`}
-              preset="formHelper"
-              style={themed($styles.mutedText)}
+          <View style={themed($deleteButtonContainer)}>
+            <Button
+              text="Delete Item"
+              preset="default"
+              onPress={handleDelete}
+              style={themed($deleteButton)}
+              disabled={deleteItemMutation.isPending}
             />
           </View>
-
-          <Button
-            text="Delete Item"
-            preset="default"
-            onPress={handleDelete}
-            style={themed($deleteButton)}
-            disabled={deleteItemMutation.isPending}
-          />
         </MotiView>
       ) : (
         <Text text="Item not found" preset="default" />
@@ -268,29 +254,46 @@ if (__DEV__ && process.env.__WDYR__) {
   ItemScreen.whyDidYouRender = true
 }
 
-const $header: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginBottom: spacing.md,
+const $scrollContentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  paddingHorizontal: spacing.lg,
+  paddingBottom: spacing.xxl,
 })
 
-const $backButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  alignSelf: "flex-start",
-  marginBottom: spacing.sm,
+const $content: ThemedStyle<ViewStyle> = () => ({})
+
+const $videoSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginBottom: spacing.lg,
+  alignItems: "center",
+  width: "100%",
 })
 
-const $content: ThemedStyle<ViewStyle> = () => ({
-  flex: 1,
+const $videoPlayerContainer: ThemedStyle<ViewStyle> = () => ({
+  width: "100%",
+  aspectRatio: 3 / 5,
+  overflow: "hidden",
+})
+
+const $videoPlayer: ThemedStyle<ViewStyle> = () => ({
+  width: "100%",
+  maxWidth: "100%",
+  height: "100%",
+  maxHeight: "100%",
+  marginVertical: 0,
 })
 
 const $title: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.md,
+  paddingHorizontal: spacing.lg,
 })
 
 const $description: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.lg,
+  paddingHorizontal: spacing.lg,
 })
 
 const $section: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.lg,
+  paddingHorizontal: spacing.lg,
 })
 
 const $sectionTitle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
@@ -317,14 +320,20 @@ const $tagText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.text,
 })
 
-const $deleteButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginTop: spacing.lg,
+const $deleteButtonContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginTop: spacing.xxl,
+  paddingHorizontal: spacing.lg,
+  paddingBottom: spacing.xxl,
+  minHeight: 400,
 })
+
+const $deleteButton: ThemedStyle<ViewStyle> = () => ({})
 
 const $videoErrorContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   padding: spacing.md,
   alignItems: "center",
   gap: spacing.sm,
+  width: "100%",
 })
 
 const $videoErrorText: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({

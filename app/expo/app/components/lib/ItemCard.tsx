@@ -78,9 +78,10 @@ export const ItemCard = memo(ItemCardComponent, (prevProps, nextProps) => {
   )
 })
 
-const $itemContent: ViewStyle = {
+const $itemContent: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   width: "100%",
-}
+  padding: spacing.xs,
+})
 
 const $itemImage: ThemedStyle<ImageStyle> = ({ colors, spacing }) => ({
   width: "100%",

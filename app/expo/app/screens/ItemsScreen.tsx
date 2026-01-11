@@ -57,7 +57,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
 
   // Memoize item separator component
   const ItemSeparator = useMemo(() => {
-    const Separator = () => <View style={{ height: theme.spacing.md, width: theme.spacing.md }} />
+    const Separator = () => <View style={{ height: theme.spacing.md }} />
     Separator.displayName = "ItemSeparator"
     return Separator
   }, [theme.spacing.md])
@@ -179,6 +179,8 @@ const $header: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   justifyContent: "space-between" as const,
   alignItems: "center" as const,
   marginBottom: spacing.sm,
+  paddingLeft: spacing.xs,
+  paddingRight: spacing.xs,
 })
 
 const $debugSection: ThemedStyle<ViewStyle> = ({ colors }) => ({
@@ -197,7 +199,9 @@ const $itemsSection: ViewStyle = {
   elevation: 1,
 }
 
-const $itemsList: ThemedStyle<ContentStyle> = () => ({})
+const $itemsList: ThemedStyle<ContentStyle> = ({ spacing }) => ({
+  padding: spacing.xs,
+})
 
 const $testButton = { marginTop: 8 }
 

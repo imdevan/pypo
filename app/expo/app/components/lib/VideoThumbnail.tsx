@@ -172,13 +172,12 @@ export const VideoThumbnail: FC<VideoThumbnailProps> = ({
   )
 }
 
-const $container: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+const $container: ThemedStyle<ViewStyle> = ({ colors }) => ({
   width: "100%",
   aspectRatio: 9 / 16,
   backgroundColor: colors.palette.neutral100,
   borderRadius: 8,
   overflow: "hidden",
-  marginVertical: spacing.sm,
   position: "relative",
 })
 

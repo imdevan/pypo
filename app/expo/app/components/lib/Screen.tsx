@@ -18,6 +18,8 @@ import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { ExtendedEdge, useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 
+import { useHeaderPadding } from "./ScreenWithHeader"
+
 export const DEFAULT_BOTTOM_OFFSET = 50
 
 interface BaseScreenProps {
@@ -198,12 +200,24 @@ function ScreenWithScrolling(props: ScreenProps) {
   } = props as ScrollScreenProps
 
   const ref = useRef<ScrollView>(null)
+  const headerPadding = useHeaderPadding()
 
   const { scrollEnabled, onContentSizeChange, onLayout } = useAutoPreset(props as AutoScreenProps)
 
   // Add native behavior of pressing the active tab to scroll to the top of the content
   // More info at: https://reactnavigation.org/docs/use-scroll-to-top/
   useScrollToTop(ref)
+
+  // Automatically add header padding to contentContainerStyle when inside ScreenWithHeader
+  const mergedContentContainerStyle =
+    headerPadding > 0
+      ? [
+          $innerStyle,
+          ScrollViewProps?.contentContainerStyle,
+          contentContainerStyle,
+          { paddingTop: headerPadding },
+        ]
+      : [$innerStyle, ScrollViewProps?.contentContainerStyle, contentContainerStyle]
 
   return (
     <KeyboardAwareScrollView
@@ -220,11 +234,7 @@ function ScreenWithScrolling(props: ScreenProps) {
         ScrollViewProps?.onContentSizeChange?.(w, h)
       }}
       style={[$outerStyle, ScrollViewProps?.style, style]}
-      contentContainerStyle={[
-        $innerStyle,
-        ScrollViewProps?.contentContainerStyle,
-        contentContainerStyle,
-      ]}
+      contentContainerStyle={mergedContentContainerStyle}
     >
       {children}
     </KeyboardAwareScrollView>

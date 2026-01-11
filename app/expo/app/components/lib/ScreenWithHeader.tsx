@@ -1,4 +1,4 @@
-import { ReactNode } from "react"
+import { createContext, ReactNode, useContext } from "react"
 import { Platform, View, ViewStyle } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
@@ -8,6 +8,37 @@ import { DrawerIconButton } from "@/screens/DemoShowroomScreen/DrawerIconButton"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
+
+/**
+ * Context that provides the header padding value for screens with headers.
+ * This allows child components (like FlashList ListHeaderComponent) to automatically
+ * add the correct padding so content doesn't get hidden behind the blurred header.
+ */
+const HeaderPaddingContext = createContext<number>(0)
+
+/**
+ * Hook to get the header padding value from ScreenWithHeader context.
+ * Returns 0 if not used within a ScreenWithHeader.
+ *
+ * Use this in scrollable content (e.g., FlashList ListHeaderComponent) to add
+ * padding so content appears below the header.
+ *
+ * @example
+ * ```tsx
+ * const headerPadding = useHeaderPadding()
+ *
+ * <FlashList
+ *   ListHeaderComponent={
+ *     <View style={{ paddingTop: headerPadding }}>
+ *       <Text>Title</Text>
+ *     </View>
+ *   }
+ * />
+ * ```
+ */
+export function useHeaderPadding(): number {
+  return useContext(HeaderPaddingContext)
+}
 
 export interface ScreenWithHeaderProps extends Omit<ScreenProps, "children"> {
   /**
@@ -34,34 +65,40 @@ export function ScreenWithHeader(props: ScreenWithHeaderProps) {
   const { top } = useSafeAreaInsets()
   const isAndroid = Platform.OS === "android"
 
+  // Calculate header padding: safe area top + header height (56px button + 24px padding = 80px)
+  const headerPadding = headerComponent || onDrawerToggle ? top + 80 : 0
+
   return (
-    <Screen
-      preset="fixed"
-      contentContainerStyle={themed($styles.flex1)}
-      safeAreaEdges={[]}
-      {...(isAndroid ? { KeyboardAvoidingViewProps: { behavior: undefined } } : {})}
-      {...screenProps}
-    >
-      {(headerComponent || onDrawerToggle) && (
-        <View style={themed($headerContainer)}>
-          {Platform.OS !== "web" ? (
-            <ThemedBlurView style={themed($headerBlur)}>
-              <View style={[themed($headerContentOverlay), { paddingTop: top }]}>
-                <View style={themed($headerContent)}>
-                  {headerComponent ||
-                    (onDrawerToggle && <DrawerIconButton onPress={onDrawerToggle} />)}
+    <HeaderPaddingContext.Provider value={headerPadding}>
+      <Screen
+        preset="fixed"
+        contentContainerStyle={themed($styles.flex1)}
+        safeAreaEdges={[]}
+        {...(isAndroid ? { KeyboardAvoidingViewProps: { behavior: undefined } } : {})}
+        {...screenProps}
+      >
+        {(headerComponent || onDrawerToggle) && (
+          <View style={themed($headerContainer)}>
+            {Platform.OS !== "web" ? (
+              <ThemedBlurView style={themed($headerBlur)}>
+                <View style={[themed($headerContentOverlay), { paddingTop: top }]}>
+                  <View style={themed($headerContent)}>
+                    {headerComponent ||
+                      (onDrawerToggle && <DrawerIconButton onPress={onDrawerToggle} />)}
+                  </View>
                 </View>
+              </ThemedBlurView>
+            ) : (
+              <View style={[themed($headerContentWithBg), { paddingTop: top }]}>
+                {headerComponent ||
+                  (onDrawerToggle && <DrawerIconButton onPress={onDrawerToggle} />)}
               </View>
-            </ThemedBlurView>
-          ) : (
-            <View style={[themed($headerContentWithBg), { paddingTop: top }]}>
-              {headerComponent || (onDrawerToggle && <DrawerIconButton onPress={onDrawerToggle} />)}
-            </View>
-          )}
-        </View>
-      )}
-      <View style={themed($contentWrapper)}>{children}</View>
-    </Screen>
+            )}
+          </View>
+        )}
+        <View style={themed($contentWrapper)}>{children}</View>
+      </Screen>
+    </HeaderPaddingContext.Provider>
   )
 }
 

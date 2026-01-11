@@ -13,6 +13,7 @@ import { EmptyState } from "@/components/lib/EmptyState"
 import { ItemCard } from "@/components/lib/ItemCard"
 import { MotiView } from "@/components/lib/MotiView"
 import { Screen } from "@/components/lib/Screen"
+import { useHeaderPadding } from "@/components/lib/ScreenWithHeader"
 import { Text } from "@/components/lib/Text"
 import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
 import { extractErrorMessage } from "@/services/api/errorHandling"
@@ -25,6 +26,7 @@ interface ItemsScreenProps {}
 
 export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const { theme, themed } = useAppTheme()
+  const headerPadding = useHeaderPadding()
   const navigation = useNavigation<NativeStackNavigationProp<ItemsStackParamList>>()
   const [debugInfo, setDebugInfo] = useState("")
 
@@ -160,7 +162,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
                 {/* <Text text="No items yet. Create your first item above!" preset="default" /> */}
               </MotiView>
             }
-            contentContainerStyle={themed($itemsList)}
+            contentContainerStyle={[themed($itemsList), { paddingTop: headerPadding }]}
           />
         )}
       </View>

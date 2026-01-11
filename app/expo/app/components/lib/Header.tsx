@@ -6,7 +6,9 @@ import {
   TouchableOpacityProps,
   View,
   ViewStyle,
+  Platform,
 } from "react-native"
+import { BlurView } from "expo-blur"
 
 import { isRTL } from "@/i18n"
 import { translate } from "@/i18n/translate"
@@ -184,49 +186,59 @@ export function Header(props: HeaderProps) {
 
   const titleContent = titleTx ? translate(titleTx, titleTxOptions) : title
 
+  const headerContent = (
+    <View style={[$styles.row, $wrapper, $styleOverride]}>
+      <HeaderAction
+        tx={leftTx}
+        text={leftText}
+        icon={leftIcon}
+        iconColor={leftIconColor}
+        onPress={onLeftPress}
+        txOptions={leftTxOptions}
+        backgroundColor={backgroundColor}
+        ActionComponent={LeftActionComponent}
+      />
+
+      {!!titleContent && (
+        <View
+          style={[
+            $titleWrapperPointerEvents,
+            titleMode === "center" && themed($titleWrapperCenter),
+            titleMode === "flex" && $titleWrapperFlex,
+            $titleContainerStyleOverride,
+          ]}
+        >
+          <Text
+            weight="medium"
+            size="md"
+            text={titleContent}
+            style={[$title, $titleStyleOverride]}
+          />
+        </View>
+      )}
+
+      <HeaderAction
+        tx={rightTx}
+        text={rightText}
+        icon={rightIcon}
+        iconColor={rightIconColor}
+        onPress={onRightPress}
+        txOptions={rightTxOptions}
+        backgroundColor={backgroundColor}
+        ActionComponent={RightActionComponent}
+      />
+    </View>
+  )
+
   return (
-    <View style={[$container, $containerInsets, { backgroundColor }, $containerStyleOverride]}>
-      <View style={[$styles.row, $wrapper, $styleOverride]}>
-        <HeaderAction
-          tx={leftTx}
-          text={leftText}
-          icon={leftIcon}
-          iconColor={leftIconColor}
-          onPress={onLeftPress}
-          txOptions={leftTxOptions}
-          backgroundColor={backgroundColor}
-          ActionComponent={LeftActionComponent}
-        />
-
-        {!!titleContent && (
-          <View
-            style={[
-              $titleWrapperPointerEvents,
-              titleMode === "center" && themed($titleWrapperCenter),
-              titleMode === "flex" && $titleWrapperFlex,
-              $titleContainerStyleOverride,
-            ]}
-          >
-            <Text
-              weight="medium"
-              size="md"
-              text={titleContent}
-              style={[$title, $titleStyleOverride]}
-            />
-          </View>
-        )}
-
-        <HeaderAction
-          tx={rightTx}
-          text={rightText}
-          icon={rightIcon}
-          iconColor={rightIconColor}
-          onPress={onRightPress}
-          txOptions={rightTxOptions}
-          backgroundColor={backgroundColor}
-          ActionComponent={RightActionComponent}
-        />
-      </View>
+    <View style={[$container, $containerInsets, $containerStyleOverride]}>
+      {Platform.OS !== "web" ? (
+        <BlurView intensity={100} tint="dark" style={$blurContainer}>
+          {headerContent}
+        </BlurView>
+      ) : (
+        <View style={[{ backgroundColor }, $blurContainer]}>{headerContent}</View>
+      )}
     </View>
   )
 }
@@ -280,6 +292,11 @@ const $wrapper: ViewStyle = {
 
 const $container: ViewStyle = {
   width: "100%",
+}
+
+const $blurContainer: ViewStyle = {
+  width: "100%",
+  flex: 1,
 }
 
 const $title: TextStyle = {

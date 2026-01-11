@@ -1,10 +1,11 @@
 import { memo, useMemo } from "react"
-import { TextStyle, ViewStyle } from "react-native"
+import { Platform, TextStyle, View, ViewStyle } from "react-native"
 import { BottomTabScreenProps, createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { CompositeScreenProps } from "@react-navigation/native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { Icon } from "@/components/lib/Icon"
+import { ThemedBlurView } from "@/components/lib/ThemedBlurView"
 import { translate } from "@/i18n/translate"
 import { ItemsStackNavigator } from "@/navigators/ItemsStackNavigator"
 import { AddItemScreen } from "@/screens/AddItemScreen"
@@ -59,6 +60,14 @@ export const TabNavigator = memo(function TabNavigator() {
       tabBarInactiveTintColor: colors.text,
       tabBarLabelStyle: themed($tabBarLabel),
       tabBarItemStyle: themed($tabBarItem),
+      tabBarBackground:
+        Platform.OS !== "web"
+          ? () => (
+              <ThemedBlurView style={themed($tabBarBlur)}>
+                <View style={themed($tabBarOverlay)} />
+              </ThemedBlurView>
+            )
+          : undefined,
     }),
     // Dependencies: track themed function, bottom inset, and colors.text that affect the styles
     // themed function identity is stable, but we track colors.text which changes with theme
@@ -109,9 +118,38 @@ export const TabNavigator = memo(function TabNavigator() {
   )
 })
 
-const $tabBar: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $tabBar: ThemedStyle<ViewStyle> = () => ({
+  backgroundColor: "transparent",
+  borderTopColor: "transparent",
+  borderTopWidth: 0,
+  elevation: 0,
+  shadowOpacity: 0,
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  right: 0,
+})
+
+const $tabBarBlur: ThemedStyle<ViewStyle> = () => ({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  width: "100%",
+  height: "100%",
+})
+
+const $tabBarOverlay: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  width: "100%",
+  height: "100%",
   backgroundColor: colors.background,
-  borderTopColor: colors.transparent,
+  opacity: 0,
 })
 
 const $tabBarItem: ThemedStyle<ViewStyle> = ({ spacing }) => ({

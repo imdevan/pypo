@@ -55,7 +55,7 @@ export const TabNavigator = memo(function TabNavigator() {
     () => ({
       headerShown: false,
       tabBarHideOnKeyboard: true,
-      tabBarStyle: themed([$tabBar, { height: bottom + 70 }]),
+      tabBarStyle: themed([$tabBar, { height: bottom + 50 }]),
       tabBarActiveTintColor: colors.text,
       tabBarInactiveTintColor: colors.text,
       tabBarLabelStyle: themed($tabBarLabel),
@@ -81,7 +81,7 @@ export const TabNavigator = memo(function TabNavigator() {
       tabBarShowLabel: false,
       tabBarLabel: translate("tabNavigator:itemsTab"),
       tabBarIcon: ({ focused }: { focused: boolean }) => (
-        <Icon name="list" color={focused ? colors.tint : colors.tintInactive} size={30} />
+        <Icon name="list" color={focused ? colors.tint : colors.tintInactive} size={24} />
       ),
     }),
     [colors.tint, colors.tintInactive],
@@ -92,7 +92,7 @@ export const TabNavigator = memo(function TabNavigator() {
       tabBarShowLabel: false,
       tabBarLabel: "Add Item",
       tabBarIcon: ({ focused }: { focused: boolean }) => (
-        <Icon name="plus" color={focused ? colors.tint : colors.tintInactive} size={30} />
+        <Icon name="plus" color={focused ? colors.tint : colors.tintInactive} size={24} />
       ),
     }),
     [colors.tint, colors.tintInactive],
@@ -103,7 +103,7 @@ export const TabNavigator = memo(function TabNavigator() {
       tabBarShowLabel: false,
       tabBarLabel: translate("tabNavigator:communityTab"),
       tabBarIcon: ({ focused }: { focused: boolean }) => (
-        <Icon name="users" color={focused ? colors.tint : colors.tintInactive} size={30} />
+        <Icon name="users" color={focused ? colors.tint : colors.tintInactive} size={24} />
       ),
     }),
     [colors.tint, colors.tintInactive],
@@ -153,7 +153,7 @@ const $tabBarOverlay: ThemedStyle<ViewStyle> = ({ colors }) => ({
 })
 
 const $tabBarItem: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  paddingTop: spacing.md,
+  paddingTop: spacing.sm,
 })
 
 const $tabBarLabel: ThemedStyle<TextStyle> = ({ colors, typography }) => ({

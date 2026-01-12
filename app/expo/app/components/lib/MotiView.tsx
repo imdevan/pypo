@@ -36,9 +36,7 @@ export const MotiView = forwardRef(function MotiView(
 ) {
   const { themed } = useAppTheme()
 
-  const $styles: StyleProp<ViewStyle> = [themed($presets[preset]), $styleOverride]
-
-  return <MotiViewBase {...rest} style={$styles} ref={ref} />
+  return <MotiViewBase {...rest} style={themed($presets[preset], $styleOverride)} ref={ref} />
 })
 
 const $baseStyle: ThemedStyle<ViewStyle> = (theme) => ({

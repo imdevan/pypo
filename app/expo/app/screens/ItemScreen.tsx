@@ -191,10 +191,10 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
         </MotiView>
       ) : item ? (
         <MotiView
+          key={item.id}
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: "spring", damping: 15, stiffness: 150 }}
-          style={themed($content)}
         >
           {/* Video Display Section - First Element, Almost Full Width */}
           {videoUrl && (
@@ -280,8 +280,6 @@ const $scrollContentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingHorizontal: spacing.lg,
   paddingBottom: spacing.xxl,
 })
-
-const $content: ThemedStyle<ViewStyle> = () => ({})
 
 const $videoSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.lg,

@@ -16,6 +16,17 @@ import { useMountLog } from "@/utils/useMountLog"
 
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 
+/**
+ * Hook to get the tab bar spacing values.
+ * Returns both the height and padding bottom for content that needs to account for the tab bar.
+ */
+export function useTabBarSpacing() {
+  const { bottom } = useSafeAreaInsets()
+  const height = bottom + 50
+  const paddingBottom = height + 32 // Add extra spacing for content
+  return { height, paddingBottom }
+}
+
 export type DemoTabParamList = {
   community: undefined
   items: undefined
@@ -44,7 +55,7 @@ const Tab = createBottomTabNavigator<DemoTabParamList>()
 export const TabNavigator = memo(function TabNavigator() {
   useMountLog("TabNavigator", { logRenders: true })
 
-  const { bottom } = useSafeAreaInsets()
+  const { height } = useTabBarSpacing()
   const {
     themed,
     theme: { colors },
@@ -55,7 +66,7 @@ export const TabNavigator = memo(function TabNavigator() {
     () => ({
       headerShown: false,
       tabBarHideOnKeyboard: true,
-      tabBarStyle: themed([$tabBar, { height: bottom + 50 }]),
+      tabBarStyle: themed([$tabBar, { height }]),
       tabBarActiveTintColor: colors.text,
       tabBarInactiveTintColor: colors.text,
       tabBarLabelStyle: themed($tabBarLabel),
@@ -69,9 +80,9 @@ export const TabNavigator = memo(function TabNavigator() {
             )
           : undefined,
     }),
-    // Dependencies: track themed function, bottom inset, and colors.text that affect the styles
+    // Dependencies: track themed function, tabBarSpacing.height, and colors.text that affect the styles
     // themed function identity is stable, but we track colors.text which changes with theme
-    [themed, bottom, colors.text],
+    [themed, height, colors.text],
   )
 
   // Memoize screen options to prevent remounts

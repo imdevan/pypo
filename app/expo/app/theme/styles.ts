@@ -17,7 +17,7 @@ export const $styles: Styles = {
     paddingHorizontal: spacing.lg,
     width: width > 1200 ? 800 : width > 600 ? width - spacing.lg : width - spacing.sm,
     margin: "auto",
-    flex: 1,
+    flexGrow: 1,
   }),
 
   toggleInner: {

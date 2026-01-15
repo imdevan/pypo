@@ -5,6 +5,8 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { type ContentStyle } from "@shopify/flash-list"
 import { FlashList } from "@shopify/flash-list"
+import { Gesture, GestureDetector } from "react-native-gesture-handler"
+import { runOnJS } from "react-native-reanimated"
 
 import type { ItemPublic } from "@/client/types.gen"
 import { Button } from "@/components/lib/Button"
@@ -38,6 +40,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false)
   const searchInputRef = useRef<ComponentRef<typeof TextField>>(null)
   const searchInputRefValue = useRef("")
+  const [numColumns, setNumColumns] = useState(2) // Default 2 columns on mobile
 
   // Screen mount verification - temporary debug logs
   useMountLog("Items")
@@ -87,7 +90,60 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   }, [allItems, searchQuery])
 
   const items = filteredItems
-  const numColumns = useMemo(() => (theme.screen.lg ? 4 : theme.screen.md ? 3 : 2), [theme.screen])
+
+  // Track initial state for pinch gesture
+  const initialColumnsRef = useRef<number>(2)
+
+  // Callbacks for pinch gesture (must be stable)
+  const setInitialPinchState = useCallback(() => {
+    initialColumnsRef.current = numColumns
+  }, [numColumns])
+
+  const updateColumnsFromScale = useCallback((scale: number) => {
+    setNumColumns((_prev) => {
+      const initialColumns = initialColumnsRef.current
+      // Calculate cumulative scale change from gesture start
+      // Scale of 1.0 = no change, > 1.0 = zoom out (more columns), < 1.0 = zoom in (fewer columns)
+      const scaleChange = scale - 1.0
+      // Each 0.25 scale change = 1 column change
+      const columnChange = Math.round(scaleChange / 0.25)
+      const target = Math.max(1, Math.min(5, initialColumns + columnChange))
+      return target
+    })
+  }, [])
+
+  const snapToNearestColumn = useCallback(() => {
+    setNumColumns((prev) => {
+      // Ensure we're at a valid column count (1-5)
+      return Math.max(1, Math.min(5, Math.round(prev)))
+    })
+  }, [])
+
+  // Pinch gesture handler for column zoom
+  const pinchGesture = useMemo(
+    () =>
+      Gesture.Pinch()
+        .onStart(() => {
+          // Store initial state when gesture starts
+          runOnJS(setInitialPinchState)()
+        })
+        .onUpdate((event) => {
+          // Calculate column change based on scale
+          // Scale > 1 = pinch out (more columns), Scale < 1 = pinch in (fewer columns)
+          const scale = event.scale
+          runOnJS(updateColumnsFromScale)(scale)
+        })
+        .onEnd(() => {
+          // Snap to nearest valid column count on gesture end
+          runOnJS(snapToNearestColumn)()
+        }),
+    [setInitialPinchState, updateColumnsFromScale, snapToNearestColumn],
+  )
+
+  // Determine what to show/hide based on column count
+  const showDescription = numColumns <= 2
+  const showTags = numColumns <= 3
+  const showTitle = numColumns <= 4
 
   // Update debug info when items load
   useEffect(() => {
@@ -141,11 +197,17 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             translateY: -20,
           }}
         >
-          <ItemCard item={item} onPress={() => handleItemPress(item.id)} />
+          <ItemCard
+            item={item}
+            onPress={() => handleItemPress(item.id)}
+            showTitle={showTitle}
+            showDescription={showDescription}
+            showTags={showTags}
+          />
         </MotiView>
       )
     },
-    [handleItemPress],
+    [handleItemPress, showTitle, showDescription, showTags],
   )
 
   // Memoize key extractor
@@ -213,92 +275,94 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
         </View>
       </DebugView>
 
-      <View style={themed($itemsSection)}>
-        {loading ? (
-          <MotiView
-            from={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ type: "timing", duration: 300 }}
-          >
-            <Text text="Loading items..." preset="default" />
-          </MotiView>
-        ) : (
-          <FlashList<ItemPublic>
-            numColumns={numColumns}
-            showsVerticalScrollIndicator={false}
-            masonry
-            optimizeItemArrangement={false}
-            data={items}
-            keyExtractor={keyExtractor}
-            ItemSeparatorComponent={ItemSeparator}
-            renderItem={renderItem}
-            estimatedItemSize={200}
-            ListHeaderComponent={
-              <View style={themed($headerContainer)}>
-                <View style={themed($header)}>
-                  <View style={themed($titleRow)}>
-                    <Text text={`Items`} preset="heading" />
-                    {allItems.length > 0 && (
-                      <Text
-                        text={
-                          searchQuery
-                            ? `(${items.length}/${allItems.length})`
-                            : `(${allItems.length})`
-                        }
-                        preset="heading"
-                      />
-                    )}
+      <GestureDetector gesture={pinchGesture}>
+        <View style={themed($itemsSection)}>
+          {loading ? (
+            <MotiView
+              from={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ type: "timing", duration: 300 }}
+            >
+              <Text text="Loading items..." preset="default" />
+            </MotiView>
+          ) : (
+            <FlashList<ItemPublic>
+              numColumns={numColumns}
+              showsVerticalScrollIndicator={false}
+              masonry
+              optimizeItemArrangement={false}
+              data={items}
+              keyExtractor={keyExtractor}
+              ItemSeparatorComponent={ItemSeparator}
+              renderItem={renderItem}
+              estimatedItemSize={200}
+              ListHeaderComponent={
+                <View style={themed($headerContainer)}>
+                  <View style={themed($header)}>
+                    <View style={themed($titleRow)}>
+                      <Text text={`Items`} preset="heading" />
+                      {allItems.length > 0 && (
+                        <Text
+                          text={
+                            searchQuery
+                              ? `(${items.length}/${allItems.length})`
+                              : `(${allItems.length})`
+                          }
+                          preset="heading"
+                        />
+                      )}
+                    </View>
+                    <Pressable onPress={handleSearchPress} style={themed($searchButton)}>
+                      <Icon name="search" size={24} />
+                    </Pressable>
                   </View>
-                  <Pressable onPress={handleSearchPress} style={themed($searchButton)}>
-                    <Icon name="search" size={24} />
-                  </Pressable>
+                  {isSearchVisible && (
+                    <MotiView
+                      from={{ opacity: 0, translateY: -10 }}
+                      animate={{ opacity: 1, translateY: 0 }}
+                      exit={{ opacity: 0, translateY: -10 }}
+                      transition={{ type: "timing", duration: 200 }}
+                    >
+                      <TextField
+                        ref={searchInputRef}
+                        placeholder="Search items..."
+                        value={searchInput}
+                        onChangeText={handleSearchChange}
+                        onBlur={handleSearchBlur}
+                        containerStyle={themed($searchField)}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                      />
+                    </MotiView>
+                  )}
                 </View>
-                {isSearchVisible && (
-                  <MotiView
-                    from={{ opacity: 0, translateY: -10 }}
-                    animate={{ opacity: 1, translateY: 0 }}
-                    exit={{ opacity: 0, translateY: -10 }}
-                    transition={{ type: "timing", duration: 200 }}
-                  >
-                    <TextField
-                      ref={searchInputRef}
-                      placeholder="Search items..."
-                      value={searchInput}
-                      onChangeText={handleSearchChange}
-                      onBlur={handleSearchBlur}
-                      containerStyle={themed($searchField)}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                    />
-                  </MotiView>
-                )}
-              </View>
-            }
-            ListEmptyComponent={
-              <MotiView
-                from={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ type: "spring", damping: 15, stiffness: 150 }}
-              >
-                <EmptyState
-                  preset="generic"
-                  style={themed($emptyState)}
-                  contentTx="demoItemsScreen:noItems"
-                  // button={favoritesOnly ? "" : undefined}
-                  // buttonOnPress={manualRefresh}
-                  // imageStyle={$emptyStateImage}
-                  ImageProps={{ resizeMode: "contain" }}
-                />
-                {/* <Text text="No items yet. Create your first item above!" preset="default" /> */}
-              </MotiView>
-            }
-            contentContainerStyle={[
-              themed($itemsList),
-              { paddingTop: headerPadding, paddingBottom },
-            ]}
-          />
-        )}
-      </View>
+              }
+              ListEmptyComponent={
+                <MotiView
+                  from={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ type: "spring", damping: 15, stiffness: 150 }}
+                >
+                  <EmptyState
+                    preset="generic"
+                    style={themed($emptyState)}
+                    contentTx="demoItemsScreen:noItems"
+                    // button={favoritesOnly ? "" : undefined}
+                    // buttonOnPress={manualRefresh}
+                    // imageStyle={$emptyStateImage}
+                    ImageProps={{ resizeMode: "contain" }}
+                  />
+                  {/* <Text text="No items yet. Create your first item above!" preset="default" /> */}
+                </MotiView>
+              }
+              contentContainerStyle={[
+                themed($itemsList),
+                { paddingTop: headerPadding, paddingBottom },
+              ]}
+            />
+          )}
+        </View>
+      </GestureDetector>
     </Screen>
   )
 }

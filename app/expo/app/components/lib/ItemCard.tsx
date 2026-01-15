@@ -14,9 +14,19 @@ interface ItemCardProps {
   item: ItemPublic
   onPress: () => void
   maxTags?: number
+  showTitle?: boolean
+  showDescription?: boolean
+  showTags?: boolean
 }
 
-const ItemCardComponent: FC<ItemCardProps> = ({ item, onPress, maxTags = 2 }) => {
+const ItemCardComponent: FC<ItemCardProps> = ({
+  item,
+  onPress,
+  maxTags = 2,
+  showTitle = true,
+  showDescription = true,
+  showTags = true,
+}) => {
   const { themed } = useAppTheme()
 
   // Access video_url and video_thumbnail_url from item
@@ -39,7 +49,7 @@ const ItemCardComponent: FC<ItemCardProps> = ({ item, onPress, maxTags = 2 }) =>
       ) : item.image_url ? (
         <Image source={{ uri: item.image_url }} style={themed($itemImage)} resizeMode="cover" />
       ) : null}
-      {item.tags && item.tags.length > 0 && (
+      {showTags && item.tags && item.tags.length > 0 && (
         <View style={themed($tagsContainer)}>
           {item.tags.slice(0, maxTags).map((tag) => (
             <TagChip key={tag.id} tag={tag} variant="solid" />
@@ -54,8 +64,8 @@ const ItemCardComponent: FC<ItemCardProps> = ({ item, onPress, maxTags = 2 }) =>
         </View>
       )}
 
-      <Text text={item.title} preset="subheading" />
-      {item.description && (
+      {showTitle && <Text text={item.title} preset="subheading" />}
+      {showDescription && item.description && (
         <Text text={item.description} preset="default" style={themed($itemDescription)} />
       )}
     </Pressable>
@@ -74,7 +84,10 @@ export const ItemCard = memo(ItemCardComponent, (prevProps, nextProps) => {
     prevProps.item.video_url === nextProps.item.video_url &&
     prevProps.item.video_thumbnail_url === nextProps.item.video_thumbnail_url &&
     prevProps.item.tags?.length === nextProps.item.tags?.length &&
-    prevProps.maxTags === nextProps.maxTags
+    prevProps.maxTags === nextProps.maxTags &&
+    prevProps.showTitle === nextProps.showTitle &&
+    prevProps.showDescription === nextProps.showDescription &&
+    prevProps.showTags === nextProps.showTags
   )
 })
 

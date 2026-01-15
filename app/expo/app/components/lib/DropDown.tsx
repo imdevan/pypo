@@ -96,6 +96,7 @@ export function DropDown({
         setValue={setValue as any}
         open={open}
         setOpen={setOpen}
+        onClose={() => setOpen(false)}
         placeholder={placeholder}
         loading={loading}
         style={themed($dropdownStyle)}
@@ -145,15 +146,19 @@ export function DropDownControlled({
       {/* @ts-ignore - react-native-dropdown-picker has complex discriminated union types */}
       <DropDownPicker
         theme={theme.isDark ? "DARK" : "LIGHT"}
+        mode="BADGE"
+        showBadgeDot={false}
         items={items}
         multiple={multiple}
         value={value}
         setValue={setValue as any}
         open={open}
         setOpen={setOpen}
+        onClose={() => setOpen(false)}
         placeholder={placeholder}
         loading={loading}
         style={themed($dropdownStyle)}
+        badgeColors={multiple ? theme.colors.tint : undefined}
         dropDownContainerStyle={themed($dropdownListStyle)}
         textStyle={themed($dropdownTextStyle)}
         placeholderStyle={themed($dropdownPlaceholderStyle)}
@@ -217,6 +222,6 @@ const $dropdownLabelStyle: ThemedStyle<TextStyle> = ({ colors }) => ({
   fontSize: 16,
 })
 
-const $dropdownSelectedItemStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  backgroundColor: colors.tint,
+const $dropdownSelectedItemStyle: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.isDark ? theme.colors.palette.neutral300 : theme.colors.tint,
 })

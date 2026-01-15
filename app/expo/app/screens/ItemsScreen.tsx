@@ -1,7 +1,7 @@
 import { ComponentRef, FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Pressable, View } from "react-native"
 import type { ViewStyle } from "react-native"
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { type ContentStyle } from "@shopify/flash-list"
 import { FlashList } from "@shopify/flash-list"
@@ -33,9 +33,11 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const { paddingBottom } = useTabBarSpacing()
   const navigation = useNavigation<NativeStackNavigationProp<ItemsStackParamList>>()
   const [debugInfo, setDebugInfo] = useState("")
+  const [searchInput, setSearchInput] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
   const [isSearchVisible, setIsSearchVisible] = useState(false)
   const searchInputRef = useRef<ComponentRef<typeof TextField>>(null)
+  const searchInputRefValue = useRef("")
 
   // Screen mount verification - temporary debug logs
   useMountLog("Items")
@@ -45,6 +47,17 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
 
   // Extract items from the response
   const allItems = useMemo(() => itemsData?.data || [], [itemsData?.data])
+
+  // Debounce search input to search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchQuery(searchInput)
+    }, 300) // 300ms delay
+
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [searchInput])
 
   // Filter items based on search query
   const filteredItems = useMemo(() => {
@@ -147,13 +160,42 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
     }, 100)
   }, [])
 
-  // Handle search query change - hide search if cleared
-  const handleSearchChange = useCallback((text: string) => {
-    setSearchQuery(text)
-    if (!text.trim()) {
-      setIsSearchVisible(false)
-    }
+  // Handle search input change - ignore tabs and spaces if input is empty
+  const handleSearchChange = useCallback(
+    (text: string) => {
+      // If current input is empty and new text is only whitespace, ignore it
+      if (!searchInput.trim() && !text.trim()) {
+        return
+      }
+      searchInputRefValue.current = text
+      setSearchInput(text)
+    },
+    [searchInput],
+  )
+
+  // Handle search input blur - hide if empty (use ref to get current value)
+  const handleSearchBlur = useCallback(() => {
+    // Use a small delay to ensure state has updated
+    setTimeout(() => {
+      if (!searchInputRefValue.current.trim()) {
+        setIsSearchVisible(false)
+      }
+    }, 100)
   }, [])
+
+  // Hide search when screen loses focus (e.g., navigating to item detail)
+  useFocusEffect(
+    useCallback(() => {
+      // When screen comes into focus, do nothing
+      return () => {
+        // When screen loses focus, hide search if empty (use ref to get current value)
+        if (!searchInputRefValue.current.trim()) {
+          setIsSearchVisible(false)
+          searchInputRef.current?.blur()
+        }
+      }
+    }, []),
+  )
 
   return (
     <Screen preset="fixed" contentContainerStyle={themed($screenContainer)}>
@@ -221,8 +263,9 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
                     <TextField
                       ref={searchInputRef}
                       placeholder="Search items..."
-                      value={searchQuery}
+                      value={searchInput}
                       onChangeText={handleSearchChange}
+                      onBlur={handleSearchBlur}
                       containerStyle={themed($searchField)}
                       autoCapitalize="none"
                       autoCorrect={false}

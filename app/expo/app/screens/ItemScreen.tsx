@@ -165,18 +165,30 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
     ])
   }, [itemId, navigation, deleteItemMutation])
 
-  const handleTitleSave = useCallback(
-    async (newTitle: string) => {
+  const handleItemUpdate = useCallback(
+    async (body: { title?: string; description?: string | null }) => {
       if (!item) return
 
       await updateItemMutation.mutateAsync({
         path: { id: itemId },
-        body: {
-          title: newTitle,
-        },
+        body,
       })
     },
     [item, itemId, updateItemMutation],
+  )
+
+  const handleTitleSave = useCallback(
+    async (newTitle: string) => {
+      await handleItemUpdate({ title: newTitle })
+    },
+    [handleItemUpdate],
+  )
+
+  const handleDescriptionSave = useCallback(
+    async (newDescription: string) => {
+      await handleItemUpdate({ description: newDescription || null })
+    },
+    [handleItemUpdate],
   )
 
   return (
@@ -238,9 +250,15 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
             inputStyle={themed($titleInput)}
           />
 
-          {item.description && (
-            <Text text={item.description} preset="default" style={themed($description)} />
-          )}
+          <EditableText
+            value={item.description || ""}
+            onSave={handleDescriptionSave}
+            preset="default"
+            placeholder="Add description..."
+            textStyle={themed($description)}
+            inputContainerStyle={themed($descriptionContainer)}
+            inputStyle={themed($descriptionInput)}
+          />
 
           {item.tags && item.tags.length > 0 && (
             <View style={themed($section)}>
@@ -326,6 +344,23 @@ const $titleInput: ThemedStyle<TextStyle> = ({ colors, typography, spacing }) =>
 const $description: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.lg,
   paddingHorizontal: spacing.lg,
+})
+
+const $descriptionContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginBottom: spacing.lg,
+  paddingHorizontal: spacing.lg,
+})
+
+const $descriptionInput: ThemedStyle<TextStyle> = ({ colors, typography, spacing }) => ({
+  fontSize: 16,
+  lineHeight: 24,
+  fontFamily: typography.primary.normal,
+  color: colors.text,
+  padding: spacing.xs,
+  borderWidth: 1,
+  borderColor: colors.border,
+  borderRadius: 4,
+  backgroundColor: colors.background,
 })
 
 const $section: ThemedStyle<ViewStyle> = ({ spacing }) => ({

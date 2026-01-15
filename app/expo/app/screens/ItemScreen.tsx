@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo, useState } from "react"
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Platform, Pressable, View } from "react-native"
 import type { TextStyle, ViewStyle } from "react-native"
 import * as ImagePicker from "expo-image-picker"
@@ -39,6 +39,7 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
   // Tags
   const { data: tagsData, isLoading: tagsLoading } = useTags()
   const [isTagsDropdownOpen, setIsTagsDropdownOpen] = useState(false)
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([])
 
   // Video display state
   const [videoError, setVideoError] = useState<string | null>(null)
@@ -211,13 +212,31 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
     return item?.tags?.map((tag) => tag.id) || []
   }, [item?.tags])
 
-  // Handle tag selection change
-  const handleTagsChange = useCallback(
-    async (tagIds: string[] | null) => {
-      await handleItemUpdate({ tag_ids: tagIds || null })
-    },
-    [handleItemUpdate],
-  )
+  // Track if dropdown was previously open to detect close events
+  const prevDropdownOpenRef = useRef(false)
+
+  // Initialize selectedTagIds when dropdown opens
+  useEffect(() => {
+    if (isTagsDropdownOpen) {
+      setSelectedTagIds(currentTagIds)
+    }
+  }, [isTagsDropdownOpen, currentTagIds])
+
+  // Save tags when dropdown closes (not on initial mount)
+  useEffect(() => {
+    const wasOpen = prevDropdownOpenRef.current
+    prevDropdownOpenRef.current = isTagsDropdownOpen
+
+    // Only save if dropdown was open and is now closed (actual close event)
+    if (wasOpen && !isTagsDropdownOpen) {
+      // Only save if tags have actually changed
+      const currentIds = [...currentTagIds].sort().join(",")
+      const selectedIds = [...selectedTagIds].sort().join(",")
+      if (currentIds !== selectedIds) {
+        handleItemUpdate({ tag_ids: selectedTagIds.length > 0 ? selectedTagIds : null })
+      }
+    }
+  }, [isTagsDropdownOpen, selectedTagIds, currentTagIds, handleItemUpdate])
 
   return (
     <Screen preset="scroll" contentContainerStyle={themed($scrollContentContainer)}>
@@ -299,9 +318,9 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
               <DropDownControlled
                 items={tagOptions}
                 multiple={true}
-                value={currentTagIds}
+                value={selectedTagIds}
                 setValue={(value: string[] | null) => {
-                  handleTagsChange(value || [])
+                  setSelectedTagIds(value || [])
                 }}
                 open={isTagsDropdownOpen}
                 setOpen={setIsTagsDropdownOpen}
@@ -349,9 +368,6 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
         </MotiView>
       ) : (
         <Text text="Item not found" preset="default" />
-      )}
-      {isTagsDropdownOpen && (
-        <Pressable style={themed($dropdownBackdrop)} onPress={() => setIsTagsDropdownOpen(false)} />
       )}
     </Screen>
   )
@@ -442,18 +458,6 @@ const $sectionTitle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 const $tagsSectionHeader: ThemedStyle<ViewStyle> = () => ({
   cursor: "pointer",
   width: "100%",
-})
-
-const $dropdownBackdrop: ThemedStyle<ViewStyle> = () => ({
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  zIndex: 99,
-  backgroundColor: "transparent",
-  width: "100%",
-  height: "100%",
 })
 
 const $tagsContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({

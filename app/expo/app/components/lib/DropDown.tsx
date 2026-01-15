@@ -51,11 +51,13 @@ export type DropDownBaseProps = DropDownSingleProps | DropDownMultipleProps
 export interface DropDownSingleControlledProps extends DropDownSingleProps {
   open: boolean
   setOpen: (value: any) => void
+  onClose?: () => void
 }
 
 export interface DropDownMultipleControlledProps extends DropDownMultipleProps {
   open: boolean
   setOpen: (value: any) => void
+  onClose?: () => void
 }
 
 export type DropDownProps = DropDownSingleControlledProps | DropDownMultipleControlledProps
@@ -137,8 +139,14 @@ export function DropDownControlled({
   maxHeight = 200,
   zIndex = 100,
   zIndexInverse = 1000,
+  onClose,
 }: DropDownProps) {
   const { theme, themed } = useAppTheme()
+
+  const handleClose = () => {
+    setOpen(false)
+    onClose?.()
+  }
 
   return (
     <View style={themed($dropdownContainer)}>
@@ -154,7 +162,7 @@ export function DropDownControlled({
         setValue={setValue as any}
         open={open}
         setOpen={setOpen}
-        onClose={() => setOpen(false)}
+        onClose={handleClose}
         placeholder={placeholder}
         loading={loading}
         style={themed($dropdownStyle)}

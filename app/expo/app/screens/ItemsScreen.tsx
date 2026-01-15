@@ -1,5 +1,5 @@
-import { FC, useCallback, useEffect, useMemo, useState } from "react"
-import { View } from "react-native"
+import { ComponentRef, FC, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Pressable, View } from "react-native"
 import type { ViewStyle } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
@@ -10,6 +10,7 @@ import type { ItemPublic } from "@/client/types.gen"
 import { Button } from "@/components/lib/Button"
 import { DebugView } from "@/components/lib/DebugView"
 import { EmptyState } from "@/components/lib/EmptyState"
+import { Icon } from "@/components/lib/Icon"
 import { ItemCard } from "@/components/lib/ItemCard"
 import { MotiView } from "@/components/lib/MotiView"
 import { Screen } from "@/components/lib/Screen"
@@ -33,6 +34,8 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const navigation = useNavigation<NativeStackNavigationProp<ItemsStackParamList>>()
   const [debugInfo, setDebugInfo] = useState("")
   const [searchQuery, setSearchQuery] = useState("")
+  const [isSearchVisible, setIsSearchVisible] = useState(false)
+  const searchInputRef = useRef<ComponentRef<typeof TextField>>(null)
 
   // Screen mount verification - temporary debug logs
   useMountLog("Items")
@@ -41,7 +44,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const { data: itemsData, isLoading: loading, error: itemsError, refetch } = useItems()
 
   // Extract items from the response
-  const allItems = itemsData?.data || []
+  const allItems = useMemo(() => itemsData?.data || [], [itemsData?.data])
 
   // Filter items based on search query
   const filteredItems = useMemo(() => {
@@ -135,6 +138,23 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   // Memoize key extractor
   const keyExtractor = useCallback((item: ItemPublic) => item.id, [])
 
+  // Handle search button press
+  const handleSearchPress = useCallback(() => {
+    setIsSearchVisible(true)
+    // Focus the input after a short delay to ensure it's rendered
+    setTimeout(() => {
+      searchInputRef.current?.focus()
+    }, 100)
+  }, [])
+
+  // Handle search query change - hide search if cleared
+  const handleSearchChange = useCallback((text: string) => {
+    setSearchQuery(text)
+    if (!text.trim()) {
+      setIsSearchVisible(false)
+    }
+  }, [])
+
   return (
     <Screen preset="fixed" contentContainerStyle={themed($screenContainer)}>
       {/* Debug Info */}
@@ -174,26 +194,41 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             ListHeaderComponent={
               <View style={themed($headerContainer)}>
                 <View style={themed($header)}>
-                  <Text text={`Items`} preset="heading" />
-                  {allItems.length > 0 && (
-                    <Text
-                      text={
-                        searchQuery
-                          ? `(${items.length}/${allItems.length})`
-                          : `(${allItems.length})`
-                      }
-                      preset="heading"
-                    />
-                  )}
+                  <View style={themed($titleRow)}>
+                    <Text text={`Items`} preset="heading" />
+                    {allItems.length > 0 && (
+                      <Text
+                        text={
+                          searchQuery
+                            ? `(${items.length}/${allItems.length})`
+                            : `(${allItems.length})`
+                        }
+                        preset="heading"
+                      />
+                    )}
+                  </View>
+                  <Pressable onPress={handleSearchPress} style={themed($searchButton)}>
+                    <Icon name="search" size={24} />
+                  </Pressable>
                 </View>
-                <TextField
-                  placeholder="Search items..."
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                  containerStyle={themed($searchField)}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
+                {isSearchVisible && (
+                  <MotiView
+                    from={{ opacity: 0, translateY: -10 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    exit={{ opacity: 0, translateY: -10 }}
+                    transition={{ type: "timing", duration: 200 }}
+                  >
+                    <TextField
+                      ref={searchInputRef}
+                      placeholder="Search items..."
+                      value={searchQuery}
+                      onChangeText={handleSearchChange}
+                      containerStyle={themed($searchField)}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                    />
+                  </MotiView>
+                )}
               </View>
             }
             ListEmptyComponent={
@@ -242,6 +277,16 @@ const $header: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   justifyContent: "space-between" as const,
   alignItems: "center" as const,
   marginBottom: spacing.md,
+})
+
+const $titleRow: ThemedStyle<ViewStyle> = () => ({
+  flexDirection: "row" as const,
+  alignItems: "center" as const,
+  gap: 8,
+})
+
+const $searchButton: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  padding: spacing.xs,
 })
 
 const $searchField: ThemedStyle<ViewStyle> = ({ spacing }) => ({

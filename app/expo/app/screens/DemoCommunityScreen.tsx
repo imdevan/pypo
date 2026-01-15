@@ -5,7 +5,7 @@ import { ListItem } from "@/components/lib/ListItem"
 import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
 import { isRTL } from "@/i18n"
-import { DemoTabScreenProps } from "@/navigators/TabNavigator"
+import { DemoTabScreenProps, useTabBarSpacing } from "@/navigators/TabNavigator"
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
@@ -19,8 +19,12 @@ const reactNativeRadioLogo = require("@assets/images/demo/rnr-logo.png")
 export const DemoCommunityScreen: FC<DemoTabScreenProps<"community">> =
   function DemoCommunityScreen(_props) {
     const { themed } = useAppTheme()
+    const { paddingBottom } = useTabBarSpacing()
     return (
-      <Screen preset="scroll" contentContainerStyle={themed($styles.container)}>
+      <Screen
+        preset="scroll"
+        contentContainerStyle={[themed($styles.container), { paddingBottom }]}
+      >
         <Text preset="heading" tx="demoCommunityScreen:title" style={themed($title)} />
         {/* <Text tx="demoCommunityScreen:tagLine" style={themed($tagline)} /> */}
 

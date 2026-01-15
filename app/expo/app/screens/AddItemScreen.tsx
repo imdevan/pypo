@@ -3,7 +3,6 @@ import { Alert, Platform, View } from "react-native"
 import type { ViewStyle } from "react-native"
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs"
 import { useNavigation } from "@react-navigation/native"
-import { useSafeAreaInsets } from "react-native-safe-area-context"
 
 import { Button } from "@/components/lib/Button"
 import { DropDown } from "@/components/lib/DropDown"
@@ -12,11 +11,12 @@ import { Screen } from "@/components/lib/Screen"
 import { Text } from "@/components/lib/Text"
 import { TextField } from "@/components/lib/TextField"
 import { VideoUploadInput } from "@/components/lib/VideoUploadInput"
-import { DemoTabParamList } from "@/navigators/TabNavigator"
+import { DemoTabParamList, useTabBarSpacing } from "@/navigators/TabNavigator"
 import { extractErrorMessage } from "@/services/api/errorHandling"
 import { useCreateItem } from "@/services/api/hooks"
 import { useTags } from "@/services/api/hooks/useTags"
 import { useAppTheme } from "@/theme/context"
+import { $styles } from "@/theme/styles"
 import { type ThemedStyle } from "@/theme/types"
 import { useMountLog } from "@/utils/useMountLog"
 import { generateVideoThumbnail, cleanupThumbnail } from "@/utils/video/thumbnail"
@@ -26,7 +26,7 @@ interface AddItemScreenProps {}
 export const AddItemScreen: FC<AddItemScreenProps> = () => {
   const { themed } = useAppTheme()
   const navigation = useNavigation<BottomTabNavigationProp<DemoTabParamList>>()
-  const insets = useSafeAreaInsets()
+  const { paddingBottom } = useTabBarSpacing()
 
   const [newItemTitle, setNewItemTitle] = useState("")
   const [newItemDescription, setNewItemDescription] = useState("")
@@ -148,12 +148,12 @@ export const AddItemScreen: FC<AddItemScreenProps> = () => {
   }
 
   return (
-    <Screen preset="scroll" contentContainerStyle={themed($contentContainer)}>
+    <Screen preset="scroll" contentContainerStyle={[themed($styles.container), paddingBottom]}>
       <View style={themed($header)}>
         <Text text="Create New Item" preset="heading" />
       </View>
 
-      <View style={[themed($formSection), { paddingBottom: insets.bottom + 120 }]}>
+      <View style={themed($formSection)}>
         <TextField
           label="Title"
           value={newItemTitle}
@@ -219,12 +219,6 @@ export const AddItemScreen: FC<AddItemScreenProps> = () => {
     </Screen>
   )
 }
-
-const $contentContainer: ThemedStyle<ViewStyle> = ({ spacing, width, screen }) => ({
-  width: screen.lg ? 800 : screen.md ? width - spacing.lg : width - spacing.md,
-  margin: "auto",
-  flexGrow: 1,
-})
 
 const $header: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.xl,

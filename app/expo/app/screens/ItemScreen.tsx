@@ -1,11 +1,12 @@
-import { FC, useCallback, useState } from "react"
-import { Platform, View } from "react-native"
+import { FC, useCallback, useMemo, useState } from "react"
+import { Platform, Pressable, View } from "react-native"
 import type { TextStyle, ViewStyle } from "react-native"
 import * as ImagePicker from "expo-image-picker"
 import Alert from "@blazejkustra/react-native-alert"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 
 import { Button } from "@/components/lib/Button"
+import { DropDownControlled } from "@/components/lib/DropDown"
 import { EditableText } from "@/components/lib/EditableText"
 import { MotiView } from "@/components/lib/MotiView"
 import { Screen } from "@/components/lib/Screen"
@@ -14,6 +15,7 @@ import { VideoPlayer } from "@/components/lib/VideoPlayer"
 import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
 import { extractErrorMessage } from "@/services/api/errorHandling"
 import { useItem, useDeleteItem, useUpdateItem } from "@/services/api/hooks"
+import { useTags } from "@/services/api/hooks/useTags"
 import { useAppTheme } from "@/theme/context"
 import { type ThemedStyle } from "@/theme/types"
 import { useMountLog } from "@/utils/useMountLog"
@@ -33,6 +35,10 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
   const deleteItemMutation = useDeleteItem()
   const updateItemMutation = useUpdateItem()
   const item = itemData
+
+  // Tags
+  const { data: tagsData, isLoading: tagsLoading } = useTags()
+  const [isTagsDropdownOpen, setIsTagsDropdownOpen] = useState(false)
 
   // Video display state
   const [videoError, setVideoError] = useState<string | null>(null)
@@ -166,7 +172,7 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
   }, [itemId, navigation, deleteItemMutation])
 
   const handleItemUpdate = useCallback(
-    async (body: { title?: string; description?: string | null }) => {
+    async (body: { title?: string; description?: string | null; tag_ids?: string[] | null }) => {
       if (!item) return
 
       await updateItemMutation.mutateAsync({
@@ -187,6 +193,28 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
   const handleDescriptionSave = useCallback(
     async (newDescription: string) => {
       await handleItemUpdate({ description: newDescription || null })
+    },
+    [handleItemUpdate],
+  )
+
+  // Prepare tag options for dropdown
+  const tagOptions = useMemo(() => {
+    if (!tagsData?.data) return []
+    return tagsData.data.map((tag) => ({
+      label: tag.name,
+      value: tag.id,
+    }))
+  }, [tagsData?.data])
+
+  // Get current tag IDs
+  const currentTagIds = useMemo(() => {
+    return item?.tags?.map((tag) => tag.id) || []
+  }, [item?.tags])
+
+  // Handle tag selection change
+  const handleTagsChange = useCallback(
+    async (tagIds: string[] | null) => {
+      await handleItemUpdate({ tag_ids: tagIds || null })
     },
     [handleItemUpdate],
   )
@@ -214,7 +242,7 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
               {videoError ? (
                 <View style={themed($videoErrorContainer)}>
                   <Text
-                    text="⚠️ Video file not found or cannot be played"
+                    text="?? Video file not found or cannot be played"
                     preset="formHelper"
                     style={themed($videoErrorText)}
                   />
@@ -260,18 +288,54 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
             inputStyle={themed($descriptionInput)}
           />
 
-          {item.tags && item.tags.length > 0 && (
-            <View style={themed($section)}>
+          <View style={themed($section)}>
+            <Pressable
+              onPress={() => setIsTagsDropdownOpen(!isTagsDropdownOpen)}
+              style={themed($tagsSectionHeader)}
+            >
               <Text text="Tags" preset="subheading" style={themed($sectionTitle)} />
+            </Pressable>
+            {isTagsDropdownOpen ? (
+              <DropDownControlled
+                items={tagOptions}
+                multiple={true}
+                value={currentTagIds}
+                setValue={(value: string[] | null) => {
+                  handleTagsChange(value || [])
+                }}
+                open={isTagsDropdownOpen}
+                setOpen={setIsTagsDropdownOpen}
+                placeholder="Select tags..."
+                loading={tagsLoading}
+                searchable={true}
+                searchPlaceholder="Search tags..."
+                closeAfterSelecting={false}
+                zIndex={100}
+                zIndexInverse={1000}
+              />
+            ) : (
               <View style={themed($tagsContainer)}>
-                {item.tags.map((tag) => (
-                  <View key={tag.id} style={themed($tagChip)}>
-                    <Text text={tag.name} preset="default" style={themed($tagText)} />
-                  </View>
-                ))}
+                {item.tags && item.tags.length > 0 ? (
+                  item.tags.map((tag) => (
+                    <Pressable
+                      key={tag.id}
+                      onPress={() => setIsTagsDropdownOpen(true)}
+                      style={themed($tagChip)}
+                    >
+                      <Text text={tag.name} preset="default" style={themed($tagText)} />
+                    </Pressable>
+                  ))
+                ) : (
+                  <Pressable
+                    onPress={() => setIsTagsDropdownOpen(true)}
+                    style={themed($tagPlaceholder)}
+                  >
+                    <Text text="Add tags..." preset="default" style={themed($tagPlaceholderText)} />
+                  </Pressable>
+                )}
               </View>
-            </View>
-          )}
+            )}
+          </View>
 
           <View style={themed($deleteButtonContainer)}>
             <Button
@@ -285,6 +349,9 @@ export const ItemScreen: FC<ItemScreenProps> = ({ route, navigation }) => {
         </MotiView>
       ) : (
         <Text text="Item not found" preset="default" />
+      )}
+      {isTagsDropdownOpen && (
+        <Pressable style={themed($dropdownBackdrop)} onPress={() => setIsTagsDropdownOpen(false)} />
       )}
     </Screen>
   )
@@ -372,10 +439,28 @@ const $sectionTitle: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom: spacing.sm,
 })
 
+const $tagsSectionHeader: ThemedStyle<ViewStyle> = () => ({
+  cursor: "pointer",
+  width: "100%",
+})
+
+const $dropdownBackdrop: ThemedStyle<ViewStyle> = () => ({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  zIndex: 99,
+  backgroundColor: "transparent",
+  width: "100%",
+  height: "100%",
+})
+
 const $tagsContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row",
   flexWrap: "wrap",
   gap: spacing.xs,
+  width: "100%",
 })
 
 const $tagChip: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
@@ -390,6 +475,23 @@ const $tagChip: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
 const $tagText: ThemedStyle<TextStyle> = ({ colors }) => ({
   fontSize: 14,
   color: colors.text,
+})
+
+const $tagPlaceholder: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor: colors.background,
+  borderColor: colors.border,
+  borderWidth: 1,
+  borderStyle: "dashed",
+  borderRadius: 4,
+  paddingHorizontal: spacing.sm,
+  paddingVertical: spacing.xs,
+  width: "100%",
+  alignItems: "center",
+})
+
+const $tagPlaceholderText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  fontSize: 14,
+  color: colors.textDim,
 })
 
 const $deleteButtonContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({

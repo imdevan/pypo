@@ -15,6 +15,7 @@ import { MotiView } from "@/components/lib/MotiView"
 import { Screen } from "@/components/lib/Screen"
 import { useHeaderPadding } from "@/components/lib/ScreenWithHeader"
 import { Text } from "@/components/lib/Text"
+import { TextField } from "@/components/lib/TextField"
 import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
 import { useTabBarSpacing } from "@/navigators/TabNavigator"
 import { extractErrorMessage } from "@/services/api/errorHandling"
@@ -31,6 +32,7 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const { paddingBottom } = useTabBarSpacing()
   const navigation = useNavigation<NativeStackNavigationProp<ItemsStackParamList>>()
   const [debugInfo, setDebugInfo] = useState("")
+  const [searchQuery, setSearchQuery] = useState("")
 
   // Screen mount verification - temporary debug logs
   useMountLog("Items")
@@ -39,7 +41,36 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const { data: itemsData, isLoading: loading, error: itemsError, refetch } = useItems()
 
   // Extract items from the response
-  const items = itemsData?.data || []
+  const allItems = itemsData?.data || []
+
+  // Filter items based on search query
+  const filteredItems = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return allItems
+    }
+
+    const query = searchQuery.toLowerCase().trim()
+    return allItems.filter((item) => {
+      // Search in title
+      if (item.title.toLowerCase().includes(query)) {
+        return true
+      }
+
+      // Search in description
+      if (item.description?.toLowerCase().includes(query)) {
+        return true
+      }
+
+      // Search in tag names
+      if (item.tags?.some((tag) => tag.name.toLowerCase().includes(query))) {
+        return true
+      }
+
+      return false
+    })
+  }, [allItems, searchQuery])
+
+  const items = filteredItems
   const numColumns = useMemo(() => (theme.screen.lg ? 4 : theme.screen.md ? 3 : 2), [theme.screen])
 
   // Update debug info when items load
@@ -141,9 +172,28 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
             renderItem={renderItem}
             estimatedItemSize={200}
             ListHeaderComponent={
-              <View style={themed($header)}>
-                <Text text={`Items`} preset="heading" />
-                {items.length > 0 && <Text text={`(${items.length})`} preset="heading" />}
+              <View style={themed($headerContainer)}>
+                <View style={themed($header)}>
+                  <Text text={`Items`} preset="heading" />
+                  {allItems.length > 0 && (
+                    <Text
+                      text={
+                        searchQuery
+                          ? `(${items.length}/${allItems.length})`
+                          : `(${allItems.length})`
+                      }
+                      preset="heading"
+                    />
+                  )}
+                </View>
+                <TextField
+                  placeholder="Search items..."
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                  containerStyle={themed($searchField)}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
               </View>
             }
             ListEmptyComponent={
@@ -181,13 +231,21 @@ const $screenContainer: ThemedStyle<ViewStyle> = () => ({
   paddingHorizontal: 0,
 })
 
+const $headerContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  paddingLeft: spacing.xs,
+  paddingRight: spacing.xs,
+  marginBottom: spacing.sm,
+})
+
 const $header: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flexDirection: "row" as const,
   justifyContent: "space-between" as const,
   alignItems: "center" as const,
-  marginBottom: spacing.sm,
-  paddingLeft: spacing.xs,
-  paddingRight: spacing.xs,
+  marginBottom: spacing.md,
+})
+
+const $searchField: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginBottom: spacing.xs,
 })
 
 const $debugSection: ThemedStyle<ViewStyle> = ({ colors }) => ({

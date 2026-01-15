@@ -155,9 +155,15 @@ export const EditableText: FC<EditableTextProps> = ({
     )
   }
 
+  const isEmpty = !value || value.trim() === ""
+
   return (
     <Pressable onPress={handlePress} disabled={!editable}>
-      <Text text={value} preset={preset} style={textStyle} />
+      {isEmpty && placeholder ? (
+        <Text text={placeholder} preset={preset} style={[textStyle, themed($placeholderText)]} />
+      ) : (
+        <Text text={value} preset={preset} style={textStyle} />
+      )}
     </Pressable>
   )
 }
@@ -173,4 +179,8 @@ const $defaultInput: ThemedStyle<TextStyle> = ({ colors, typography, spacing }) 
   borderColor: colors.border,
   borderRadius: 4,
   backgroundColor: colors.background,
+})
+
+const $placeholderText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  color: colors.textDim,
 })

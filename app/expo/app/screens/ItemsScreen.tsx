@@ -16,6 +16,7 @@ import { Screen } from "@/components/lib/Screen"
 import { useHeaderPadding } from "@/components/lib/ScreenWithHeader"
 import { Text } from "@/components/lib/Text"
 import { ItemsStackParamList } from "@/navigators/ItemsStackNavigator"
+import { useTabBarSpacing } from "@/navigators/TabNavigator"
 import { extractErrorMessage } from "@/services/api/errorHandling"
 import { useItems } from "@/services/api/hooks"
 import { useAppTheme } from "@/theme/context"
@@ -27,6 +28,7 @@ interface ItemsScreenProps {}
 export const ItemsScreen: FC<ItemsScreenProps> = () => {
   const { theme, themed } = useAppTheme()
   const headerPadding = useHeaderPadding()
+  const { paddingBottom } = useTabBarSpacing()
   const navigation = useNavigation<NativeStackNavigationProp<ItemsStackParamList>>()
   const [debugInfo, setDebugInfo] = useState("")
 
@@ -162,7 +164,10 @@ export const ItemsScreen: FC<ItemsScreenProps> = () => {
                 {/* <Text text="No items yet. Create your first item above!" preset="default" /> */}
               </MotiView>
             }
-            contentContainerStyle={[themed($itemsList), { paddingTop: headerPadding }]}
+            contentContainerStyle={[
+              themed($itemsList),
+              { paddingTop: headerPadding, paddingBottom },
+            ]}
           />
         )}
       </View>

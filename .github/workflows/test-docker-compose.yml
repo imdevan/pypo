@@ -17,8 +17,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - run: docker compose build
+        working-directory: app/backend
       - run: docker compose down -v --remove-orphans
+        working-directory: app/backend
       - run: docker compose up -d --wait backend
+        working-directory: app/backend
       - name: Test backend is up
         run: curl http://localhost:8000/api/v1/utils/health-check
       - run: docker compose down -v --remove-orphans
+        working-directory: app/backend

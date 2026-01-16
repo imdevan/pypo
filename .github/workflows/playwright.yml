@@ -62,26 +62,31 @@ jobs:
     - name: Install uv
       uses: astral-sh/setup-uv@v6
       with:
-        version: "0.4.15"
+        version: "0.5.11"
         enable-cache: true
     - run: uv sync
-      working-directory: backend
+      working-directory: app/backend
     - run: npm ci
-      working-directory: expo
+      working-directory: app/expo
     - run: uv run bash scripts/generate-client.sh
+      working-directory: app/backend
       env:
-        VIRTUAL_ENV: backend/.venv
+        VIRTUAL_ENV: app/backend/.venv
     - run: docker compose build
+      working-directory: app/expo
     - run: docker compose down -v --remove-orphans
+      working-directory: app/expo
     - name: Run Playwright tests
       run: docker compose run --rm playwright npx playwright test --fail-on-flaky-tests --trace=retain-on-failure --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+      working-directory: app/expo
     - run: docker compose down -v --remove-orphans
+      working-directory: app/expo
     - name: Upload blob report to GitHub Actions Artifacts
       if: ${{ !cancelled() }}
       uses: actions/upload-artifact@v4
       with:
         name: blob-report-${{ matrix.shardIndex }}
-        path: expo/blob-report
+        path: app/expo/blob-report
         include-hidden-files: true
         retention-days: 1
 
@@ -99,21 +104,21 @@ jobs:
         node-version: 20
     - name: Install dependencies
       run: npm ci
-      working-directory: expo
+      working-directory: app/expo
     - name: Download blob reports from GitHub Actions Artifacts
       uses: actions/download-artifact@v4
       with:
-        path: expo/all-blob-reports
+        path: app/expo/all-blob-reports
         pattern: blob-report-*
         merge-multiple: true
     - name: Merge into HTML Report
       run: npx playwright merge-reports --reporter html ./all-blob-reports
-      working-directory: expo
+      working-directory: app/expo
     - name: Upload HTML report
       uses: actions/upload-artifact@v4
       with:
         name: html-report--attempt-${{ github.run_attempt }}
-        path: expo/playwright-report
+        path: app/expo/playwright-report
         retention-days: 30
         include-hidden-files: true
 

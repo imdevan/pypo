@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import { TextStyle } from "react-native"
 
 import { ListItem } from "@/components/lib/ListItem"
 import { Screen } from "@/components/lib/Screen"
@@ -11,11 +11,6 @@ import { $styles } from "@/theme/styles"
 import type { ThemedStyle } from "@/theme/types"
 import { openLinkInBrowser } from "@/utils/openLinkInBrowser"
 
-const chainReactLogo = require("@assets/images/demo/cr-logo.png")
-const reactNativeLiveLogo = require("@assets/images/demo/rnl-logo.png")
-const reactNativeNewsletterLogo = require("@assets/images/demo/rnn-logo.png")
-const reactNativeRadioLogo = require("@assets/images/demo/rnr-logo.png")
-
 export const DemoCommunityScreen: FC<DemoTabScreenProps<"community">> =
   function DemoCommunityScreen(_props) {
     const { themed } = useAppTheme()
@@ -26,89 +21,53 @@ export const DemoCommunityScreen: FC<DemoTabScreenProps<"community">> =
         contentContainerStyle={[themed($styles.container), { paddingBottom }]}
       >
         <Text preset="heading" tx="demoCommunityScreen:title" style={themed($title)} />
-        {/* <Text tx="demoCommunityScreen:tagLine" style={themed($tagline)} /> */}
 
-        <Text preset="subheading" tx="demoCommunityScreen:joinUsOnSlackTitle" />
-        <Text tx="demoCommunityScreen:joinUsOnSlack" style={themed($description)} />
-        <ListItem
-          tx="demoCommunityScreen:joinSlackLink"
-          leftIcon="slack"
-          rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          onPress={() => openLinkInBrowser("https://community.infinite.red/")}
-        />
         <Text
           preset="subheading"
-          tx="demoCommunityScreen:makeIgniteEvenBetterTitle"
+          tx="demoCommunityScreen:makePyPoBetterTitle"
           style={themed($sectionTitle)}
         />
-        <Text tx="demoCommunityScreen:makeIgniteEvenBetter" style={themed($description)} />
+        <Text tx="demoCommunityScreen:makePyPoBetter" style={themed($description)} />
         <ListItem
-          tx="demoCommunityScreen:contributeToIgniteLink"
+          tx="demoCommunityScreen:contributeToPyPoLink"
+          leftIcon="github"
+          rightIcon={isRTL ? "caretLeft" : "caretRight"}
+          onPress={() => openLinkInBrowser("https://github.com/imdevan/PyPo")}
+        />
+
+        <Text
+          preset="subheading"
+          tx="demoCommunityScreen:linkBackTitle"
+          style={themed($sectionTitle)}
+        />
+        <Text tx="demoCommunityScreen:linkBack" style={themed($description)} />
+        <ListItem
+          tx="demoCommunityScreen:igniteLink"
+          bottomSeparator
           leftIcon="github"
           rightIcon={isRTL ? "caretLeft" : "caretRight"}
           onPress={() => openLinkInBrowser("https://github.com/infinitered/ignite")}
         />
+        <ListItem
+          tx="demoCommunityScreen:fastApiLink"
+          rightIcon={isRTL ? "caretLeft" : "caretRight"}
+          leftIcon="github"
+          onPress={() =>
+            openLinkInBrowser("https://github.com/fastapi/full-stack-fastapi-template")
+          }
+        />
 
         <Text
           preset="subheading"
-          tx="demoCommunityScreen:theLatestInReactNativeTitle"
+          tx="demoCommunityScreen:workWithMeTitle"
           style={themed($sectionTitle)}
         />
-        <Text tx="demoCommunityScreen:theLatestInReactNative" style={themed($description)} />
+        <Text tx="demoCommunityScreen:workWithMe" style={themed($description)} />
         <ListItem
-          tx="demoCommunityScreen:reactNativeRadioLink"
-          bottomSeparator
-          rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          LeftComponent={
-            <View style={[$styles.row, themed($logoContainer)]}>
-              <Image source={reactNativeRadioLogo} style={$logo} />
-            </View>
-          }
-          onPress={() => openLinkInBrowser("https://reactnativeradio.com/")}
-        />
-        <ListItem
-          tx="demoCommunityScreen:reactNativeNewsletterLink"
-          bottomSeparator
-          rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          LeftComponent={
-            <View style={[$styles.row, themed($logoContainer)]}>
-              <Image source={reactNativeNewsletterLogo} style={$logo} />
-            </View>
-          }
-          onPress={() => openLinkInBrowser("https://reactnativenewsletter.com/")}
-        />
-        <ListItem
-          tx="demoCommunityScreen:reactNativeLiveLink"
-          bottomSeparator
-          rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          LeftComponent={
-            <View style={[$styles.row, themed($logoContainer)]}>
-              <Image source={reactNativeLiveLogo} style={$logo} />
-            </View>
-          }
-          onPress={() => openLinkInBrowser("https://rn.live/")}
-        />
-        <ListItem
-          tx="demoCommunityScreen:chainReactConferenceLink"
-          rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          LeftComponent={
-            <View style={[$styles.row, themed($logoContainer)]}>
-              <Image source={chainReactLogo} style={$logo} />
-            </View>
-          }
-          onPress={() => openLinkInBrowser("https://cr.infinite.red/")}
-        />
-        <Text
-          preset="subheading"
-          tx="demoCommunityScreen:hireUsTitle"
-          style={themed($sectionTitle)}
-        />
-        <Text tx="demoCommunityScreen:hireUs" style={themed($description)} />
-        <ListItem
-          tx="demoCommunityScreen:hireUsLink"
+          tx="demoCommunityScreen:getInTouchLink"
           leftIcon="clap"
           rightIcon={isRTL ? "caretLeft" : "caretRight"}
-          onPress={() => openLinkInBrowser("https://infinite.red/contact")}
+          onPress={() => openLinkInBrowser("https://devanhuapaya.com/contact")}
         />
       </Screen>
     )
@@ -125,15 +84,3 @@ const $description: ThemedStyle<TextStyle> = ({ spacing }) => ({
 const $sectionTitle: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginTop: spacing.xxl,
 })
-
-const $logoContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  marginEnd: spacing.md,
-  flexWrap: "wrap",
-  alignContent: "center",
-  alignSelf: "stretch",
-})
-
-const $logo: ImageStyle = {
-  height: 38,
-  width: 38,
-}

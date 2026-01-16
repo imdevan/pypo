@@ -22,23 +22,26 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
         with:
-          version: "0.4.15"
+          version: "0.5.11"
           enable-cache: true
       - name: Install dependencies
         run: uv sync --group dev
-        working-directory: backend
+        working-directory: app/backend
       - run: docker compose down -v --remove-orphans
+        working-directory: app/backend
       - run: docker compose up -d mailcatcher
+        working-directory: app/backend
       - name: Migrate DB
         run: uv run bash scripts/prestart.sh
-        working-directory: backend
+        working-directory: app/backend
       - name: Run tests
         run: uv run bash scripts/tests-start.sh "Coverage for ${{ github.sha }}"
-        working-directory: backend
+        working-directory: app/backend
       - run: docker compose down -v --remove-orphans
+        working-directory: app/backend
       - name: Store coverage files
         uses: actions/upload-artifact@v4
         with:
           name: coverage-html
-          path: backend/htmlcov
+          path: app/backend/htmlcov
           include-hidden-files: true

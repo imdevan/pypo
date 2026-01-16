@@ -130,3 +130,6 @@ docker-compose -f docker-compose.traefik.yml up -d
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+<!-- Greptile analysis anchor, no functional change -->
+

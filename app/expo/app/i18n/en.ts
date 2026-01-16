@@ -51,27 +51,20 @@ const en = {
     itemsTab: "“Items”",
   },
   demoCommunityScreen: {
-    title: "Connect with the community",
-    tagLine:
-      "Plug in to Infinite Red's community of React Native engineers and level up your app development with us!",
-    joinUsOnSlackTitle: "Join us on Slack",
-    joinUsOnSlack:
-      "Wish there was a place to connect with React Native engineers around the world? Join the conversation in the Infinite Red Community Slack! Our growing community is a safe space to ask questions, learn from others, and grow your network.",
-    joinSlackLink: "Join the Slack Community",
-    makeIgniteEvenBetterTitle: "Make Ignite even better",
-    makeIgniteEvenBetter:
-      "Have an idea to make Ignite even better? We're happy to hear that! We're always looking for others who want to help us build the best React Native tooling out there. Join us over on GitHub to join us in building the future of Ignite.",
-    contributeToIgniteLink: "Contribute to Ignite",
-    theLatestInReactNativeTitle: "The latest in React Native",
-    theLatestInReactNative: "We're here to keep you current on all React Native has to offer.",
-    reactNativeRadioLink: "React Native Radio",
-    reactNativeNewsletterLink: "React Native Newsletter",
-    reactNativeLiveLink: "React Native Live",
-    chainReactConferenceLink: "Chain React Conference",
-    hireUsTitle: "Hire Infinite Red for your next project",
-    hireUs:
-      "Whether it's running a full project or getting teams up to speed with our hands-on training, Infinite Red can help with just about any React Native project.",
-    hireUsLink: "Send us a message",
+    title: "Community",
+    makePyPoBetterTitle: "Make PyPo Better",
+    makePyPoBetter:
+      "Have an idea to make PyPo even better? We're always looking for contributors who want to help us build the best app possible. Join us on GitHub to help shape the future of PyPo.",
+    contributeToPyPoLink: "Contribute to PyPo",
+    linkBackTitle: "Built with Ignite & FastAPI",
+    linkBack:
+      "PyPo is built on top of amazing open-source tools. Check out the Ignite React Native boilerplate and the FastAPI template that power this app.",
+    igniteLink: "Ignite React Native Boilerplate",
+    fastApiLink: "FastAPI Template",
+    workWithMeTitle: "Work with Me",
+    workWithMe:
+      "Looking for a React Native or React developer for your next project? I'm available for freelance work and consulting. Let's build something amazing together!",
+    getInTouchLink: "Get in Touch",
   },
   demoShowroomScreen: {
     jumpStart: "Components to jump start your project!",

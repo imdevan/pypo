@@ -26,7 +26,7 @@ jobs:
           enable-cache: true
       - name: Install dependencies
         run: uv sync --group dev
-        working-directory: backend
+        working-directory: app/backend
       - run: docker compose down -v --remove-orphans
         working-directory: app/backend
       - run: docker compose up -d mailcatcher

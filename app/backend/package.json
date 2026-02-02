@@ -10,6 +10,7 @@
     "test": "uv run pytest",
     "lint": "echo 'Backend lint completed'",
     "format": "echo 'Backend format completed'",
-    "clean": "echo 'Backend clean completed'"
+    "clean": "echo 'Backend clean completed'",
+    "postinstall": "uv sync"
   }
 }

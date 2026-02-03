@@ -6,6 +6,11 @@ set -x
 # Let the DB start
 python app/backend_pre_start.py
 
+# Optional destructive reset for local/dev rebuilds.
+if [ "${RESET_DB:-false}" = "true" ]; then
+  ./scripts/reset-db.sh
+fi
+
 # Run migrations
 alembic upgrade head
 

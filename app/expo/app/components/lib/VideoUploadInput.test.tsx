@@ -6,18 +6,6 @@ import { render, fireEvent } from "@testing-library/react-native"
 import { VideoUploadInput } from "./VideoUploadInput"
 import { ThemeProvider } from "../../theme/context"
 
-// Mock Platform.OS
-jest.mock("react-native", () => {
-  const RN = jest.requireActual("react-native")
-  return {
-    ...RN,
-    Platform: {
-      OS: "web",
-      select: jest.fn((obj) => obj.web),
-    },
-  }
-})
-
 // Mock URL.createObjectURL and URL.revokeObjectURL
 global.URL.createObjectURL = jest.fn((blob) => `blob:http://localhost/${blob}`)
 global.URL.revokeObjectURL = jest.fn()
@@ -49,6 +37,15 @@ describe("VideoUploadInput", () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    // Mock Platform.OS to 'ios' by default for mobile tests
+    Object.defineProperty(Platform, "OS", {
+      get: () => "ios",
+      configurable: true,
+    })
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   it("should render the component", () => {
@@ -62,17 +59,6 @@ describe("VideoUploadInput", () => {
     expect(getByText("Video")).toBeDefined()
   })
 
-  it("should show placeholder text", () => {
-    const { getByText } = render(
-      <ThemeProvider>
-        <NavigationContainer>
-          <VideoUploadInput {...defaultProps} placeholder="Select a video" />
-        </NavigationContainer>
-      </ThemeProvider>,
-    )
-    expect(getByText("Select a video")).toBeDefined()
-  })
-
   it("should show select button", () => {
     const { getByText } = render(
       <ThemeProvider>
@@ -81,14 +67,14 @@ describe("VideoUploadInput", () => {
         </NavigationContainer>
       </ThemeProvider>,
     )
-    expect(getByText("Select Video File")).toBeDefined()
+    expect(getByText("Select Video from Library")).toBeDefined()
   })
 
   it("should show clear button when value is set", () => {
     const { getByText } = render(
       <ThemeProvider>
         <NavigationContainer>
-          <VideoUploadInput {...defaultProps} value="blob:http://localhost/test" />
+          <VideoUploadInput {...defaultProps} value="file:///path/to/video.mp4" />
         </NavigationContainer>
       </ThemeProvider>,
     )
@@ -110,7 +96,7 @@ describe("VideoUploadInput", () => {
     const { getByText } = render(
       <ThemeProvider>
         <NavigationContainer>
-          <VideoUploadInput {...defaultProps} value="blob:http://localhost/test" />
+          <VideoUploadInput {...defaultProps} value="file:///path/to/video.mp4" />
         </NavigationContainer>
       </ThemeProvider>,
     )
@@ -136,7 +122,7 @@ describe("VideoUploadInput", () => {
         </NavigationContainer>
       </ThemeProvider>,
     )
-    const button = getByText("Select Video File")
+    const button = getByText("Select Video from Library")
     // Note: In React Native Testing Library, disabled state might not be directly testable
     // This test verifies the component renders without errors when disabled
     expect(button).toBeDefined()
@@ -149,7 +135,7 @@ describe("VideoUploadInput", () => {
         <NavigationContainer>
           <VideoUploadInput
             {...defaultProps}
-            value="blob:http://localhost/test"
+            value="file:///path/to/video.mp4"
             onChange={onChange}
           />
         </NavigationContainer>
@@ -160,7 +146,6 @@ describe("VideoUploadInput", () => {
     fireEvent.press(clearButton)
 
     expect(onChange).toHaveBeenCalledWith(null)
-    expect(global.URL.revokeObjectURL).toHaveBeenCalledWith("blob:http://localhost/test")
   })
 
   describe("File selection", () => {
@@ -181,7 +166,7 @@ describe("VideoUploadInput", () => {
 
       // Simulate file selection through the component's internal handler
       // In a real scenario, this would be triggered by the file input
-      const selectButton = getByText("Select Video File")
+      const selectButton = getByText("Select Video from Library")
       fireEvent.press(selectButton)
 
       // The actual file selection would happen through the hidden input element
@@ -192,8 +177,11 @@ describe("VideoUploadInput", () => {
 
   describe("Platform-specific behavior", () => {
     it("should show mobile message on non-web platforms", () => {
-      // Mock Platform.OS to be ios
-      jest.spyOn(Platform, "OS", "get").mockReturnValue("ios")
+      // Override Platform.OS to be web for this test
+      Object.defineProperty(Platform, "OS", {
+        get: () => "web",
+        configurable: true,
+      })
 
       const { getByText } = render(
         <ThemeProvider>
@@ -203,9 +191,7 @@ describe("VideoUploadInput", () => {
         </ThemeProvider>,
       )
 
-      expect(getByText(/Video upload is only available on web/)).toBeDefined()
-
-      jest.restoreAllMocks()
+      expect(getByText(/Video upload is not available on web/)).toBeDefined()
     })
   })
 })

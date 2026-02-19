@@ -71,14 +71,14 @@ export const TabNavigator = memo(function TabNavigator() {
       tabBarInactiveTintColor: colors.text,
       tabBarLabelStyle: themed($tabBarLabel),
       tabBarItemStyle: themed($tabBarItem),
-      tabBarBackground:
-        Platform.OS !== "web"
-          ? () => (
-              <ThemedBlurView style={themed($tabBarBlur)}>
-                <View style={themed($tabBarOverlay)} />
-              </ThemedBlurView>
-            )
-          : undefined,
+      tabBarBackground: () =>
+        Platform.OS !== "web" ? (
+          <ThemedBlurView style={themed($tabBarBlur)}>
+            <View style={themed($tabBarOverlay)} />
+          </ThemedBlurView>
+        ) : (
+          <View style={themed($tabBarWebBackground)} />
+        ),
     }),
     // Dependencies: track themed function, tabBarSpacing.height, and colors.text that affect the styles
     // themed function identity is stable, but we track colors.text which changes with theme
@@ -172,4 +172,19 @@ const $tabBarLabel: ThemedStyle<TextStyle> = ({ colors, typography }) => ({
   fontFamily: typography.primary.medium,
   lineHeight: 16,
   color: colors.text,
+})
+
+const $tabBarWebBackground: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  width: "100%",
+  height: "100%",
+  backgroundColor: colors.background + "88",
+  // @ts-ignore - CSS-only property for web
+  backdropFilter: "blur(10px)",
+  // @ts-ignore - CSS-only property for web
+  WebkitBackdropFilter: "blur(10px)",
 })

@@ -1,5 +1,5 @@
 import type { ViewStyle, TextStyle } from "react-native"
-import { Pressable, View } from "react-native"
+import { Pressable, View, ScrollView, Platform } from "react-native"
 import { useNavigation, CommonActions, NavigationProp } from "@react-navigation/native"
 
 import { Button } from "@/components/lib/Button"
@@ -117,7 +117,11 @@ export function AppDrawer() {
 
   return (
     <View style={themed($drawerContainer)}>
-      <View style={themed($contentSection)}>
+      <ScrollView
+        style={themed($scrollView)}
+        contentContainerStyle={themed($scrollContent)}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={themed($userSection)}>
           <Pressable
             onPress={() => handleUserProfileNavigation()}
@@ -178,9 +182,9 @@ export function AppDrawer() {
             </View>
           </Pressable>
         </View>
-      </View>
 
-      <Button preset="outline" text="Logout" onPress={logout} />
+        <Button preset="outline" text="Logout" onPress={logout} />
+      </ScrollView>
     </View>
   )
 }
@@ -190,11 +194,22 @@ const $drawerContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.background,
   padding: spacing.lg,
   paddingTop: spacing.xl * 2,
-  justifyContent: "space-between",
+  ...(Platform.OS === "web" && {
+    paddingTop: 0,
+    paddingBottom: 0,
+  }),
 })
 
-const $contentSection: ThemedStyle<ViewStyle> = () => ({
+const $scrollView: ThemedStyle<ViewStyle> = () => ({
   flex: 1,
+})
+
+const $scrollContent: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  flexGrow: 1,
+  paddingBottom: spacing.xl,
+  ...(Platform.OS === "web" && {
+    paddingTop: spacing.xl * 2,
+  }),
 })
 
 const $userSection: ThemedStyle<ViewStyle> = ({ spacing }) => ({

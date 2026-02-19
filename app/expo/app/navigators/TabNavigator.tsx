@@ -163,8 +163,9 @@ const $tabBarOverlay: ThemedStyle<ViewStyle> = ({ colors }) => ({
   opacity: 0,
 })
 
-const $tabBarItem: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  paddingTop: spacing.sm,
+const $tabBarItem: ThemedStyle<ViewStyle> = () => ({
+  justifyContent: "center",
+  alignItems: "center",
 })
 
 const $tabBarLabel: ThemedStyle<TextStyle> = ({ colors, typography }) => ({
@@ -182,7 +183,7 @@ const $tabBarWebBackground: ThemedStyle<ViewStyle> = ({ colors }) => ({
   bottom: 0,
   width: "100%",
   height: "100%",
-  backgroundColor: colors.background + "88",
+  backgroundColor: colors.background + "CC",
   // @ts-ignore - CSS-only property for web
   backdropFilter: "blur(10px)",
   // @ts-ignore - CSS-only property for web

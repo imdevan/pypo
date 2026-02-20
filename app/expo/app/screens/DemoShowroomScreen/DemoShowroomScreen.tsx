@@ -104,6 +104,7 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"showroom">> = function D
   }, [])
 
   const isAndroid = Platform.OS === "android"
+  const isWeb = Platform.OS === "web"
 
   return (
     /*       <DrawerWrapper
@@ -113,49 +114,76 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"showroom">> = function D
       >
  */
     <Screen
-      preset="fixed"
+      preset={isWeb ? "scroll" : "fixed"}
       contentContainerStyle={themed($styles.container)}
       {...(isAndroid ? { KeyboardAvoidingViewProps: { behavior: undefined } } : {})}
     >
-      <SectionListWithKeyboardAwareScrollView
-        showsVerticalScrollIndicator={false}
-        ref={listRef}
-        contentContainerStyle={themed($sectionListContentContainer)}
-        stickySectionHeadersEnabled={false}
-        sections={Object.values(Demos).map((d) => ({
-          name: d.name,
-          description: d.description,
-          data: [d.data({ theme, themed })],
-        }))}
-        renderItem={({ item, index: sectionIndex }) => (
-          <View>
-            {item.map((demo: ReactElement, demoIndex: number) => (
-              <View key={`${sectionIndex}-${demoIndex}`}>{demo}</View>
-            ))}
-          </View>
-        )}
-        renderSectionFooter={() => <View style={themed($demoUseCasesSpacer)} />}
-        ListHeaderComponent={
-          <>
+      {isWeb ? (
+        <View style={themed($webContainer)}>
+          <View style={themed($sectionListContentContainer)}>
             <DevelopmentLinks />
-
             <View style={themed($heading)}>
               <Text preset="heading" tx="demoShowroomScreen:jumpStart" />
             </View>
-          </>
-        }
-        onScrollToIndexFailed={scrollToIndexFailed}
-        renderSectionHeader={({ section }) => {
-          return (
+            {Object.values(Demos).map((demo, sectionIndex) => (
+              <View key={sectionIndex}>
+                <View>
+                  <Text preset="heading" style={themed($demoItemName)}>
+                    {demo.name}
+                  </Text>
+                  <Text style={themed($demoItemDescription)}>{translate(demo.description)}</Text>
+                </View>
+                <View>
+                  {demo.data({ theme, themed }).map((item: ReactElement, demoIndex: number) => (
+                    <View key={`${sectionIndex}-${demoIndex}`}>{item}</View>
+                  ))}
+                </View>
+                <View style={themed($demoUseCasesSpacer)} />
+              </View>
+            ))}
+          </View>
+        </View>
+      ) : (
+        <SectionListWithKeyboardAwareScrollView
+          showsVerticalScrollIndicator={false}
+          ref={listRef}
+          contentContainerStyle={themed($sectionListContentContainer)}
+          stickySectionHeadersEnabled={false}
+          sections={Object.values(Demos).map((d) => ({
+            name: d.name,
+            description: d.description,
+            data: [d.data({ theme, themed })],
+          }))}
+          renderItem={({ item, index: sectionIndex }) => (
             <View>
-              <Text preset="heading" style={themed($demoItemName)}>
-                {section.name}
-              </Text>
-              <Text style={themed($demoItemDescription)}>{translate(section.description)}</Text>
+              {item.map((demo: ReactElement, demoIndex: number) => (
+                <View key={`${sectionIndex}-${demoIndex}`}>{demo}</View>
+              ))}
             </View>
-          )
-        }}
-      />
+          )}
+          renderSectionFooter={() => <View style={themed($demoUseCasesSpacer)} />}
+          ListHeaderComponent={
+            <>
+              <DevelopmentLinks />
+
+              <View style={themed($heading)}>
+                <Text preset="heading" tx="demoShowroomScreen:jumpStart" />
+              </View>
+            </>
+          }
+          onScrollToIndexFailed={scrollToIndexFailed}
+          renderSectionHeader={({ section }) => {
+            return (
+              <View>
+                <Text preset="heading" style={themed($demoItemName)}>
+                  {section.name}
+                </Text>
+                <Text style={themed($demoItemDescription)}>{translate(section.description)}</Text>
+              </View>
+            )
+          }}
+        />
+      )}
     </Screen>
     // </DrawerWrapper>
   )
@@ -163,6 +191,10 @@ export const DemoShowroomScreen: FC<DemoTabScreenProps<"showroom">> = function D
 
 const $sectionListContentContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   paddingHorizontal: spacing.lg,
+})
+
+const $webContainer: ThemedStyle<ViewStyle> = () => ({
+  flex: 1,
 })
 
 const $heading: ThemedStyle<ViewStyle> = ({ spacing }) => ({

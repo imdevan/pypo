@@ -36,7 +36,9 @@
   },
   "dependencies": {
     "@blazejkustra/react-native-alert": "^1.0.0",
-    "@expo-google-fonts/space-grotesk": "^0.4.0",
+    "@expo-google-fonts/be-vietnam-pro": "^0.4.0",
+    "@expo-google-fonts/fira-code": "^0.4.0",
+    "@expo-google-fonts/red-hat-display": "^0.4.0",
     "@expo/metro-runtime": "~5.0.4",
     "@expo/vector-icons": "^15.0.3",
     "@react-native-seoul/masonry-list": "^1.4.2",

@@ -1,53 +1,70 @@
 // TODO: write documentation about fonts and typography along with guides on how to add custom fonts in own
 // markdown file and add links from here
 
-import { Platform } from "react-native"
 import {
-  SpaceGrotesk_300Light as spaceGroteskLight,
-  SpaceGrotesk_400Regular as spaceGroteskRegular,
-  SpaceGrotesk_500Medium as spaceGroteskMedium,
-  SpaceGrotesk_600SemiBold as spaceGroteskSemiBold,
-  SpaceGrotesk_700Bold as spaceGroteskBold,
-} from "@expo-google-fonts/space-grotesk"
+  BeVietnamPro_300Light as beVietnamProLight,
+  BeVietnamPro_400Regular as beVietnamProRegular,
+  BeVietnamPro_500Medium as beVietnamProMedium,
+  BeVietnamPro_600SemiBold as beVietnamProSemiBold,
+  BeVietnamPro_700Bold as beVietnamProBold,
+} from "@expo-google-fonts/be-vietnam-pro"
+import {
+  FiraCode_300Light as firaCodeLight,
+  FiraCode_400Regular as firaCodeRegular,
+  FiraCode_500Medium as firaCodeMedium,
+  FiraCode_600SemiBold as firaCodeSemiBold,
+  FiraCode_700Bold as firaCodeBold,
+} from "@expo-google-fonts/fira-code"
+import {
+  RedHatDisplay_300Light as redHatDisplayLight,
+  RedHatDisplay_400Regular as redHatDisplayRegular,
+  RedHatDisplay_500Medium as redHatDisplayMedium,
+  RedHatDisplay_600SemiBold as redHatDisplaySemiBold,
+  RedHatDisplay_700Bold as redHatDisplayBold,
+} from "@expo-google-fonts/red-hat-display"
 
 export const customFontsToLoad = {
-  spaceGroteskLight,
-  spaceGroteskRegular,
-  spaceGroteskMedium,
-  spaceGroteskSemiBold,
-  spaceGroteskBold,
+  redHatDisplayLight,
+  redHatDisplayRegular,
+  redHatDisplayMedium,
+  redHatDisplaySemiBold,
+  redHatDisplayBold,
+  beVietnamProLight,
+  beVietnamProRegular,
+  beVietnamProMedium,
+  beVietnamProSemiBold,
+  beVietnamProBold,
+  firaCodeLight,
+  firaCodeRegular,
+  firaCodeMedium,
+  firaCodeSemiBold,
+  firaCodeBold,
 }
 
 const fonts = {
-  spaceGrotesk: {
+  redHatDisplay: {
     // Cross-platform Google font.
-    light: "spaceGroteskLight",
-    normal: "spaceGroteskRegular",
-    medium: "spaceGroteskMedium",
-    semiBold: "spaceGroteskSemiBold",
-    bold: "spaceGroteskBold",
+    light: "redHatDisplayLight",
+    normal: "redHatDisplayRegular",
+    medium: "redHatDisplayMedium",
+    semiBold: "redHatDisplaySemiBold",
+    bold: "redHatDisplayBold",
   },
-  helveticaNeue: {
-    // iOS only font.
-    thin: "HelveticaNeue-Thin",
-    light: "HelveticaNeue-Light",
-    normal: "Helvetica Neue",
-    medium: "HelveticaNeue-Medium",
+  beVietnamPro: {
+    // Cross-platform Google font.
+    light: "beVietnamProLight",
+    normal: "beVietnamProRegular",
+    medium: "beVietnamProMedium",
+    semiBold: "beVietnamProSemiBold",
+    bold: "beVietnamProBold",
   },
-  courier: {
-    // iOS only font.
-    normal: "Courier",
-  },
-  sansSerif: {
-    // Android only font.
-    thin: "sans-serif-thin",
-    light: "sans-serif-light",
-    normal: "sans-serif",
-    medium: "sans-serif-medium",
-  },
-  monospace: {
-    // Android only font.
-    normal: "monospace",
+  firaCode: {
+    // Cross-platform Google font for code.
+    light: "firaCodeLight",
+    normal: "firaCodeRegular",
+    medium: "firaCodeMedium",
+    semiBold: "firaCodeSemiBold",
+    bold: "firaCodeBold",
   },
 }
 
@@ -59,13 +76,13 @@ export const typography = {
   /**
    * The primary font. Used in most places.
    */
-  primary: fonts.spaceGrotesk,
+  primary: fonts.redHatDisplay,
   /**
    * An alternate font used for perhaps titles and stuff.
    */
-  secondary: Platform.select({ ios: fonts.helveticaNeue, android: fonts.sansSerif }),
+  secondary: fonts.beVietnamPro,
   /**
    * Lets get fancy with a monospace font!
    */
-  code: Platform.select({ ios: fonts.courier, android: fonts.monospace }),
+  code: fonts.firaCode,
 }
